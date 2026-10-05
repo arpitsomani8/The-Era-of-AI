@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Network, 
@@ -10,12 +10,14 @@ import {
   Search, 
   Printer, 
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Info
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 
 export default function Navbar({ onOpenSearch, onOpenAbout }) {
   const location = useLocation();
+  const [logoError, setLogoError] = useState(false);
 
   const navItems = [
     {
@@ -78,18 +80,18 @@ export default function Navbar({ onOpenSearch, onOpenAbout }) {
           className="group flex items-center space-x-3 text-left focus:outline-none"
         >
           <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/25 ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-indigo-400/40 transition-all duration-200 shrink-0 bg-slate-900 flex items-center justify-center">
-            <img 
-              src={`${import.meta.env.BASE_URL}logo.png`} 
-              alt="The Era of AI Logo" 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextSibling.style.display = 'flex';
-              }}
-            />
-            <div className="hidden w-full h-full items-center justify-center bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 text-white">
-              <Sparkles className="w-5 h-5" />
-            </div>
+            {!logoError ? (
+              <img 
+                src={`${import.meta.env.BASE_URL}logo.png`} 
+                alt="The Era of AI Logo" 
+                className="w-full h-full object-cover"
+                onError={() => setLogoError(true)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 text-white">
+                <Sparkles className="w-5 h-5" />
+              </div>
+            )}
           </div>
           <div>
             <span className="font-bold text-sm md:text-base tracking-tight text-white flex items-center gap-2 group-hover:text-indigo-300 transition-colors">
