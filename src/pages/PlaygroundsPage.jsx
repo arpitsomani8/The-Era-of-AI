@@ -26,6 +26,7 @@ import TokenizerPlayground from '../components/TokenizerPlayground';
 import RAGPipelinePlayground from '../components/RAGPipelinePlayground';
 import LoRAPlayground from '../components/LoRAPlayground';
 import PromptEngineeringPlayground from '../components/PromptEngineeringPlayground';
+import PlaygroundGuide from '../components/PlaygroundGuide';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -353,6 +354,11 @@ export default function PlaygroundsPage() {
             </button>
           </div>
         </div>
+
+        {/* ========================================================= */}
+        {/* INTERACTIVE PLAYGROUND GUIDE & REVEALABLE CONCLUSION */}
+        {/* ========================================================= */}
+        <PlaygroundGuide activeTab={activeTab} />
 
         {/* ========================================================= */}
         {/* TAB 1: MULTI-HEAD ATTENTION MATRIX SIMULATOR */}
