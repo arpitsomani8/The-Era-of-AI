@@ -18,6 +18,7 @@ import {
 import conceptsData from '../data/concepts.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 export default function ConceptsPage() {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -266,7 +267,15 @@ export default function ConceptsPage() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Audio / AI Voice Explainer */}
+                  <AudioExplainerButton
+                    title={selectedConcept.title}
+                    definition={selectedConcept.def || selectedConcept.definition}
+                    intuition={selectedConcept.logic}
+                    example={selectedConcept.example}
+                  />
+
                   {/* Mark as Mastered button */}
                   <button
                     onClick={() => toggleCompleted(`concept-${selectedConcept.id}`)}

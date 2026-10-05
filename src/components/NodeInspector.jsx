@@ -4,6 +4,7 @@ import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers, Arr
 import KaTeXRenderer, { MathText } from './KaTeXRenderer';
 import { findConceptForSubtopic } from '../utils/conceptLookup';
 import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export default function NodeInspector({ node, crossLinks = [], onClose, onSelectNode }) {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -59,7 +60,15 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+          {/* Audio Explainer */}
+          <AudioExplainerButton
+            title={node.label}
+            definition={node.def}
+            intuition={node.logic}
+            example={node.example}
+          />
+
           {/* Mark Done button */}
           <button
             onClick={() => toggleCompleted(nKey)}
