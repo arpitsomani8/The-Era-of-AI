@@ -3,22 +3,175 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { 
   Search, 
   BookOpen, 
-  Calculator, 
-  Lightbulb, 
-  Sparkles, 
   Layers, 
   ChevronDown, 
   ChevronUp, 
-  Printer,
   ArrowUpRight,
   Bookmark,
-  CheckCircle2
+  CheckCircle2,
+  Network,
+  GitBranch,
+  ExternalLink,
+  Compass
 } from 'lucide-react';
 import topicsData from '../data/topics.json';
-import hubNodesData from '../data/hubNodes.json';
-import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
+import allNodesData from '../data/allNodes.json';
 import { findConceptForSubtopic } from '../utils/conceptLookup';
 import { useProgress } from '../context/ProgressContext';
+
+// Curated inter-topic relationships across the curriculum
+const CURATED_TOPIC_CONNECTIONS = {
+  math_linalg: [
+    { id: 'genai_embed', relation: 'Powers Vector Spaces' },
+    { id: 'ml_unsupervised', relation: 'Matrix Decomposition (SVD & PCA)' }
+  ],
+  math_calc: [
+    { id: 'ml_opt', relation: 'Supplies ∇ Gradients' },
+    { id: 'dl_backprop', relation: 'Multivariate Chain Rule' }
+  ],
+  math_prob: [
+    { id: 'ml_logistic', relation: 'Likelihood & Probabilities' },
+    { id: 'dl_generative', relation: 'Prior Distributions & Latent SDEs' }
+  ],
+  math_info: [
+    { id: 'ml_loss', relation: 'Derives Cross-Entropy' },
+    { id: 'ml_trees', relation: 'Information Gain & Entropy' }
+  ],
+  data_scrub: [
+    { id: 'data_impute', relation: 'Pipeline Next: Missing Value Imputation' },
+    { id: 'data_scale', relation: 'Pipeline Follow-up: Outlier Cleansing' }
+  ],
+  data_impute: [
+    { id: 'data_scrub', relation: 'Prerequisite: Anomaly Detection' },
+    { id: 'data_scale', relation: 'Pipeline Next: Feature Standardization' }
+  ],
+  data_scale: [
+    { id: 'ml_opt', relation: 'Enables Gradient Stability' },
+    { id: 'math_linalg', relation: 'Distance Metric Normalization' }
+  ],
+  data_fe: [
+    { id: 'ml_linear', relation: 'Supplies Feature Matrix X' },
+    { id: 'genai_embed', relation: 'Dense Embeddings vs Sparse Crosses' }
+  ],
+  data_split: [
+    { id: 'eval_tradeoff', relation: 'Measures Generalization & Leakage' },
+    { id: 'eval_matrix', relation: 'Independent Validation Folds' }
+  ],
+  ml_linear: [
+    { id: 'data_fe', relation: 'Feature Engineering Inputs' },
+    { id: 'ml_loss', relation: 'Mean Squared Error Optimization' }
+  ],
+  ml_loss: [
+    { id: 'dl_backprop', relation: 'Seed of Chain Rule' },
+    { id: 'math_info', relation: 'Information Theoretic Loss' }
+  ],
+  ml_opt: [
+    { id: 'dl_opt', relation: 'Evolves to Adam / AdamW' },
+    { id: 'math_calc', relation: 'Supplied by ∇ Gradients' },
+    { id: 'data_scale', relation: 'Enables Gradient Stability' }
+  ],
+  ml_logistic: [
+    { id: 'dl_activations', relation: 'Sigmoid becomes Activation' },
+    { id: 'math_prob', relation: 'Likelihood & Probabilities' }
+  ],
+  ml_reg: [
+    { id: 'dl_norm', relation: 'Controls Overfitting' },
+    { id: 'eval_tradeoff', relation: 'Bias-Variance Regularization' }
+  ],
+  ml_trees: [
+    { id: 'math_info', relation: 'Information Gain & Entropy' },
+    { id: 'eval_matrix', relation: 'Classification & Split Evaluation' }
+  ],
+  ml_unsupervised: [
+    { id: 'math_linalg', relation: 'Eigenvalue Decomposition for PCA' },
+    { id: 'genai_embed', relation: 'Cluster Analysis in Vector Space' }
+  ],
+  eval_matrix: [
+    { id: 'genai_align', relation: 'Evaluates Alignment Quality' },
+    { id: 'eval_curves', relation: 'Precision, Recall & F1 Boundaries' }
+  ],
+  eval_curves: [
+    { id: 'eval_matrix', relation: 'Derives ROC-AUC & PR Curves' },
+    { id: 'eval_tradeoff', relation: 'Threshold Tuning for Class Imbalance' }
+  ],
+  eval_tradeoff: [
+    { id: 'data_split', relation: 'Measures Generalization' },
+    { id: 'ml_reg', relation: 'Regularization to Prevent Overfitting' }
+  ],
+  dl_neurons: [
+    { id: 'genai_attention', relation: 'Layered Linear Projections' },
+    { id: 'dl_activations', relation: 'Non-linear Transformation of Latents' }
+  ],
+  dl_activations: [
+    { id: 'ml_logistic', relation: 'Sigmoid becomes Activation' },
+    { id: 'dl_backprop', relation: 'Non-vanishing Derivative Gradients' }
+  ],
+  dl_backprop: [
+    { id: 'ml_loss', relation: 'Seed of Chain Rule' },
+    { id: 'math_calc', relation: 'Multivariate Chain Rule' }
+  ],
+  dl_opt: [
+    { id: 'genai_train', relation: 'Drives LoRA / Pre-training' },
+    { id: 'ml_opt', relation: 'Evolves from Classical Optimization' }
+  ],
+  dl_norm: [
+    { id: 'ml_reg', relation: 'Controls Overfitting' },
+    { id: 'genai_attention', relation: 'Pre-LayerNorm in Transformers' }
+  ],
+  dl_vision: [
+    { id: 'dl_neurons', relation: '2D Convolutional Receptive Fields' },
+    { id: 'genai_embed', relation: 'Vision Transformers & Patch Embeddings' }
+  ],
+  dl_seq: [
+    { id: 'genai_attention', relation: 'Evolution: Recurrence to Self-Attention' },
+    { id: 'dl_backprop', relation: 'Backpropagation Through Time (BPTT)' }
+  ],
+  dl_generative: [
+    { id: 'math_prob', relation: 'Diffusion SDEs & Latent Gaussian Priors' },
+    { id: 'genai_train', relation: 'Score Matching & Denoiser Architectures' }
+  ],
+  genai_embed: [
+    { id: 'genai_rag', relation: 'Generates Vector Chunks' },
+    { id: 'math_linalg', relation: 'Vector Space Dot Products' }
+  ],
+  genai_attention: [
+    { id: 'dl_neurons', relation: 'Layered Linear Projections' },
+    { id: 'genai_train', relation: 'FlashAttention & KV-Cache Execution' }
+  ],
+  genai_train: [
+    { id: 'dl_opt', relation: 'Drives LoRA / Pre-training' },
+    { id: 'genai_align', relation: 'Base Model to Instruct Alignment' }
+  ],
+  genai_align: [
+    { id: 'eval_matrix', relation: 'Evaluates Alignment Quality' },
+    { id: 'genai_prompt_agents', relation: 'System Prompts & Safety Guardrails' }
+  ],
+  genai_rag: [
+    { id: 'genai_embed', relation: 'Generates Vector Chunks' },
+    { id: 'genai_prompt_agents', relation: 'Retrieval Augmentation for Agents' }
+  ],
+  genai_prompt_agents: [
+    { id: 'genai_rag', relation: 'Tool Use & Vector DB Retrieval' },
+    { id: 'genai_align', relation: 'Safety Guardrails & Constitutional AI' }
+  ],
+  mlops_root: [
+    { id: 'eval_matrix', relation: 'Continuous Drift & Quality Monitoring' },
+    { id: 'genai_rag', relation: 'Vector DB & Production Serving Pipelines' }
+  ]
+};
+
+const getCategoryBadgeClass = (cat) => {
+  switch (cat) {
+    case 'math': return 'text-blue-400 bg-blue-500/10 border-blue-500/30';
+    case 'data': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+    case 'ml': return 'text-purple-400 bg-purple-500/10 border-purple-500/30';
+    case 'eval': return 'text-amber-400 bg-amber-500/10 border-amber-500/30';
+    case 'dl': return 'text-pink-400 bg-pink-500/10 border-pink-500/30';
+    case 'genai': return 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30';
+    case 'mlops': return 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
+    default: return 'text-slate-300 bg-slate-800 border-slate-700';
+  }
+};
 
 export default function SyllabusPage() {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -27,9 +180,13 @@ export default function SyllabusPage() {
   const [searchQuery, setSearchQuery] = useState(initialTopic);
   const [activeCategory, setActiveCategory] = useState('all');
   const [expandedTopics, setExpandedTopics] = useState(() => {
-    // Default expand all
+    // Default expand all to easily scan subtopics & connections
     return new Set(topicsData.map((t) => t.id));
   });
+
+  const nodeMap = useMemo(() => {
+    return new Map(allNodesData.map((n) => [n.id, n]));
+  }, []);
 
   const completedSyllabusCount = useMemo(() => {
     return topicsData.filter((t) => isCompleted(t.id)).length;
@@ -72,14 +229,17 @@ export default function SyllabusPage() {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchTitle = topic.label?.toLowerCase().includes(q);
-        const matchDef = topic.def?.toLowerCase().includes(q);
-        const matchLogic = topic.logic?.toLowerCase().includes(q);
         const matchSub = topic.subtopics?.some((s) => s.toLowerCase().includes(q));
-        if (!matchTitle && !matchDef && !matchLogic && !matchSub) return false;
+        const conns = CURATED_TOPIC_CONNECTIONS[topic.id] || [];
+        const matchConn = conns.some((c) => {
+          const targetNode = nodeMap.get(c.id);
+          return targetNode?.label?.toLowerCase().includes(q) || c.relation?.toLowerCase().includes(q);
+        });
+        if (!matchTitle && !matchSub && !matchConn) return false;
       }
       return true;
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, nodeMap]);
 
   return (
     <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 p-4 sm:p-6 md:p-10">
@@ -89,13 +249,13 @@ export default function SyllabusPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
               <BookOpen className="w-3.5 h-3.5" />
-              Complete Curriculum
+              Curriculum Roadmap
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Line-wise Master AI & Machine Learning Syllabus
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
-              From vector calculus and classical optimization to modern LLMs, diffusion mechanisms, and production evaluation. Every single topic broken down with definition, mathematical formulas, intuitive logic, and real-world scenarios.
+              Clean curriculum index: explore core topics, line-wise subtopics, and inter-domain connected pathways with direct redirect links to their in-depth breakdowns.
             </p>
           </div>
 
@@ -129,7 +289,7 @@ export default function SyllabusPage() {
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Mark modules as mastered to track your study roadmap and export personalized revision guides.
+                Track your study roadmap across topics and subtopics.
               </p>
             </div>
           </div>
@@ -155,7 +315,7 @@ export default function SyllabusPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search syllabus by topic, formula, or keyword..."
+              placeholder="Search syllabus by topic, subtopic, or connected concept..."
               className="w-full bg-slate-900 border border-slate-800 text-xs sm:text-sm text-white rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-500"
             />
             <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -198,6 +358,7 @@ export default function SyllabusPage() {
             const isExpanded = expandedTopics.has(topic.id);
             const isDone = isCompleted(topic.id);
             const bookmarked = isBookmarked(topic.id);
+            const connectedTopics = CURATED_TOPIC_CONNECTIONS[topic.id] || [];
 
             return (
               <div
@@ -229,7 +390,7 @@ export default function SyllabusPage() {
                         }`}>
                           {topic.label}
                         </h2>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full uppercase font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-semibold border ${getCategoryBadgeClass(topic.category)}`}>
                           {topic.category}
                         </span>
                         {isDone && (
@@ -239,13 +400,37 @@ export default function SyllabusPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
-                        {topic.subtopics?.join(' • ')}
-                      </p>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 flex-wrap">
+                        <span>{topic.subtopics?.length || 0} Subtopics</span>
+                        <span>•</span>
+                        <span>{connectedTopics.length} Connected Topics</span>
+                      </div>
                     </div>
                   </div>
 
                   <div className="no-print flex items-center gap-2 shrink-0">
+                    {/* Direct redirect to Core Concepts topic view */}
+                    <Link
+                      to={`/concepts?topic=${encodeURIComponent(topic.id)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 border border-indigo-500/30 hover:border-indigo-500/50 transition"
+                      title={`Open detailed study breakdown for "${topic.label}" in Core Concepts`}
+                    >
+                      <span>Explore Detail</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
+
+                    {/* Direct redirect to Mind Map node */}
+                    <Link
+                      to={`/mindmap?node=${encodeURIComponent(topic.id)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 transition"
+                      title={`View "${topic.label}" on 2D Knowledge Graph`}
+                    >
+                      <Network className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Mind Map</span>
+                    </Link>
+
                     {/* Mark as Mastered button */}
                     <button
                       onClick={(e) => {
@@ -290,75 +475,27 @@ export default function SyllabusPage() {
                   </div>
                 </div>
 
-                {/* Expanded Details Body */}
+                {/* Expanded Body: ONLY Subtopics and Connected Topics with Redirect Links */}
                 {isExpanded && (
-                  <div className="p-4 sm:p-6 border-t border-slate-800/80 bg-slate-950/40 space-y-4 text-xs sm:text-sm">
-                    {/* Definition */}
-                    {topic.def && (
-                      <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
-                        <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                          <BookOpen className="w-3.5 h-3.5" />
-                          1. Core Definition & Role
-                        </h3>
-                        <p className="text-slate-300 leading-relaxed">
-                          <MathText text={topic.def} />
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Formula */}
-                    {topic.formula && (
-                      <div className="bg-slate-900/80 rounded-xl p-4 border border-indigo-500/20">
-                        <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <Calculator className="w-3.5 h-3.5" />
-                          2. Mathematical Formulation
-                        </h3>
-                        <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 overflow-x-auto">
-                          <KaTeXRenderer math={topic.formula} block={true} />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Grid of Logic & Real-World Scenario */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {topic.logic && (
-                        <div className="bg-amber-950/20 rounded-xl p-4 border border-amber-500/25">
-                          <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                            <Lightbulb className="w-3.5 h-3.5" />
-                            3. Intuition & When to Use
-                          </h3>
-                          <p className="text-amber-100/90 leading-relaxed text-xs sm:text-sm">
-                            <MathText text={topic.logic} />
-                          </p>
-                        </div>
-                      )}
-
-                      {topic.example && (
-                        <div className="bg-emerald-950/20 rounded-xl p-4 border border-emerald-500/25">
-                          <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            4. Real-World Practical Example
-                          </h3>
-                          <p className="text-emerald-100/90 leading-relaxed text-xs sm:text-sm">
-                            <MathText text={topic.example} />
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Subtopics Checklist */}
+                  <div className="p-4 sm:p-5 border-t border-slate-800/80 bg-slate-950/40 space-y-5 text-xs sm:text-sm">
+                    {/* 1. Subtopics Section */}
                     {topic.subtopics && topic.subtopics.length > 0 && (
-                      <div className="pt-2">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <div>
+                        <div className="flex items-center justify-between mb-2.5">
+                          <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                             <Layers className="w-3.5 h-3.5 text-indigo-400" />
-                            Line-Wise Syllabus Modules ({topic.subtopics.length}):
+                            Subtopics ({topic.subtopics.length})
                           </h3>
-                          <span className="text-[11px] text-indigo-400 font-medium hidden sm:inline">
-                            Click to explore in Core Concepts &rarr;
-                          </span>
+                          <Link 
+                            to={`/concepts?topic=${encodeURIComponent(topic.id)}`}
+                            className="text-[11px] text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 group transition"
+                          >
+                            <span>Explore all in Core Concepts</span>
+                            <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                          </Link>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {topic.subtopics.map((sub, sIdx) => {
                             const concept = findConceptForSubtopic(sub, topic.id);
                             const targetUrl = concept
@@ -369,13 +506,93 @@ export default function SyllabusPage() {
                               <Link
                                 key={sIdx}
                                 to={targetUrl}
-                                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-indigo-600/20 text-slate-200 hover:text-indigo-300 border border-slate-800 hover:border-indigo-500/40 transition-all flex items-center gap-2 group shadow-sm"
-                                title={`Read full mathematical breakdown and real-world examples for "${sub}" in Core Concepts`}
+                                className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-600/15 text-slate-200 hover:text-white border border-slate-800 hover:border-indigo-500/40 transition-all flex items-start justify-between gap-2.5 group shadow-sm"
+                                title={`Open detailed breakdown, math formulas, and code sandbox for "${sub}" in Core Concepts`}
                               >
-                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:scale-125 transition-transform shrink-0"></span>
-                                <span>{sub}</span>
-                                <ArrowUpRight className="w-3 h-3 text-slate-500 group-hover:text-indigo-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+                                <div className="flex items-start gap-2.5 min-w-0">
+                                  <span className="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 shrink-0 group-hover:scale-125 transition-transform"></span>
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-medium text-slate-200 group-hover:text-indigo-200 leading-snug">
+                                      {sub}
+                                    </p>
+                                    <span className="text-[10px] text-slate-500 group-hover:text-indigo-400/80">
+                                      Open detail section &rarr;
+                                    </span>
+                                  </div>
+                                </div>
+                                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0 mt-0.5" />
                               </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 2. Connected Topics Section */}
+                    {connectedTopics.length > 0 && (
+                      <div className="pt-2 border-t border-slate-800/60">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <GitBranch className="w-3.5 h-3.5 text-cyan-400" />
+                            Connected Topics ({connectedTopics.length})
+                          </h3>
+                          <Link 
+                            to={`/mindmap?node=${encodeURIComponent(topic.id)}`}
+                            className="text-[11px] text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1 group transition"
+                          >
+                            <span>Inspect node connections in Mind Map</span>
+                            <Network className="w-3 h-3 group-hover:scale-110 transition-transform" />
+                          </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {connectedTopics.map((conn, cIdx) => {
+                            const targetNode = nodeMap.get(conn.id);
+                            if (!targetNode) return null;
+                            const targetConceptUrl = `/concepts?topic=${encodeURIComponent(conn.id)}`;
+                            const targetMapUrl = `/mindmap?node=${encodeURIComponent(conn.id)}`;
+
+                            return (
+                              <div
+                                key={cIdx}
+                                className="p-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-900 border border-slate-800/90 hover:border-cyan-500/40 transition-all flex flex-col justify-between gap-2 shadow-sm"
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
+                                        {conn.relation}
+                                      </span>
+                                      <span className={`text-[9px] px-1.5 py-0.2 rounded uppercase font-bold border ${getCategoryBadgeClass(targetNode.category)}`}>
+                                        {targetNode.category}
+                                      </span>
+                                    </div>
+                                    <h4 className="text-xs font-bold text-slate-100">
+                                      {targetNode.label}
+                                    </h4>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 pt-1 border-t border-slate-800/40">
+                                  <Link
+                                    to={targetConceptUrl}
+                                    className="inline-flex items-center gap-1 text-[11px] font-medium text-indigo-400 hover:text-indigo-300 transition"
+                                    title={`Go to detail page for ${targetNode.label}`}
+                                  >
+                                    <span>Detail section</span>
+                                    <ArrowUpRight className="w-3 h-3" />
+                                  </Link>
+                                  <span className="text-slate-700">•</span>
+                                  <Link
+                                    to={targetMapUrl}
+                                    className="inline-flex items-center gap-1 text-[11px] font-medium text-cyan-400 hover:text-cyan-300 transition"
+                                    title={`View ${targetNode.label} on Mind Map`}
+                                  >
+                                    <Network className="w-3 h-3" />
+                                    <span>Mind Map</span>
+                                  </Link>
+                                </div>
+                              </div>
                             );
                           })}
                         </div>
@@ -391,3 +608,4 @@ export default function SyllabusPage() {
     </div>
   );
 }
+
