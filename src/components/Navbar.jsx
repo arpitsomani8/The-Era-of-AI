@@ -12,13 +12,17 @@ import {
   Sparkles,
   ExternalLink,
   Info,
-  Zap
+  Zap,
+  Bookmark,
+  CheckCircle2
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
+import { useProgress } from '../context/ProgressContext';
 
-export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic }) {
+export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
+  const { bookmarkCount, completedCount } = useProgress();
 
   const navItems = [
     {
@@ -136,10 +140,11 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic }) {
         })}
       </nav>
 
-      {/* Right Controls: Theme Switcher, Global Search, About & Print */}
+      {/* Right Controls: Theme Switcher, Global Search, Bookmarks, About & Print */}
       <div className="flex items-center space-x-2">
         <ThemeSwitcher />
 
+        {/* Global Search */}
         <button
           onClick={onOpenSearch}
           id="navbar-search-btn"
@@ -152,6 +157,33 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic }) {
             ⌘K
           </kbd>
         </button>
+
+        {/* Bookmarks & Study Cheatsheet Drawer Toggle */}
+        <button
+          onClick={onOpenBookmarks}
+          id="navbar-bookmarks-btn"
+          className="relative p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+          title="Open Saved Bookmarks & Study Cheatsheet"
+        >
+          <Bookmark className={`w-3.5 h-3.5 transition-transform group-hover:scale-110 ${bookmarkCount > 0 ? 'text-amber-400 fill-amber-400' : 'text-slate-400'}`} />
+          <span className="hidden lg:inline">Bookmarks</span>
+          {bookmarkCount > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold">
+              {bookmarkCount}
+            </span>
+          )}
+        </button>
+
+        {/* Learning Mastery Counter (shows if any items completed) */}
+        {completedCount > 0 && (
+          <div 
+            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-xs font-medium"
+            title={`${completedCount} curriculum items and questions mastered!`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{completedCount} Mastered</span>
+          </div>
+        )}
 
         <button
           onClick={onOpenAbout}

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import Navbar from './components/Navbar';
 import SearchModal from './components/SearchModal';
 import AboutModal from './components/AboutModal';
+import BookmarksDrawer from './components/BookmarksDrawer';
 import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
 import MindMapPage from './pages/MindMapPage';
@@ -79,6 +80,7 @@ function SEOManager() {
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [showKineticIntro, setShowKineticIntro] = useState(() => {
     // Show kinetic intro on first visit of the session
     return !sessionStorage.getItem('era_of_ai_kinetic_seen');
@@ -111,6 +113,7 @@ export default function App() {
         onOpenSearch={() => setIsSearchOpen(true)} 
         onOpenAbout={() => setIsAboutOpen(true)}
         onOpenKinetic={() => setShowKineticIntro(true)}
+        onOpenBookmarks={() => setIsBookmarksOpen(true)}
       />
 
       {/* Main Routed Page Viewport */}
@@ -139,6 +142,12 @@ export default function App() {
       <AboutModal
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+      />
+
+      {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}
+      <BookmarksDrawer
+        isOpen={isBookmarksOpen}
+        onClose={() => setIsBookmarksOpen(false)}
       />
 
       {/* Kinetic Physics Opening Visualization */}

@@ -9,7 +9,9 @@ import {
   Filter, 
   Info,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Download,
+  Compass
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import allNodesData from '../data/allNodes.json';
@@ -23,12 +25,59 @@ export default function MindMapPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDomain, setActiveDomain] = useState('all');
   const [showInterlinks, setShowInterlinks] = useState(true);
+  const [showMinimap, setShowMinimap] = useState(true);
 
   // SVG Pan & Zoom Transform State
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 0.85 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const svgRef = useRef(null);
+
+  // Export as SVG
+  const handleExportSVG = () => {
+    if (!svgRef.current) return;
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svgRef.current);
+    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `The-Era-of-AI-Knowledge-Graph-${new Date().toISOString().slice(0, 10)}.svg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Export as PNG
+  const handleExportPNG = () => {
+    if (!svgRef.current) return;
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svgRef.current);
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 2400;
+      canvas.height = 1400;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = theme === 'bright' ? '#f8fafc' : theme === 'metallic-green' ? '#041d13' : '#020617';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+
+      const pngUrl = canvas.toDataURL('image/png');
+      const downloadLink = document.createElement('a');
+      downloadLink.href = pngUrl;
+      downloadLink.download = `The-Era-of-AI-Knowledge-Graph-${new Date().toISOString().slice(0, 10)}.png`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    };
+    img.src = url;
+  };
 
   // Sync selected node with URL parameter
   useEffect(() => {
@@ -304,6 +353,7 @@ export default function MindMapPage() {
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
           </button>
+
           <button
             onClick={() => setShowInterlinks(!showInterlinks)}
             title="Toggle Inter-Domain Cross-Links"
@@ -315,6 +365,30 @@ export default function MindMapPage() {
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>Links: {showInterlinks ? 'ON' : 'OFF'}</span>
+          </button>
+
+          {/* Radar Minimap Toggle */}
+          <button
+            onClick={() => setShowMinimap(!showMinimap)}
+            title="Toggle Radar Minimap"
+            className={`p-1.5 px-2.5 rounded-lg border transition text-xs font-semibold hidden md:flex items-center gap-1.5 ${
+              showMinimap
+                ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/40'
+                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Radar</span>
+          </button>
+
+          {/* Export PNG Dropdown */}
+          <button
+            onClick={handleExportPNG}
+            title="Export High-Resolution Mind Map (PNG)"
+            className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-slate-700/60 hover:border-indigo-500/50 transition flex items-center gap-1.5 font-medium"
+          >
+            <Download className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="hidden sm:inline">Export PNG</span>
           </button>
         </div>
       </div>
@@ -481,6 +555,52 @@ export default function MindMapPage() {
             </g>
           </g>
         </svg>
+
+        {/* Floating Radar Minimap */}
+        {showMinimap && (
+          <div className="absolute bottom-16 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 shadow-2xl hidden md:flex flex-col gap-1.5 z-20 animate-fadeIn">
+            <div className="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <Compass className="w-3.5 h-3.5" />
+                Radar View
+              </span>
+              <span className="text-[10px] font-mono text-indigo-300">
+                {Math.round(transform.k * 100)}% zoom
+              </span>
+            </div>
+            
+            {/* Radar Mini SVG canvas */}
+            <svg 
+              className="w-40 h-28 bg-slate-950/90 rounded-xl border border-slate-800"
+              viewBox="-800 -600 1600 1200"
+            >
+              {/* Nodes miniature points */}
+              {allNodesData.map((n) => (
+                <circle
+                  key={`radar-${n.id}`}
+                  cx={n.x}
+                  cy={n.y}
+                  r={n.id === selectedNodeId ? 28 : n.id === 'root' ? 24 : 14}
+                  fill={n.id === selectedNodeId ? '#38bdf8' : n.id === 'root' ? '#818cf8' : '#64748b'}
+                  opacity={n.id === selectedNodeId ? 1 : 0.65}
+                />
+              ))}
+
+              {/* Viewport Box Indicator */}
+              <rect
+                x={(-transform.x - 400) / transform.k}
+                y={(-transform.y - 250) / transform.k}
+                width={800 / transform.k}
+                height={500 / transform.k}
+                fill="rgba(56, 189, 248, 0.08)"
+                stroke="#38bdf8"
+                strokeWidth={4 / transform.k}
+                strokeDasharray="10,10"
+                className="transition-all duration-75"
+              />
+            </svg>
+          </div>
+        )}
 
         {/* Legend Overlay at bottom-left */}
         <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 shadow-xl pointer-events-none hidden md:flex items-center space-x-4">

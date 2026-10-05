@@ -10,12 +10,17 @@ import {
   Tag, 
   ChevronRight,
   Share2,
-  Check
+  Check,
+  Bookmark,
+  CheckCircle2,
+  Copy
 } from 'lucide-react';
 import conceptsData from '../data/concepts.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
+import { useProgress } from '../context/ProgressContext';
 
 export default function ConceptsPage() {
+  const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
   const [searchParams, setSearchParams] = useSearchParams();
   const conceptIdParam = searchParams.get('id');
   const searchParam = searchParams.get('search');
@@ -28,6 +33,7 @@ export default function ConceptsPage() {
   const [searchQuery, setSearchQuery] = useState(() => searchParam || '');
   const [activeCategory, setActiveCategory] = useState(() => categoryParam || 'all');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedFormula, setCopiedFormula] = useState(false);
 
   // Sync state with URL search params whenever they change
   useEffect(() => {
@@ -201,6 +207,7 @@ export default function ConceptsPage() {
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {filteredConcepts.map((concept) => {
             const isSelected = selectedConcept?.id === concept.id;
+            const isDone = isCompleted(`concept-${concept.id}`);
 
             return (
               <div
@@ -213,12 +220,17 @@ export default function ConceptsPage() {
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white border border-transparent'
                 }`}
               >
-                <div className="min-w-0">
-                  <div className="truncate text-xs font-medium">
-                    {concept.title}
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate mt-0.5">
-                    {concept.topic_label}
+                <div className="min-w-0 flex items-center gap-2">
+                  {isDone && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Mastered" />
+                  )}
+                  <div className="min-w-0">
+                    <div className="truncate text-xs font-medium">
+                      {concept.title}
+                    </div>
+                    <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                      {concept.topic_label}
+                    </div>
                   </div>
                 </div>
                 <ChevronRight
@@ -246,25 +258,68 @@ export default function ConceptsPage() {
                   <span className="text-xs text-slate-400">
                     Module: <strong className="text-slate-200">{selectedConcept.topic_label}</strong>
                   </span>
+                  {isCompleted(`concept-${selectedConcept.id}`) && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                      Mastered
+                    </span>
+                  )}
                 </div>
 
-                <button
-                  onClick={handleCopyLink}
-                  className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5"
-                  title="Copy direct link to this concept"
-                >
-                  {copiedLink ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Link Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Share2 className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Share Concept</span>
-                    </>
-                  )}
-                </button>
+                <div className="flex items-center gap-2">
+                  {/* Mark as Mastered button */}
+                  <button
+                    onClick={() => toggleCompleted(`concept-${selectedConcept.id}`)}
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition flex items-center gap-1.5 ${
+                      isCompleted(`concept-${selectedConcept.id}`)
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                        : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+                    }`}
+                    title={isCompleted(`concept-${selectedConcept.id}`) ? 'Mark Incomplete' : 'Mark as Mastered'}
+                  >
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${isCompleted(`concept-${selectedConcept.id}`) ? 'text-emerald-400' : ''}`} />
+                    <span>{isCompleted(`concept-${selectedConcept.id}`) ? 'Mastered' : 'Mark Done'}</span>
+                  </button>
+
+                  {/* Bookmark button */}
+                  <button
+                    onClick={() => toggleBookmark({
+                      id: `concept-${selectedConcept.id}`,
+                      type: 'concept',
+                      title: selectedConcept.title,
+                      subtitle: `${selectedConcept.topic_label} (${selectedConcept.category})`,
+                      link: `/concepts?id=${selectedConcept.id}`
+                    })}
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition flex items-center gap-1.5 ${
+                      isBookmarked(`concept-${selectedConcept.id}`)
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                        : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+                    }`}
+                    title={isBookmarked(`concept-${selectedConcept.id}`) ? 'Remove Bookmark' : 'Bookmark Concept'}
+                  >
+                    <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(`concept-${selectedConcept.id}`) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    <span>{isBookmarked(`concept-${selectedConcept.id}`) ? 'Saved' : 'Save'}</span>
+                  </button>
+
+                  {/* Share button */}
+                  <button
+                    onClick={handleCopyLink}
+                    className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5"
+                    title="Copy direct link to this concept"
+                  >
+                    {copiedLink ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Share</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
@@ -288,10 +343,35 @@ export default function ConceptsPage() {
             {/* 2. Mathematical Formulation */}
             {selectedConcept.formula && (
               <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-3">
-                <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-                  2. Core Mathematical Formulation
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Calculator className="w-3.5 h-3.5 text-indigo-400" />
+                    2. Core Mathematical Formulation
+                  </h3>
+
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedConcept.formula);
+                      setCopiedFormula(true);
+                      setTimeout(() => setCopiedFormula(false), 2000);
+                    }}
+                    className="p-1 px-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1"
+                    title="Copy raw LaTeX equation"
+                  >
+                    {copiedFormula ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-400" />
+                        <span className="text-emerald-400">LaTeX Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>Copy LaTeX</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
                 <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 overflow-x-auto text-center">
                   <KaTeXRenderer math={selectedConcept.formula} block={true} />
                 </div>

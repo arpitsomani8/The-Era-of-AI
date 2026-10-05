@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers, ArrowUpRight } from 'lucide-react';
+import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers, ArrowUpRight, Bookmark, CheckCircle2, Copy, Check } from 'lucide-react';
 import KaTeXRenderer, { MathText } from './KaTeXRenderer';
 import { findConceptForSubtopic } from '../utils/conceptLookup';
+import { useProgress } from '../context/ProgressContext';
 
 export default function NodeInspector({ node, crossLinks = [], onClose, onSelectNode }) {
+  const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
+  const [copiedFormula, setCopiedFormula] = useState(false);
   if (!node) return null;
+
+  const nKey = `node-${node.id}`;
+  const isDone = isCompleted(nKey);
+  const isSaved = isBookmarked(nKey);
 
   const relevantLinks = crossLinks.filter(
     (l) => l.from === node.id || l.to === node.id
@@ -39,17 +46,60 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
           >
             {node.category?.toUpperCase() || 'TOPIC'}
           </span>
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
-            {node.label}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
+              {node.label}
+            </h2>
+            {isDone && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                Mastered
+              </span>
+            )}
+          </div>
         </div>
-        <button
-          onClick={onClose}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          title="Close Inspector"
-        >
-          <X className="w-5 h-5" />
-        </button>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Mark Done button */}
+          <button
+            onClick={() => toggleCompleted(nKey)}
+            className={`p-1.5 rounded-lg border transition ${
+              isDone 
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+            }`}
+            title={isDone ? 'Mark Incomplete' : 'Mark Node Mastered'}
+          >
+            <CheckCircle2 className={`w-4 h-4 ${isDone ? 'text-emerald-400' : ''}`} />
+          </button>
+
+          {/* Bookmark button */}
+          <button
+            onClick={() => toggleBookmark({
+              id: nKey,
+              type: 'concept',
+              title: node.label,
+              subtitle: `Mind Map Node • ${node.category}`,
+              link: `/mindmap?node=${node.id}`
+            })}
+            className={`p-1.5 rounded-lg border transition ${
+              isSaved 
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+            }`}
+            title={isSaved ? 'Remove Bookmark' : 'Bookmark Node'}
+          >
+            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+          </button>
+
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            title="Close Inspector"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Body Content */}
@@ -70,10 +120,34 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
         {/* 2. Mathematical Formula */}
         {node.formula && (
           <div className="bg-slate-950/80 rounded-xl p-4 border border-indigo-500/25">
-            <h3 className="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-              2. Core Mathematical Formulation
-            </h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-semibold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Calculator className="w-3.5 h-3.5 text-indigo-400" />
+                2. Core Mathematical Formulation
+              </h3>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(node.formula);
+                  setCopiedFormula(true);
+                  setTimeout(() => setCopiedFormula(false), 2000);
+                }}
+                className="p-1 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1"
+                title="Copy raw LaTeX equation"
+              >
+                {copiedFormula ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    <span className="text-emerald-400">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>Copy LaTeX</span>
+                  </>
+                )}
+              </button>
+            </div>
             <div className="py-2 px-1 overflow-x-auto bg-slate-900/90 rounded-lg border border-slate-800">
               <KaTeXRenderer math={node.formula} block={true} />
             </div>
