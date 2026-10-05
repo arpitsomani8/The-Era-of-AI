@@ -13,7 +13,12 @@ import {
   Flame,
   CheckCircle2,
   XCircle,
-  RotateCcw
+  RotateCcw,
+  Sun,
+  Moon,
+  CloudRain,
+  Sunset,
+  Palette
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -81,8 +86,28 @@ export default function GardenCompanion() {
   const [quizIndex, setQuizIndex] = useState(0);
   const [selectedQuizOption, setSelectedQuizOption] = useState(null);
   const [quizStreak, setQuizStreak] = useState(0);
-  const [quizScore, setQuizScore] = useState(0);
   const [quizFeedback, setQuizFeedback] = useState(null); // 'correct' | 'wrong' | null
+
+  // Dynamic Garden Atmosphere & Weather: 'cosmic' (night) | 'day' (sunny) | 'sunset' | 'rain'
+  const [atmosphere, setAtmosphere] = useState(() => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 17) return 'day';
+    if (hour >= 17 && hour < 20) return 'sunset';
+    return 'cosmic';
+  });
+
+  // Companion Avatar: 'aero' (cyber explorer) | 'neon' (gold drone) | 'catbot' (quantum kitty)
+  const [avatar, setAvatar] = useState('aero');
+
+  const getSkyBgClass = () => {
+    switch (atmosphere) {
+      case 'day': return 'bg-gradient-to-b from-sky-400 via-sky-200 to-indigo-100';
+      case 'sunset': return 'bg-gradient-to-b from-orange-600 via-pink-600 to-indigo-950';
+      case 'rain': return 'bg-gradient-to-b from-slate-900 via-cyan-950 to-slate-950';
+      case 'cosmic':
+      default: return 'bg-gradient-to-b from-indigo-950/90 via-slate-900/80 to-slate-950';
+    }
+  };
 
   const companionTips = [
     {
@@ -299,6 +324,35 @@ export default function GardenCompanion() {
           </div>
 
           <div className="flex items-center gap-1">
+            {/* Atmosphere Cycle Toggle */}
+            <button
+              onClick={() => {
+                const cycle = { cosmic: 'day', day: 'sunset', sunset: 'rain', rain: 'cosmic' };
+                setAtmosphere(prev => cycle[prev] || 'cosmic');
+              }}
+              aria-label={`Cycle atmosphere (current: ${atmosphere})`}
+              className="p-1 rounded-md text-amber-300 hover:text-amber-200 hover:bg-slate-800 transition flex items-center"
+              title={`Garden Sky: ${atmosphere.toUpperCase()} (Click to cycle Day/Sunset/Cosmic/Rain)`}
+            >
+              {atmosphere === 'day' && <Sun className="w-3.5 h-3.5 text-amber-400" />}
+              {atmosphere === 'sunset' && <Sunset className="w-3.5 h-3.5 text-orange-400" />}
+              {atmosphere === 'rain' && <CloudRain className="w-3.5 h-3.5 text-cyan-400" />}
+              {atmosphere === 'cosmic' && <Moon className="w-3.5 h-3.5 text-indigo-300" />}
+            </button>
+
+            {/* Avatar Cycle Toggle */}
+            <button
+              onClick={() => {
+                const cycle = { aero: 'neon', neon: 'catbot', catbot: 'aero' };
+                setAvatar(prev => cycle[prev] || 'aero');
+              }}
+              aria-label={`Cycle companion avatar (current: ${avatar})`}
+              className="p-1 rounded-md text-slate-400 hover:text-cyan-300 hover:bg-slate-800 transition flex items-center"
+              title={`Avatar: ${avatar === 'aero' ? 'Aero Standard' : avatar === 'neon' ? 'Neon Sentinel' : 'CatBot AI'} (Click to cycle)`}
+            >
+              <Palette className="w-3.5 h-3.5 text-purple-400" />
+            </button>
+
             {/* Audio Toggle */}
             <button
               onClick={() => {
@@ -337,7 +391,7 @@ export default function GardenCompanion() {
         </div>
 
         {/* Animated Garden Scene SVG */}
-        <div className="relative w-full h-44 bg-gradient-to-b from-indigo-950/60 via-slate-900/80 to-slate-950 overflow-hidden flex items-end justify-center">
+        <div className={`relative w-full h-44 ${getSkyBgClass()} transition-colors duration-700 overflow-hidden flex items-end justify-center`}>
           {/* Subtle cosmic night garden backdrop */}
           <div className="absolute inset-0 opacity-40 pointer-events-none">
             {/* Stars & fireflies */}
@@ -356,11 +410,25 @@ export default function GardenCompanion() {
                 <stop offset="100%" stopColor="#064e3b" />
               </linearGradient>
 
-              {/* Robot Metallic Gradient */}
+              {/* Robot Metallic Gradient - Standard Aero */}
               <linearGradient id="robotBodyGrad" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#6366f1" />
                 <stop offset="50%" stopColor="#4338ca" />
                 <stop offset="100%" stopColor="#312e81" />
+              </linearGradient>
+
+              {/* Robot Metallic Gradient - Neon Sentinel */}
+              <linearGradient id="robotNeonGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="50%" stopColor="#d97706" />
+                <stop offset="100%" stopColor="#78350f" />
+              </linearGradient>
+
+              {/* Robot Metallic Gradient - CatBot Pink/Purple */}
+              <linearGradient id="robotCatGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#f472b6" />
+                <stop offset="50%" stopColor="#c084fc" />
+                <stop offset="100%" stopColor="#6b21a8" />
               </linearGradient>
 
               {/* Visor Cyan Glow */}
@@ -375,6 +443,66 @@ export default function GardenCompanion() {
                 <stop offset="100%" stopColor="#ec4899" />
               </linearGradient>
             </defs>
+
+            {/* Dynamic Celestial & Weather Atmosphere Elements */}
+            {atmosphere === 'day' && (
+              <g className="day-sky">
+                {/* Radiant Sun with pulse */}
+                <circle cx="330" cy="34" r="22" fill="#fef08a" opacity="0.3" className="animate-pulse" />
+                <circle cx="330" cy="34" r="14" fill="#facc15" />
+                {/* Fluffy drifting clouds */}
+                <g fill="#ffffff" opacity="0.85">
+                  <path d="M 60 28 Q 72 18 86 22 Q 98 16 112 26 Q 118 33 105 36 Q 75 38 60 28 Z" />
+                  <path d="M 210 22 Q 220 15 232 17 Q 245 12 255 21 Q 260 27 248 30 Q 225 32 210 22 Z" opacity="0.8" />
+                </g>
+              </g>
+            )}
+
+            {atmosphere === 'sunset' && (
+              <g className="sunset-sky">
+                {/* Sinking Sun Disk */}
+                <circle cx="300" cy="48" r="26" fill="#f97316" opacity="0.35" className="animate-pulse" />
+                <circle cx="300" cy="48" r="16" fill="#ea580c" />
+                {/* Dusk clouds */}
+                <path d="M 40 42 Q 120 36 180 40 Q 130 46 40 44 Z" fill="#fda4af" opacity="0.5" />
+                <path d="M 220 38 Q 290 32 360 40 Q 310 44 220 41 Z" fill="#f43f5e" opacity="0.45" />
+              </g>
+            )}
+
+            {atmosphere === 'cosmic' && (
+              <g className="cosmic-sky">
+                {/* Crescent Moon & Constellations */}
+                <path
+                  d="M 335 20 A 13 13 0 1 0 348 33 A 11 11 0 1 1 335 20 Z"
+                  fill="#fef08a"
+                  opacity="0.95"
+                />
+                <circle cx="338" cy="22" r="1.5" fill="#fef9c3" className="animate-ping" style={{ animationDuration: '3s' }} />
+              </g>
+            )}
+
+            {atmosphere === 'rain' && (
+              <g className="rain-sky">
+                {/* Rain clouds */}
+                <path d="M 35 15 Q 65 5 95 12 Q 130 6 165 20 Q 140 28 45 25 Z" fill="#334155" opacity="0.85" />
+                <path d="M 200 12 Q 240 4 285 14 Q 340 8 365 22 Q 300 28 210 24 Z" fill="#334155" opacity="0.85" />
+                {/* Animated Falling Rain Streaks */}
+                {[20, 55, 90, 130, 165, 205, 240, 280, 315, 355, 385].map((rx, idx) => (
+                  <line
+                    key={idx}
+                    x1={rx}
+                    y1={24 + (idx % 4) * 8}
+                    x2={rx - 10}
+                    y2={60 + (idx % 4) * 8}
+                    stroke="#38bdf8"
+                    strokeWidth="1.2"
+                    strokeDasharray="4,6"
+                    opacity="0.65"
+                    className="animate-pulse"
+                  />
+                ))}
+              </g>
+            )}
 
             {/* Hill 1 & Lush Rolling Lawn */}
             <path
@@ -477,19 +605,60 @@ export default function GardenCompanion() {
                 <polygon points="18 52, 22 52, 20 58" fill="#ffffff" />
 
                 {/* Robot Body / Chassis */}
-                <rect x="5" y="24" width="30" height="26" rx="8" fill="url(#robotBodyGrad)" stroke="#818cf8" strokeWidth="1.5" />
+                <rect
+                  x="5"
+                  y="24"
+                  width="30"
+                  height="26"
+                  rx="8"
+                  fill={avatar === 'neon' ? 'url(#robotNeonGrad)' : avatar === 'catbot' ? 'url(#robotCatGrad)' : 'url(#robotBodyGrad)'}
+                  stroke={avatar === 'neon' ? '#fbbf24' : avatar === 'catbot' ? '#f472b6' : '#818cf8'}
+                  strokeWidth="1.5"
+                />
                 
                 {/* Chest Core Reactor */}
-                <circle cx="20" cy="37" r="4.5" fill="#06b6d4" className="animate-pulse" />
+                <circle
+                  cx="20"
+                  cy="37"
+                  r="4.5"
+                  fill={avatar === 'neon' ? '#f59e0b' : avatar === 'catbot' ? '#ec4899' : '#06b6d4'}
+                  className="animate-pulse"
+                />
                 <circle cx="20" cy="37" r="2" fill="#ffffff" />
 
                 {/* Robot Head */}
-                <rect x="7" y="6" width="26" height="18" rx="6" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
+                <rect
+                  x="7"
+                  y="6"
+                  width="26"
+                  height="18"
+                  rx="6"
+                  fill="#1e1b4b"
+                  stroke={avatar === 'neon' ? '#fbbf24' : avatar === 'catbot' ? '#f472b6' : '#818cf8'}
+                  strokeWidth="1.5"
+                />
 
-                {/* Antenna */}
-                <line x1="20" y1="6" x2="20" y2="0" stroke="#818cf8" strokeWidth="1.5" />
-                <circle cx="20" cy="0" r="2.5" fill={companionMode === 'quiz' ? '#f59e0b' : '#38bdf8'} className="animate-ping" style={{ animationDuration: '1.8s' }} />
-                <circle cx="20" cy="0" r="2" fill={companionMode === 'quiz' ? '#f59e0b' : '#38bdf8'} />
+                {/* CatBot Ears */}
+                {avatar === 'catbot' && (
+                  <g>
+                    <polygon points="9,6 6,-2 14,4" fill="#ec4899" stroke="#fda4af" strokeWidth="1" />
+                    <polygon points="23,4 31,-2 28,6" fill="#ec4899" stroke="#fda4af" strokeWidth="1" />
+                  </g>
+                )}
+
+                {/* Neon Halo */}
+                {avatar === 'neon' && (
+                  <ellipse cx="20" cy="0" rx="14" ry="3.5" fill="none" stroke="#fbbf24" strokeWidth="1.5" className="animate-pulse" opacity="0.9" />
+                )}
+
+                {/* Antenna (for Aero & Neon) */}
+                {avatar !== 'catbot' && (
+                  <>
+                    <line x1="20" y1="6" x2="20" y2="0" stroke={avatar === 'neon' ? '#fbbf24' : '#818cf8'} strokeWidth="1.5" />
+                    <circle cx="20" cy="0" r="2.5" fill={companionMode === 'quiz' ? '#f59e0b' : avatar === 'neon' ? '#fbbf24' : '#38bdf8'} className="animate-ping" style={{ animationDuration: '1.8s' }} />
+                    <circle cx="20" cy="0" r="2" fill={companionMode === 'quiz' ? '#f59e0b' : avatar === 'neon' ? '#fbbf24' : '#38bdf8'} />
+                  </>
+                )}
 
                 {/* Visor Screen with Animated Blinking Eyes */}
                 <rect x="10" y="10" width="20" height="10" rx="3" fill="#020617" />
