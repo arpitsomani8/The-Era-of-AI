@@ -1,6 +1,8 @@
 import React from 'react';
-import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers, ArrowUpRight } from 'lucide-react';
 import KaTeXRenderer, { MathText } from './KaTeXRenderer';
+import { findConceptForSubtopic } from '../utils/conceptLookup';
 
 export default function NodeInspector({ node, crossLinks = [], onClose, onSelectNode }) {
   if (!node) return null;
@@ -107,19 +109,34 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
         {/* 5. Subtopics Breakdown */}
         {node.subtopics && node.subtopics.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-slate-400" />
-              Key Subtopics & Architectural Components ({node.subtopics.length})
-            </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {node.subtopics.map((sub, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 rounded-md text-xs bg-slate-800/80 text-slate-300 border border-slate-700/60"
-                >
-                  {sub}
-                </span>
-              ))}
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-slate-400" />
+                Key Subtopics & Architectural Components ({node.subtopics.length})
+              </h3>
+              <span className="text-[11px] text-indigo-400 font-medium hidden sm:inline">
+                Click to explore &rarr;
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {node.subtopics.map((sub, idx) => {
+                const concept = findConceptForSubtopic(sub, node.id);
+                const targetUrl = concept
+                  ? `/concepts?id=${encodeURIComponent(concept.id)}`
+                  : `/concepts?search=${encodeURIComponent(sub)}`;
+
+                return (
+                  <Link
+                    key={idx}
+                    to={targetUrl}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-indigo-600/20 text-slate-200 hover:text-indigo-300 border border-slate-700/60 hover:border-indigo-500/50 transition-all duration-150 group shadow-sm"
+                    title={`View full explanation, formulas & examples for "${sub}"`}
+                  >
+                    <span>{sub}</span>
+                    <ArrowUpRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

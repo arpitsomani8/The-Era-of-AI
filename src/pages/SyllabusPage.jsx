@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { 
   Search, 
   BookOpen, 
@@ -9,11 +9,13 @@ import {
   Layers, 
   ChevronDown, 
   ChevronUp, 
-  Printer 
+  Printer,
+  ArrowUpRight
 } from 'lucide-react';
 import topicsData from '../data/topics.json';
 import hubNodesData from '../data/hubNodes.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
+import { findConceptForSubtopic } from '../utils/conceptLookup';
 
 export default function SyllabusPage() {
   const [searchParams] = useSearchParams();
@@ -247,20 +249,35 @@ export default function SyllabusPage() {
                     {/* Subtopics Checklist */}
                     {topic.subtopics && topic.subtopics.length > 0 && (
                       <div className="pt-2">
-                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <Layers className="w-3.5 h-3.5 text-slate-400" />
-                          Line-Wise Syllabus Modules:
-                        </h3>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                            Line-Wise Syllabus Modules ({topic.subtopics.length}):
+                          </h3>
+                          <span className="text-[11px] text-indigo-400 font-medium hidden sm:inline">
+                            Click to explore in Core Concepts &rarr;
+                          </span>
+                        </div>
                         <div className="flex flex-wrap gap-2">
-                          {topic.subtopics.map((sub, sIdx) => (
-                            <span
-                              key={sIdx}
-                              className="px-3 py-1 rounded-lg text-xs bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-1.5"
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                              {sub}
-                            </span>
-                          ))}
+                          {topic.subtopics.map((sub, sIdx) => {
+                            const concept = findConceptForSubtopic(sub, topic.id);
+                            const targetUrl = concept
+                              ? `/concepts?id=${encodeURIComponent(concept.id)}`
+                              : `/concepts?search=${encodeURIComponent(sub)}`;
+
+                            return (
+                              <Link
+                                key={sIdx}
+                                to={targetUrl}
+                                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-indigo-600/20 text-slate-200 hover:text-indigo-300 border border-slate-800 hover:border-indigo-500/40 transition-all flex items-center gap-2 group shadow-sm"
+                                title={`Read full mathematical breakdown and real-world examples for "${sub}" in Core Concepts`}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:scale-125 transition-transform shrink-0"></span>
+                                <span>{sub}</span>
+                                <ArrowUpRight className="w-3 h-3 text-slate-500 group-hover:text-indigo-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+                              </Link>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
