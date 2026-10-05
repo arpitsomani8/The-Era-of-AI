@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers } from 'lucide-react';
-import KaTeXRenderer from './KaTeXRenderer';
+import KaTeXRenderer, { MathText } from './KaTeXRenderer';
 
 export default function NodeInspector({ node, crossLinks = [], onClose, onSelectNode }) {
   if (!node) return null;
@@ -59,7 +59,9 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
               1. Formal Definition
             </h3>
-            <p className="text-slate-200 leading-relaxed">{node.def}</p>
+            <p className="text-slate-200 leading-relaxed">
+              <MathText text={node.def} />
+            </p>
           </div>
         )}
 
@@ -83,7 +85,9 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
               3. Intuition & When to Use
             </h3>
-            <p className="text-amber-100/90 leading-relaxed">{node.logic}</p>
+            <p className="text-amber-100/90 leading-relaxed">
+              <MathText text={node.logic} />
+            </p>
           </div>
         )}
 
@@ -94,7 +98,9 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
               4. Real-World Practical Example
             </h3>
-            <p className="text-emerald-100/90 leading-relaxed">{node.example}</p>
+            <p className="text-emerald-100/90 leading-relaxed">
+              <MathText text={node.example} />
+            </p>
           </div>
         )}
 

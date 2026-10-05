@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import topicsData from '../data/topics.json';
 import hubNodesData from '../data/hubNodes.json';
-import KaTeXRenderer from '../components/KaTeXRenderer';
+import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 
 export default function SyllabusPage() {
   const [searchParams] = useSearchParams();
@@ -198,7 +198,9 @@ export default function SyllabusPage() {
                           <BookOpen className="w-3.5 h-3.5" />
                           1. Core Definition & Role
                         </h3>
-                        <p className="text-slate-300 leading-relaxed">{topic.def}</p>
+                        <p className="text-slate-300 leading-relaxed">
+                          <MathText text={topic.def} />
+                        </p>
                       </div>
                     )}
 
@@ -224,7 +226,7 @@ export default function SyllabusPage() {
                             3. Intuition & When to Use
                           </h3>
                           <p className="text-amber-100/90 leading-relaxed text-xs sm:text-sm">
-                            {topic.logic}
+                            <MathText text={topic.logic} />
                           </p>
                         </div>
                       )}
@@ -236,7 +238,7 @@ export default function SyllabusPage() {
                             4. Real-World Practical Example
                           </h3>
                           <p className="text-emerald-100/90 leading-relaxed text-xs sm:text-sm">
-                            {topic.example}
+                            <MathText text={topic.example} />
                           </p>
                         </div>
                       )}

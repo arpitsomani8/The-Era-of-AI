@@ -43,3 +43,40 @@ export default function KaTeXRenderer({ math, block = false, className = '' }) {
     />
   );
 }
+
+/**
+ * MathText renders text containing inline LaTeX expressions wrapped in $...$
+ * as rich KaTeX formulas, while keeping the rest as regular text.
+ */
+export function MathText({ text, className = '' }) {
+  if (!text) return null;
+  const str = String(text);
+
+  // If no math markers, render as-is
+  if (!str.includes('$')) {
+    return <span className={className}>{str}</span>;
+  }
+
+  // Split string by $ delimiters
+  const segments = str.split('$');
+
+  return (
+    <span className={className}>
+      {segments.map((segment, index) => {
+        // Odd index means it was inside $...$
+        if (index % 2 === 1) {
+          if (!segment.trim()) return null;
+          return (
+            <KaTeXRenderer
+              key={index}
+              math={segment}
+              block={false}
+              className="inline-math px-0.5"
+            />
+          );
+        }
+        return segment;
+      })}
+    </span>
+  );
+}

@@ -13,7 +13,7 @@ import {
   Check
 } from 'lucide-react';
 import conceptsData from '../data/concepts.json';
-import KaTeXRenderer from '../components/KaTeXRenderer';
+import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 
 export default function ConceptsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -213,7 +213,7 @@ export default function ConceptsPage() {
                   1. Formal Definition & Role
                 </h3>
                 <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
-                  {selectedConcept.def}
+                  <MathText text={selectedConcept.def} />
                 </p>
               </div>
             )}
@@ -239,7 +239,7 @@ export default function ConceptsPage() {
                   3. Intuition & When to Use
                 </h3>
                 <p className="text-amber-100/90 leading-relaxed text-sm sm:text-base">
-                  {selectedConcept.logic}
+                  <MathText text={selectedConcept.logic} />
                 </p>
               </div>
             )}
@@ -252,7 +252,7 @@ export default function ConceptsPage() {
                   4. Real-World Practical Example
                 </h3>
                 <p className="text-emerald-100/90 leading-relaxed text-sm sm:text-base">
-                  {selectedConcept.example}
+                  <MathText text={selectedConcept.example} />
                 </p>
               </div>
             )}

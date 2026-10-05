@@ -417,8 +417,15 @@ export default function MindMapPage() {
                 const isRoot = node.level === 0;
                 const isHub = node.level === 1;
 
-                const nodeWidth = isRoot ? 260 : isHub ? 210 : 180;
-                const nodeHeight = isRoot ? 60 : isHub ? 48 : 42;
+                // Dynamically calculate node width based on character count so text never spills out of the box
+                const labelLen = (node.label || '').length;
+                const charWidth = isRoot ? 8.6 : isHub ? 7.6 : 6.8;
+                const textWidth = Math.round(labelLen * charWidth);
+                const leftOffset = isRoot ? 36 : isHub ? 30 : 28;
+                const rightPadding = 18;
+                const minWidth = isRoot ? 260 : isHub ? 210 : 180;
+                const nodeWidth = Math.max(minWidth, textWidth + leftOffset + rightPadding);
+                const nodeHeight = isRoot ? 54 : isHub ? 46 : 40;
                 const rx = isRoot ? 16 : 10;
 
                 return (
@@ -447,20 +454,21 @@ export default function MindMapPage() {
 
                     {/* Small category indicator dot */}
                     <circle
-                      cx={-nodeWidth / 2 + 16}
+                      cx={-nodeWidth / 2 + 14}
                       cy={0}
-                      r={isRoot ? 6 : 4}
+                      r={isRoot ? 5.5 : 4}
                       fill={cfg.stroke}
                     />
 
                     {/* Node text label */}
                     <text
-                      x={-nodeWidth / 2 + 28}
+                      x={-nodeWidth / 2 + leftOffset}
                       y={4}
                       fill={isSelected ? '#ffffff' : isRoot ? themeColors.nodeRootText : themeColors.nodeText}
                       fontSize={isRoot ? 14 : isHub ? 12 : 11}
                       fontWeight={isRoot ? '700' : isHub ? '600' : '500'}
-                      fontFamily="system-ui, sans-serif"
+                      fontFamily="Inter, system-ui, sans-serif"
+                      style={{ pointerEvents: 'none', userSelect: 'none' }}
                     >
                       {node.label}
                     </text>

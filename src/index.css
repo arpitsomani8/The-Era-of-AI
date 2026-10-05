@@ -13,7 +13,7 @@
   body {
     @apply bg-slate-950 text-slate-100 font-sans antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
@@ -108,7 +108,7 @@
 }
 
 /* ==========================================================================
-   THEME 1: BRIGHT MODE (Clean Daylight Modern)
+   THEME 1: BRIGHT DAY MODE (Ultra-Clean Daylight Modern & High-Contrast)
    ========================================================================== */
 [data-theme="bright"] {
   color-scheme: light;
@@ -124,6 +124,7 @@
 [data-theme="bright"] .bg-slate-900\/90,
 [data-theme="bright"] .bg-slate-900\/95 {
   background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
 }
 [data-theme="bright"] .bg-slate-900\/60,
 [data-theme="bright"] .bg-slate-900\/80 {
@@ -134,7 +135,7 @@
 [data-theme="bright"] .bg-slate-950\/60,
 [data-theme="bright"] .bg-slate-950\/70,
 [data-theme="bright"] .bg-slate-950\/80 {
-  background-color: #f1f5f9 !important;
+  background-color: #ffffff !important;
 }
 [data-theme="bright"] .bg-slate-800,
 [data-theme="bright"] .bg-slate-800\/80 {
@@ -145,21 +146,28 @@
 [data-theme="bright"] .bg-slate-800\/60 {
   background-color: #f1f5f9 !important;
 }
+
+/* Text Hierarchy in Bright Mode */
 [data-theme="bright"] .text-white {
   color: #0f172a !important;
 }
 [data-theme="bright"] .text-slate-100 {
-  color: #1e293b !important;
+  color: #0f172a !important;
 }
 [data-theme="bright"] .text-slate-200 {
-  color: #334155 !important;
+  color: #1e293b !important;
 }
 [data-theme="bright"] .text-slate-300 {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 [data-theme="bright"] .text-slate-400 {
+  color: #475569 !important;
+}
+[data-theme="bright"] .text-slate-500 {
   color: #64748b !important;
 }
+
+/* Borders in Bright Mode */
 [data-theme="bright"] .border-slate-800,
 [data-theme="bright"] .border-slate-800\/80,
 [data-theme="bright"] .border-slate-800\/60,
@@ -170,6 +178,8 @@
 [data-theme="bright"] .border-slate-700\/80 {
   border-color: #cbd5e1 !important;
 }
+
+/* Form inputs */
 [data-theme="bright"] input,
 [data-theme="bright"] select {
   background-color: #ffffff !important;
@@ -177,8 +187,97 @@
   border-color: #cbd5e1 !important;
 }
 [data-theme="bright"] input::placeholder {
-  color: #94a3b8 !important;
+  color: #64748b !important;
 }
+
+/* HIGH-CONTRAST CALLOUT BOXES IN BRIGHT MODE */
+
+/* 1. Intuition & When to Use (Amber) */
+[data-theme="bright"] .bg-amber-950\/20 {
+  background-color: #fffbeb !important;
+  border-color: #fcd34d !important;
+}
+[data-theme="bright"] .text-amber-400 {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+[data-theme="bright"] .text-amber-100,
+[data-theme="bright"] .text-amber-100\/90,
+[data-theme="bright"] .text-amber-200,
+[data-theme="bright"] .text-amber-200\/90,
+[data-theme="bright"] .text-amber-300 {
+  color: #78350f !important;
+  font-weight: 500 !important;
+}
+
+/* 2. Real-World Practical Example (Emerald) */
+[data-theme="bright"] .bg-emerald-950\/20 {
+  background-color: #f0fdf4 !important;
+  border-color: #86efac !important;
+}
+[data-theme="bright"] .text-emerald-400 {
+  color: #065f46 !important;
+  font-weight: 700 !important;
+}
+[data-theme="bright"] .text-emerald-100,
+[data-theme="bright"] .text-emerald-100\/90,
+[data-theme="bright"] .text-emerald-200,
+[data-theme="bright"] .text-emerald-200\/90,
+[data-theme="bright"] .text-emerald-300 {
+  color: #064e3b !important;
+  font-weight: 500 !important;
+}
+
+/* 3. Core Definition & Role (Rose / Pink) */
+[data-theme="bright"] .text-rose-300 {
+  color: #9f1239 !important;
+  font-weight: 700 !important;
+}
+[data-theme="bright"] .text-rose-400 {
+  color: #be123c !important;
+}
+[data-theme="bright"] .bg-rose-500\/10 {
+  background-color: #ffe4e6 !important;
+  color: #9f1239 !important;
+  border-color: #fecdd3 !important;
+}
+
+/* 4. Mathematical Formulation (Indigo) */
+[data-theme="bright"] .text-indigo-300 {
+  color: #3730a3 !important;
+  font-weight: 700 !important;
+}
+[data-theme="bright"] .text-indigo-400 {
+  color: #4338ca !important;
+}
+[data-theme="bright"] .bg-indigo-500\/10,
+[data-theme="bright"] .bg-indigo-500\/20 {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-color: #c7d2fe !important;
+}
+[data-theme="bright"] .border-indigo-500\/25,
+[data-theme="bright"] .border-indigo-500\/20,
+[data-theme="bright"] .border-indigo-500\/30 {
+  border-color: #a5b4fc !important;
+}
+
+/* 5. Interview Vault (Purple) */
+[data-theme="bright"] .text-purple-300 {
+  color: #6b21a8 !important;
+  font-weight: 700 !important;
+}
+[data-theme="bright"] .text-purple-400 {
+  color: #7e22ce !important;
+}
+[data-theme="bright"] .bg-purple-500\/10,
+[data-theme="bright"] .bg-purple-500\/20 {
+  background-color: #ede9fe !important;
+  color: #6b21a8 !important;
+  border-color: #ddd6fe !important;
+}
+
+/* KaTeX Formulas in Bright Mode */
 [data-theme="bright"] .katex {
   color: #0f172a !important;
 }
@@ -193,6 +292,23 @@
 [data-theme="bright"] .katex .frac-line {
   border-color: #4f46e5 !important;
 }
+[data-theme="bright"] .formula-box,
+[data-theme="bright"] .katex-display {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Concept Encyclopedia Sidebar in Bright Mode */
+[data-theme="bright"] aside {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+[data-theme="bright"] .bg-rose-600\/20 {
+  background-color: #ffe4e6 !important;
+  color: #9f1239 !important;
+  border-color: #f43f5e !important;
+}
+
 [data-theme="bright"] ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
