@@ -31,6 +31,23 @@ export default function ThemeSwitcher() {
     }
   };
 
+  const [alignRight, setAlignRight] = useState(false);
+
+  // Intelligently determine if dropdown should align left or right based on viewport room
+  useEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const wouldOverflowRight = rect.left + 270 > window.innerWidth;
+      const wouldOverflowLeft = rect.right - 270 < 0;
+      
+      if (wouldOverflowRight && !wouldOverflowLeft) {
+        setAlignRight(true);
+      } else {
+        setAlignRight(false);
+      }
+    }
+  }, [isOpen]);
+
   const currentThemeObj = themes.find((t) => t.id === theme) || themes[0];
 
   return (
@@ -54,7 +71,9 @@ export default function ThemeSwitcher() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div 
+          className={`absolute ${alignRight ? 'right-0' : 'left-0'} mt-2 w-64 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150`}
+        >
           <div className="px-3 py-2 border-b border-slate-800/80 mb-1 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <Palette className="w-3.5 h-3.5 text-indigo-400" />
