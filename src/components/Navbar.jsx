@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Network, 
   BookOpen, 
@@ -39,6 +39,7 @@ export default function Navbar({
   onOpenPythonLab
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [logoError, setLogoError] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
@@ -86,18 +87,6 @@ export default function Navbar({
   };
 
   const navItems = [
-    {
-      to: '/mindmap',
-      label: 'Mind Map',
-      icon: Network,
-      color: 'indigo',
-    },
-    {
-      to: '/syllabus',
-      label: 'Line-wise Syllabus',
-      icon: BookOpen,
-      color: 'blue',
-    },
     {
       to: '/papers',
       label: 'Landmark Papers',
@@ -184,10 +173,39 @@ export default function Navbar({
         </div>
 
         {/* Center Desktop Nav Tabs (Visible on xl+ screens) */}
-        <nav className="hidden xl:flex items-center space-x-0.5 2xl:space-x-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow-inner flex-nowrap shrink-0">
+        <nav className="hidden xl:flex items-center space-x-1 2xl:space-x-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow-inner flex-nowrap shrink-0">
+          {/* Merged Segmented Toggle: Mind Map & Line-wise Syllabus */}
+          <div className="flex items-center p-0.5 bg-slate-900 rounded-lg border border-slate-800 shadow-sm shrink-0">
+            <button
+              onClick={() => navigate('/mindmap')}
+              id="navbar-toggle-mindmap-btn"
+              className={`px-2.5 py-1.5 rounded-md text-[11px] 2xl:text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                location.pathname === '/mindmap' || location.pathname === '/'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <Network className="w-3.5 h-3.5 shrink-0" />
+              <span>Mind Map</span>
+            </button>
+            <button
+              onClick={() => navigate('/syllabus')}
+              id="navbar-toggle-syllabus-btn"
+              className={`px-2.5 py-1.5 rounded-md text-[11px] 2xl:text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                location.pathname === '/syllabus'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 shrink-0" />
+              <span>Line-wise Syllabus</span>
+            </button>
+          </div>
+
+          {/* Remaining 5 Core Specialized Hubs */}
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.to || (item.to === '/mindmap' && location.pathname === '/');
+            const isActive = location.pathname === item.to;
 
             return (
               <NavLink
@@ -437,15 +455,48 @@ export default function Navbar({
       {mobileMenuOpen && (
         <div className="xl:hidden mt-2.5 pt-3 pb-2 border-t border-slate-800 space-y-3.5 animate-fadeIn">
           {/* Section 1: Main Platform Routes */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 font-mono flex items-center justify-between">
+              <span>Core Curriculum</span>
+              <span className="text-slate-500 font-normal">Toggle View</span>
+            </span>
+
+            {/* Merged Segmented Toggle in Mobile */}
+            <div className="p-1 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-1">
+              <button
+                onClick={() => { navigate('/mindmap'); setMobileMenuOpen(false); }}
+                id="mobile-toggle-mindmap-btn"
+                className={`flex-1 p-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 ${
+                  location.pathname === '/mindmap' || location.pathname === '/'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <Network className="w-4 h-4 shrink-0" />
+                <span>Mind Map</span>
+              </button>
+              <button
+                onClick={() => { navigate('/syllabus'); setMobileMenuOpen(false); }}
+                id="mobile-toggle-syllabus-btn"
+                className={`flex-1 p-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 ${
+                  location.pathname === '/syllabus'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <BookOpen className="w-4 h-4 shrink-0" />
+                <span>Line-wise Syllabus</span>
+              </button>
+            </div>
+
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 font-mono flex items-center justify-between pt-1">
               <span>Navigation Pages</span>
-              <span className="text-slate-500 font-normal">7 Core Hubs</span>
+              <span className="text-slate-500 font-normal">5 Specialized Hubs</span>
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.to || (item.to === '/mindmap' && location.pathname === '/');
+                const isActive = location.pathname === item.to;
 
                 return (
                   <NavLink

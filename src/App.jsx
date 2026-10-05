@@ -10,6 +10,7 @@ import AssessmentModal from './components/AssessmentModal';
 import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
 import TimelineModal from './components/TimelineModal';
 import PythonSandboxModal from './components/PythonSandboxModal';
+import KnowledgeHubPage from './pages/KnowledgeHubPage';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -131,9 +132,9 @@ export default function App() {
       {/* Main Routed Page Viewport */}
       <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
         <Routes>
-          <Route path="/" element={<Navigate to="/mindmap" replace />} />
-          <Route path="/mindmap" element={<MindMapPage />} />
-          <Route path="/syllabus" element={<SyllabusPage />} />
+          <Route path="/" element={<KnowledgeHubPage />} />
+          <Route path="/mindmap" element={<KnowledgeHubPage />} />
+          <Route path="/syllabus" element={<KnowledgeHubPage />} />
           <Route path="/papers" element={<PapersPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/case-studies" element={<ProjectsPage />} />
