@@ -14,7 +14,8 @@ import {
   Info,
   Zap,
   Bookmark,
-  CheckCircle2
+  CheckCircle2,
+  PlayCircle
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
@@ -68,6 +69,14 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
       color: 'rose',
       badge: '170',
       badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    },
+    {
+      to: '/playgrounds',
+      label: 'ML Playgrounds',
+      icon: PlayCircle,
+      color: 'cyan',
+      badge: 'Live',
+      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30 animate-pulse',
     }
   ];
 

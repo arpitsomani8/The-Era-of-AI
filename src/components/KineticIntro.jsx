@@ -25,6 +25,18 @@ export default function KineticIntro({ isOpen, onClose }) {
     };
     window.addEventListener('resize', handleResize);
 
+    let mouse = { x: -1000, y: -1000, active: false };
+    const handleMouseMove = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    };
+    const handleMouseLeave = () => {
+      mouse.active = false;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+
     // Particle setup
     const particleCount = Math.min(100, Math.floor((width * height) / 14000));
     const particles = [];
@@ -95,11 +107,30 @@ export default function KineticIntro({ isOpen, onClose }) {
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
-        p.y += p.vy;
+        // Mouse gravitational attraction
+        if (mouse.active) {
+          const mdx = mouse.x - p.x;
+          const mdy = mouse.y - p.y;
+          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mDist < 180 && mDist > 5) {
+            const pullForce = (1 - mDist / 180) * 0.4;
+            p.vx += (mdx / mDist) * pullForce;
+            p.vy += (mdy / mDist) * pullForce;
+
+            // Draw synaptic beam to cursor
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = theme === 'metallic-green' ? '#34d399' : '#38bdf8';
+            ctx.globalAlpha = (1 - mDist / 180) * 0.5;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
 
         // Gravitational drag toward expanding perimeter
-        p.vx *= 0.99;
-        p.vy *= 0.99;
+        p.vx *= 0.98;
+        p.vy *= 0.98;
 
         // Bounce from walls
         if (p.x < 0 || p.x > width) p.vx *= -1;
@@ -148,6 +179,8 @@ export default function KineticIntro({ isOpen, onClose }) {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
       }

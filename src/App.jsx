@@ -12,6 +12,7 @@ import PapersPage from './pages/PapersPage';
 import ProjectsPage from './pages/ProjectsPage';
 import InterviewPage from './pages/InterviewPage';
 import ConceptsPage from './pages/ConceptsPage';
+import PlaygroundsPage from './pages/PlaygroundsPage';
 
 // Component to handle backwards-compatible hash URLs (e.g., #interview, #papers)
 function HashListener() {
@@ -60,6 +61,9 @@ function SEOManager() {
     } else if (path.includes('/concept')) {
       pageTitle = 'Core Concepts & Deep Technical Guides — The Era of AI';
       metaDesc = 'In-depth mathematical formulations, code implementations, and visual explanations across all machine learning and deep learning domains.';
+    } else if (path.includes('/playground')) {
+      pageTitle = 'Interactive ML Playgrounds & Simulators — The Era of AI';
+      metaDesc = 'Real-time multi-head attention matrix heatmaps and 2D gradient descent physics simulations with dynamic optimizers.';
     }
 
     document.title = pageTitle;
@@ -128,6 +132,8 @@ export default function App() {
           <Route path="/interview" element={<InterviewPage />} />
           <Route path="/concepts" element={<ConceptsPage />} />
           <Route path="/concept" element={<ConceptsPage />} />
+          <Route path="/playgrounds" element={<PlaygroundsPage />} />
+          <Route path="/playground" element={<PlaygroundsPage />} />
           <Route path="*" element={<Navigate to="/mindmap" replace />} />
         </Routes>
       </main>

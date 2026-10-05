@@ -56,9 +56,68 @@ export default function GardenCompanion() {
     triggerWave();
   };
 
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [isAirplaneFlying, setIsAirplaneFlying] = useState(false);
+  const [petalsBurst, setPetalsBurst] = useState(false);
+
+  // Web Audio API Synthesizer (No external assets required)
+  const playSound = (type = 'chime') => {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+
+      if (type === 'chime') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      } else if (type === 'whoosh') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(260, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(620, ctx.currentTime + 0.25);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      }
+    } catch {
+      // Audio context might be restricted before gesture
+    }
+  };
+
   const triggerWave = () => {
     setIsWaving(false);
+    playSound('chime');
     setTimeout(() => setIsWaving(true), 50);
+  };
+
+  const launchAirplane = () => {
+    if (isAirplaneFlying) return;
+    setIsAirplaneFlying(true);
+    playSound('whoosh');
+    setTimeout(() => {
+      setIsAirplaneFlying(false);
+    }, 2000);
+  };
+
+  const triggerPetals = () => {
+    setPetalsBurst(true);
+    playSound('chime');
+    setTimeout(() => setPetalsBurst(false), 1500);
   };
 
   if (isClosed) return null;
@@ -106,6 +165,24 @@ export default function GardenCompanion() {
           </div>
 
           <div className="flex items-center gap-1">
+            {/* Audio Toggle */}
+            <button
+              onClick={() => {
+                const next = !soundEnabled;
+                setSoundEnabled(next);
+                if (next) playSound('chime');
+              }}
+              aria-label={soundEnabled ? 'Mute companion audio' : 'Enable companion audio'}
+              className={`p-1 rounded-md transition ${
+                soundEnabled
+                  ? 'text-cyan-400 bg-cyan-500/10'
+                  : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'
+              }`}
+              title={soundEnabled ? 'Mute chimes' : 'Enable gentle chimes'}
+            >
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+            </button>
+
             <button
               onClick={() => setIsMinimized(true)}
               aria-label="Minimize companion"
@@ -302,6 +379,27 @@ export default function GardenCompanion() {
               </g>
             </g>
 
+            {/* Paper Airplane Flying from Child to Robot */}
+            {isAirplaneFlying && (
+              <g className="animate-pulse">
+                <path d="M 310 115 Q 260 65 200 80" fill="none" stroke="#e0e7ff" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.7" />
+                <polygon points="0,0 14,4 0,8 3,4" fill="#ffffff" stroke="#6366f1" strokeWidth="1" transform="translate(240, 82) rotate(-165)" />
+                <circle cx="230" cy="85" r="2" fill="#38bdf8" className="animate-ping" />
+              </g>
+            )}
+
+            {/* Floating Petals Burst from Flowers */}
+            {petalsBurst && (
+              <g>
+                <circle cx="50" cy="140" r="3" fill="#f472b6" opacity="0.9" />
+                <circle cx="55" cy="125" r="2.5" fill="#ec4899" opacity="0.8" />
+                <circle cx="100" cy="135" r="3" fill="#38bdf8" opacity="0.9" />
+                <circle cx="105" cy="120" r="2" fill="#38bdf8" opacity="0.8" />
+                <circle cx="270" cy="135" r="3" fill="#f472b6" opacity="0.9" />
+                <circle cx="275" cy="122" r="2.5" fill="#fbcfe8" opacity="0.8" />
+              </g>
+            )}
+
             {/* Sparkles of Knowledge / Synergy between Robot and Child */}
             <g className="knowledge-sparkles" opacity="0.8">
               <path d="M 180 110 Q 210 100 240 115" fill="none" stroke="#818cf8" strokeDasharray="3,3" strokeWidth="1" opacity="0.4" />
@@ -312,12 +410,12 @@ export default function GardenCompanion() {
         </div>
 
         {/* Speech Bubble / Dialogue Area */}
-        <div className="p-3.5 bg-slate-950/90 border-t border-slate-800/80 space-y-2.5">
+        <div className="p-3 bg-slate-950/90 border-t border-slate-800/80 space-y-2.5">
           <div className="flex items-start gap-2.5">
             <div className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 mt-0.5">
               <MessageSquare className="w-3.5 h-3.5" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-indigo-300">
                   {currentTip.author}
@@ -333,20 +431,39 @@ export default function GardenCompanion() {
           </div>
 
           {/* Interactive Button Strip */}
-          <div className="flex items-center justify-between pt-1 text-xs">
-            <button
-              onClick={triggerWave}
-              className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-slate-700/60 hover:border-indigo-500/50 transition flex items-center gap-1.5 text-[11px] font-medium"
-            >
-              <Sparkles className="w-3 h-3 text-cyan-400" />
-              <span>Wave Hi! 👋</span>
-            </button>
+          <div className="flex items-center justify-between gap-1.5 pt-1 text-xs flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={triggerWave}
+                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                title="Wave back at Aero"
+              >
+                <Sparkles className="w-3 h-3 text-cyan-400" />
+                <span>Wave 👋</span>
+              </button>
+
+              <button
+                onClick={launchAirplane}
+                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-cyan-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                title="Little Leo throws a paper airplane to Aero"
+              >
+                <span>Fly Plane ✈️</span>
+              </button>
+
+              <button
+                onClick={triggerPetals}
+                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-pink-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                title="Bloom garden flowers"
+              >
+                <span>Bloom 🌸</span>
+              </button>
+            </div>
 
             <button
               onClick={handleNextTip}
-              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition text-[11px] flex items-center gap-1 shadow-sm"
+              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition text-[11px] flex items-center gap-1 shadow-sm ml-auto"
             >
-              <span>Next Note</span>
+              <span>Next</span>
               <ChevronUp className="w-3 h-3 rotate-90" />
             </button>
           </div>
