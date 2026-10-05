@@ -575,16 +575,20 @@ export default function MindMapPage() {
               viewBox="-800 -600 1600 1200"
             >
               {/* Nodes miniature points */}
-              {allNodesData.map((n) => (
-                <circle
-                  key={`radar-${n.id}`}
-                  cx={n.x}
-                  cy={n.y}
-                  r={n.id === selectedNodeId ? 28 : n.id === 'root' ? 24 : 14}
-                  fill={n.id === selectedNodeId ? '#38bdf8' : n.id === 'root' ? '#818cf8' : '#64748b'}
-                  opacity={n.id === selectedNodeId ? 1 : 0.65}
-                />
-              ))}
+              {allNodesData.map((n) => {
+                const config = categoryConfig[n.category] || categoryConfig.ml;
+                const nodeColor = n.id === selectedNodeId ? '#38bdf8' : n.id === 'root' ? '#818cf8' : config.stroke;
+                return (
+                  <circle
+                    key={`radar-${n.id}`}
+                    cx={n.x}
+                    cy={n.y}
+                    r={n.id === selectedNodeId ? 28 : n.id === 'root' ? 24 : 16}
+                    fill={nodeColor}
+                    opacity={n.id === selectedNodeId ? 1 : 0.85}
+                  />
+                );
+              })}
 
               {/* Viewport Box Indicator */}
               <rect
@@ -603,28 +607,36 @@ export default function MindMapPage() {
         )}
 
         {/* Legend Overlay at bottom-left */}
-        <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 shadow-xl pointer-events-none hidden md:flex items-center space-x-4">
+        <div className="absolute bottom-4 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 shadow-xl pointer-events-none hidden md:flex items-center space-x-3.5">
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50"></span>
             <span>Math</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></span>
             <span>Data</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm shadow-purple-500/50"></span>
             <span>Classical ML</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50"></span>
+            <span>Evaluation</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50"></span>
             <span>Deep Learning</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/50"></span>
             <span>GenAI & LLMs</span>
           </div>
-          <div className="text-slate-500 border-l border-slate-700 pl-3">
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span>
+            <span>MLOps</span>
+          </div>
+          <div className="text-slate-500 border-l border-slate-700 pl-3 hidden lg:block">
             Drag to pan &bull; Scroll to zoom &bull; Click node to inspect details
           </div>
         </div>
