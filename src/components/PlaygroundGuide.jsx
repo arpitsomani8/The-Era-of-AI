@@ -259,7 +259,7 @@ export const PLAYGROUND_GUIDES = {
 
 export default function PlaygroundGuide({ activeTab }) {
   const [isRevealed, setIsRevealed] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const guide = PLAYGROUND_GUIDES[activeTab];
   if (!guide) return null;
@@ -269,7 +269,9 @@ export default function PlaygroundGuide({ activeTab }) {
       {/* Header Banner */}
       <div 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-4 sm:p-5 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-950 flex items-center justify-between cursor-pointer border-b border-indigo-500/20 select-none group"
+        className={`p-3.5 sm:p-4 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-950 flex items-center justify-between cursor-pointer select-none group transition ${
+          isExpanded ? 'border-b border-indigo-500/20' : ''
+        }`}
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
