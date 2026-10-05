@@ -20,7 +20,8 @@ import {
   History,
   Download,
   Menu,
-  X
+  X,
+  Code2
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
@@ -33,7 +34,8 @@ export default function Navbar({
   onOpenBookmarks, 
   onOpenAssessment, 
   onOpenCheatsheet, 
-  onOpenTimeline 
+  onOpenTimeline,
+  onOpenPythonLab
 }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
@@ -263,6 +265,17 @@ export default function Navbar({
               <span>Timeline</span>
             </button>
 
+            {/* In-Browser Python Lab Sandbox */}
+            <button
+              onClick={onOpenPythonLab}
+              id="navbar-python-lab-btn"
+              className="p-1.5 px-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-300 hover:text-white border border-emerald-500/30 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+              title="In-Browser Python & AI Math Sandbox (Pyodide Wasm)"
+            >
+              <Code2 className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <span>Python Lab</span>
+            </button>
+
             {/* Kinetic Universe Sandbox */}
             <button
               onClick={onOpenKinetic}
@@ -403,6 +416,14 @@ export default function Navbar({
               >
                 <History className="w-4 h-4 text-amber-400 shrink-0" />
                 <span className="truncate">Timeline</span>
+              </button>
+
+              <button
+                onClick={() => { onOpenPythonLab(); setMobileMenuOpen(false); }}
+                className="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-2 transition"
+              >
+                <Code2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="truncate">Python Lab</span>
               </button>
 
               <button

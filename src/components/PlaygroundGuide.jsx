@@ -254,6 +254,41 @@ export const PLAYGROUND_GUIDES = {
       productionImpact: 'This is the foundation of modern reasoning frontiers (OpenAI o1/o3, DeepSeek-R1). Allocating more tokens to reasoning at inference time yields exponential gains on PhD-level STEM benchmarks without increasing model parameter size.',
       interviewRule: 'Rule of Thumb: Prompt tokens are the question; Reasoning tokens are the working scratchpad; Completion tokens are the final answer.'
     }
+  },
+
+  transformer: {
+    title: 'The Transformer Token Journey (Decoder-Only Architecture)',
+    subtitle: 'Trace a discrete token step-by-step through an entire modern LLM block: RoPE, GQA, RMSNorm, SwiGLU, and Softmax Logits.',
+    steps: [
+      {
+        num: 1,
+        title: 'Choose a Prompt & Token',
+        detail: 'Select the preset "AI & Cognition" or type your own prompt, then click on a specific token (e.g. "intelligence") to accompany through the block.'
+      },
+      {
+        num: 2,
+        title: 'Switch Architectures (Llama 3 vs Mistral vs Gemma 2)',
+        detail: 'Toggle between Llama 3 8B, Mistral 7B, and Gemma 2 to compare their hidden dimensions, head dimensions, and vocab sizes.'
+      },
+      {
+        num: 3,
+        title: 'Step Through the 8 Pipeline Stages',
+        detail: 'Use Next or Auto-Step to trace the token from Embedding Lookup (Stage 1) through 2D RoPE rotation, GQA head grouping, SwiGLU gating, and final Vocabulary Softmax (Stage 8).'
+      }
+    ],
+    observations: [
+      'In Stage 2 (RoPE), observe how low-frequency channels rotate by a tiny fraction of a radian while high-frequency channels rotate vigorously with position.',
+      'In Stage 4 (GQA), notice how 32 Query heads share only 8 Key/Value heads, saving 75% memory bandwidth in the KV cache.',
+      'In Stage 5 (Residuals), toggling the ablation switch immediately demonstrates why deep neural networks collapse without the linear skip highway.',
+      'In Stage 6 (SwiGLU), the SiLU/Swish gate acts as an analog valve controlling which factual features from the Up projection pass to the Down projection.'
+    ],
+    challenge: 'Why did modern LLMs (Llama 3, DeepSeek, Mistral) abandon standard LayerNorm, GELU, and absolute positional embeddings in favor of RMSNorm, SwiGLU, and RoPE?',
+    conclusion: {
+      mathFormula: '$$x_{l+1} = x_l + \\text{GQA}\\left(\\text{RMSNorm}(x_l), R_m\\right) + \\text{FFN}_{\\text{SwiGLU}}\\left(\\text{RMSNorm}(x_{\\text{mid}})\\right)$$',
+      mathExplanation: 'Modern LLM architectures converged on this trio for extreme hardware efficiency and theoretical elegance: 1) RMSNorm drops the mean calculation, reducing memory passes across the high-bandwidth memory bus; 2) RoPE enforces relative position naturally via orthogonal 2D rotations in the complex plane; 3) SwiGLU introduces dynamic gating which provides higher non-linear expressive capacity than static GELU activations per parameter.',
+      productionImpact: 'Together with Grouped-Query Attention (GQA), this modern stack enables models like Llama 3 and DeepSeek to achieve 128k+ context windows while sustaining over 100 tokens/sec on commodity GPU clusters.',
+      interviewRule: 'Rule of Thumb: Attention routes context between tokens; SwiGLU FFN retrieves internal factual knowledge; Residuals keep the gradients flowing forever.'
+    }
   }
 };
 

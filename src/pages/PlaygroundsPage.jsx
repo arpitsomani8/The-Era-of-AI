@@ -26,6 +26,7 @@ import TokenizerPlayground from '../components/TokenizerPlayground';
 import RAGPipelinePlayground from '../components/RAGPipelinePlayground';
 import LoRAPlayground from '../components/LoRAPlayground';
 import PromptEngineeringPlayground from '../components/PromptEngineeringPlayground';
+import TransformerJourneyPlayground from '../components/TransformerJourneyPlayground';
 import PlaygroundGuide from '../components/PlaygroundGuide';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
@@ -274,7 +275,18 @@ export default function PlaygroundsPage() {
           </div>
 
           {/* Tab Selector */}
-          <div className="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1 shrink-0 self-start md:self-auto">
+          <div className="flex items-center flex-wrap gap-1 bg-slate-900 border border-slate-800 rounded-xl p-1 shrink-0 self-start md:self-auto">
+            <button
+              onClick={() => setActiveTab('transformer')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'transformer'
+                  ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-md shadow-cyan-600/30 ring-1 ring-cyan-400'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Token Journey & Blocks</span>
+            </button>
             <button
               onClick={() => setActiveTab('attention')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
@@ -1042,6 +1054,13 @@ export default function PlaygroundsPage() {
         {/* ========================================================= */}
         {activeTab === 'prompting' && (
           <PromptEngineeringPlayground />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 8: THE TRANSFORMER TOKEN JOURNEY ARCHITECTURE */}
+        {/* ========================================================= */}
+        {activeTab === 'transformer' && (
+          <TransformerJourneyPlayground />
         )}
       </div>
     </div>
