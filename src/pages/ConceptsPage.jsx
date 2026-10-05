@@ -18,19 +18,61 @@ import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 export default function ConceptsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const conceptIdParam = searchParams.get('id');
+  const searchParam = searchParams.get('search');
+  const topicParam = searchParams.get('topic');
+  const categoryParam = searchParams.get('category');
 
   const [selectedConceptId, setSelectedConceptId] = useState(
     () => conceptIdParam || (conceptsData[0] ? conceptsData[0].id : null)
   );
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState(() => searchParam || '');
+  const [activeCategory, setActiveCategory] = useState(() => categoryParam || 'all');
   const [copiedLink, setCopiedLink] = useState(false);
 
+  // Sync state with URL search params whenever they change
   useEffect(() => {
+    // 1. Direct Concept ID
     if (conceptIdParam) {
-      setSelectedConceptId(conceptIdParam);
+      const match = conceptsData.find((c) => c.id === conceptIdParam);
+      if (match) {
+        setSelectedConceptId(match.id);
+        if (match.category) {
+          setActiveCategory(match.category);
+        }
+        setSearchQuery('');
+        return;
+      }
     }
-  }, [conceptIdParam]);
+
+    // 2. Topic ID scoped
+    if (topicParam) {
+      const topicMatches = conceptsData.filter((c) => c.topic_id === topicParam);
+      if (topicMatches.length > 0) {
+        setSelectedConceptId(topicMatches[0].id);
+        if (topicMatches[0].category) {
+          setActiveCategory(topicMatches[0].category);
+        }
+        setSearchQuery('');
+        return;
+      }
+    }
+
+    // 3. Category scoped
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
+      const catMatches = conceptsData.filter((c) => c.category === categoryParam);
+      if (catMatches.length > 0) {
+        setSelectedConceptId(catMatches[0].id);
+      }
+      return;
+    }
+
+    // 4. Search query
+    if (searchParam) {
+      setSearchQuery(searchParam);
+      setActiveCategory('all');
+    }
+  }, [conceptIdParam, topicParam, categoryParam, searchParam]);
 
   const categories = [
     { id: 'all', label: 'All (170)' },
@@ -49,20 +91,44 @@ export default function ConceptsPage() {
         return false;
       }
       if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchTitle = c.title?.toLowerCase().includes(q);
-        const matchDef = c.def?.toLowerCase().includes(q);
-        const matchTopic = c.topic_label?.toLowerCase().includes(q);
-        const matchTag = c.tags?.some((t) => t.toLowerCase().includes(q));
-        if (!matchTitle && !matchDef && !matchTopic && !matchTag) return false;
+        const q = searchQuery.toLowerCase().trim();
+        const tokens = q.split(/[\s,&]+/).filter((t) => t.length > 1);
+        
+        const title = (c.title || '').toLowerCase();
+        const def = (c.def || '').toLowerCase();
+        const topic = (c.topic_label || '').toLowerCase();
+        const tags = (c.tags || []).join(' ').toLowerCase();
+        const combined = `${title} ${def} ${topic} ${tags}`;
+
+        if (title.includes(q) || combined.includes(q)) return true;
+        if (tokens.length > 0 && tokens.some((t) => combined.includes(t))) return true;
+        return false;
       }
       return true;
     });
   }, [activeCategory, searchQuery]);
 
+  // Selected Concept resolution: prioritize match in filteredConcepts
   const selectedConcept = useMemo(() => {
-    return conceptsData.find((c) => c.id === selectedConceptId) || filteredConcepts[0] || conceptsData[0];
+    const foundInFiltered = filteredConcepts.find((c) => c.id === selectedConceptId);
+    if (foundInFiltered) return foundInFiltered;
+
+    if (filteredConcepts.length > 0) {
+      return filteredConcepts[0];
+    }
+
+    return conceptsData.find((c) => c.id === selectedConceptId) || conceptsData[0];
   }, [selectedConceptId, filteredConcepts]);
+
+  // Auto-scroll sidebar list to the selected concept
+  useEffect(() => {
+    if (selectedConcept?.id) {
+      const el = document.getElementById(`concept-item-${selectedConcept.id}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [selectedConcept?.id]);
 
   const handleSelect = (id) => {
     setSelectedConceptId(id);
@@ -139,6 +205,7 @@ export default function ConceptsPage() {
             return (
               <div
                 key={concept.id}
+                id={`concept-item-${concept.id}`}
                 onClick={() => handleSelect(concept.id)}
                 className={`p-2.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-2 text-xs ${
                   isSelected
