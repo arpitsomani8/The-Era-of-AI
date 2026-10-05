@@ -328,5 +328,35 @@
     "breakthrough": "Showed that a 13B model trained on 1.0 trillion tokens of public data could outperform the closed 175B GPT-3, using RMSNorm, SwiGLU activations, and Rotary Positional Embeddings (RoPE).",
     "formula": "$$\\text{Architecture} = \\text{Pre-RMSNorm} + \\text{SwiGLU}(x, W, V) + \\text{RoPE}(q, k, m)$$",
     "impact": "Ignited the global open-source AI ecosystem; spurred thousands of open models, local runtimes (llama.cpp, Ollama, vLLM), and sovereign enterprise deployments."
+  },
+  {
+    "id": "paper_2610_03367_multilingual_gsm_symbolic_what",
+    "title": "Multilingual GSM-Symbolic: What determines capability transfer across languages?",
+    "authors": "Kenneth Enevoldsen, Riley Herchert, Sofie Mosegaard, Dan Saattrup Smart et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "llm",
+    "arxiv_id": "2610.03367",
+    "url": "https://arxiv.org/abs/2610.03367",
+    "one_liner": "We understand little about how capabilities acquired in one language carry over to another, or what governs this transfer: evaluations rely on incomparable, sat...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "We understand little about how capabilities acquired in one language carry over to another, or what governs this transfer: evaluations rely on incomparable, saturation-prone datasets and rarely examine its determinants jointly. Identifying what predicts transfer would let us avoid exhaustive evaluation across all language pairs and let developers target the ...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2610_03240_collective_bias_mitigation_via",
+    "title": "Collective Bias Mitigation via Model Routing and Collaboration",
+    "authors": "Mingzhe Du, Luu Anh Tuan, Xiaobao Wu, Yichong Huang et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "generative",
+    "arxiv_id": "2610.03240",
+    "url": "https://arxiv.org/abs/2610.03240",
+    "one_liner": "Large language models (LLMs) are increasingly deployed in public health, finance, and governance, requiring both accuracy and societal value alignment. Despite ...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Large language models (LLMs) are increasingly deployed in public health, finance, and governance, requiring both accuracy and societal value alignment. Despite recent advances, LLMs often perpetuate or amplify bias embedded in their training data, posing challenges to fairness. While self-debiasing encourages an LLM to identify and correct its own biases, re...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
