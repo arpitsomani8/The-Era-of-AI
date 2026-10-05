@@ -1,0 +1,77 @@
+[
+  {
+    "from": "math_calc",
+    "to": "ml_opt",
+    "label": "Supplies ∇ Gradients"
+  },
+  {
+    "from": "math_linalg",
+    "to": "genai_embed",
+    "label": "Powers Vector Spaces"
+  },
+  {
+    "from": "math_prob",
+    "to": "ml_logistic",
+    "label": "Likelihood & Probabilities"
+  },
+  {
+    "from": "math_info",
+    "to": "ml_loss",
+    "label": "Derives Cross-Entropy"
+  },
+  {
+    "from": "data_scale",
+    "to": "ml_opt",
+    "label": "Enables Gradient Stability"
+  },
+  {
+    "from": "data_fe",
+    "to": "ml_linear",
+    "label": "Supplies Feature Matrix X"
+  },
+  {
+    "from": "data_split",
+    "to": "eval_tradeoff",
+    "label": "Measures Generalization"
+  },
+  {
+    "from": "ml_loss",
+    "to": "dl_backprop",
+    "label": "Seed of Chain Rule"
+  },
+  {
+    "from": "ml_opt",
+    "to": "dl_opt",
+    "label": "Evolves to Adam / AdamW"
+  },
+  {
+    "from": "ml_reg",
+    "to": "dl_norm",
+    "label": "Controls Overfitting"
+  },
+  {
+    "from": "ml_logistic",
+    "to": "dl_activations",
+    "label": "Sigmoid becomes Activation"
+  },
+  {
+    "from": "dl_neurons",
+    "to": "genai_attention",
+    "label": "Layered Linear Projections"
+  },
+  {
+    "from": "genai_embed",
+    "to": "genai_rag",
+    "label": "Generates Vector Chunks"
+  },
+  {
+    "from": "dl_opt",
+    "to": "genai_train",
+    "label": "Drives LoRA / Pre-training"
+  },
+  {
+    "from": "eval_matrix",
+    "to": "genai_align",
+    "label": "Evaluates Alignment Quality"
+  }
+]

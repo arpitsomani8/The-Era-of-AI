@@ -1,0 +1,168 @@
+[
+  {
+    "id": "root",
+    "label": "AI & Machine Learning Universe",
+    "category": "center",
+    "x": 0,
+    "y": 0,
+    "level": 0,
+    "def": "The unified superset of artificial intelligence, statistical learning, deep representations, and automated reasoning.",
+    "formula": "$$f: \\mathcal{X} \\to \\mathcal{Y}, \\quad \\min_\\theta \\mathcal{L}(f(X; \\theta), Y) + \\lambda \\Omega(\\theta)$$",
+    "logic": "All AI/ML algorithms learn an approximating function f(X; θ) mapping inputs X to targets Y while penalizing complexity Ω(θ) to ensure generalization.",
+    "example": "Predicting house price Y given features X, or predicting the next token in a conversational prompt.",
+    "subtopics": [
+      "Mathematical Foundations",
+      "Data Engineering & Preprocessing",
+      "Classical ML",
+      "Model Evaluation",
+      "Deep Learning",
+      "Generative AI & LLMs",
+      "MLOps & Production"
+    ],
+    "connections": [
+      "math_root",
+      "data_root",
+      "ml_root",
+      "eval_root",
+      "dl_root",
+      "genai_root",
+      "mlops_root"
+    ]
+  },
+  {
+    "id": "math_root",
+    "label": "1. Mathematical Foundations",
+    "category": "math",
+    "x": -500,
+    "y": -450,
+    "level": 1,
+    "def": "The theoretical backbone of all ML algorithms: vector spaces, optimization calculus, and statistical inference.",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{(x, y)} [\\text{loss}(y, f(x; \\theta))]$$",
+    "logic": "Provides the formal language to define loss surfaces, calculate gradients, compute probabilities, and prove convergence bounds.",
+    "example": "Understanding why high-dimensional embeddings suffer from the curse of dimensionality and how cosine distance remedies it.",
+    "subtopics": [
+      "Linear Algebra",
+      "Calculus & Optimization",
+      "Probability & Statistics",
+      "Information Theory"
+    ],
+    "connections": [
+      "root"
+    ]
+  },
+  {
+    "id": "data_root",
+    "label": "2. Data Preprocessing & EDA",
+    "category": "data",
+    "x": -550,
+    "y": 150,
+    "level": 1,
+    "def": "The end-to-end pipeline of cleaning, transforming, imputing, scaling, and partitioning raw real-world data for robust modeling.",
+    "formula": "$$\\mathcal{D}_{\\text{clean}} = \\text{Pipeline}(\\text{Scrub}(\\mathcal{D}_{\\text{raw}})) \\implies X_{\\text{train}}, X_{\\text{val}}, X_{\\text{test}}$$",
+    "logic": "Raw data contains sensor noise, missing entries, extreme outliers, and skewed distributions that destabilize optimization without proper preprocessing.",
+    "example": "Transforming messy CSV transaction logs into normalized numerical feature matrices ready for model training.",
+    "subtopics": [
+      "Scrubbing & Outliers",
+      "Imputation Strategies",
+      "Feature Scaling",
+      "Feature Engineering",
+      "Data Partitioning & SMOTE"
+    ],
+    "connections": [
+      "root"
+    ]
+  },
+  {
+    "id": "ml_root",
+    "label": "3. Classical Machine Learning",
+    "category": "ml",
+    "x": -100,
+    "y": -450,
+    "level": 1,
+    "def": "Supervised and unsupervised statistical learning algorithms, loss formulations, gradient descent optimization, and regularization.",
+    "formula": "$$\\hat{y} = f(X; W, b) = \\sigma(W^T X + b)$$",
+    "logic": "Establishes foundational concepts of feature weights, loss minimization, decision boundaries, tree-based partitioning, and clustering.",
+    "example": "Training an XGBoost model on structured tabular customer records to predict churn with high explainability.",
+    "subtopics": [
+      "Linear Regression",
+      "Loss Functions",
+      "Gradient Descent",
+      "Classification & Sigmoid",
+      "Regularization",
+      "Trees & Boosting",
+      "Unsupervised & Clustering"
+    ],
+    "connections": [
+      "root"
+    ]
+  },
+  {
+    "id": "eval_root",
+    "label": "4. Model Evaluation & Generalization",
+    "category": "eval",
+    "x": -100,
+    "y": 350,
+    "level": 1,
+    "def": "Rigorous quantitative frameworks to test accuracy, calibration, trade-offs, and generalization performance on unseen data.",
+    "formula": "$$\\mathbb{E}[(y - \\hat{f})^2] = \\text{Bias}^2 + \\text{Variance} + \\sigma^2$$",
+    "logic": "Prevents deploying models with false confidence caused by data leakage, class imbalance skew, or memorization of training noise.",
+    "example": "Using PR-AUC and Recall instead of raw Accuracy to evaluate an automated credit card fraud detector.",
+    "subtopics": [
+      "Confusion Matrix",
+      "ROC & PR Curves",
+      "Bias-Variance Tradeoff",
+      "Cross-Validation"
+    ],
+    "connections": [
+      "root"
+    ]
+  },
+  {
+    "id": "dl_root",
+    "label": "5. Deep Learning Foundations",
+    "category": "dl",
+    "x": 450,
+    "y": -200,
+    "level": 1,
+    "def": "Hierarchical representation learning through layered computational graphs, non-linear activations, backpropagation, and specialized architectures.",
+    "formula": "$$a^{[l]} = g\\left(W^{[l]} a^{[l-1]} + b^{[l]}\\right)$$",
+    "logic": "Replaces manual feature engineering with learned feature hierarchies (e.g. pixels -> edges -> textures -> objects).",
+    "example": "Deep convolutional networks classifying 1,000 distinct object classes from raw ImageNet pixel matrices.",
+    "subtopics": [
+      "Neurons & Perceptrons",
+      "Activation Functions",
+      "Backpropagation",
+      "Optimizers (Adam, AdamW)",
+      "Normalization (BatchNorm, LayerNorm)",
+      "Vision (CNN, ViT)",
+      "Sequence Models (LSTM)",
+      "Diffusion Models"
+    ],
+    "connections": [
+      "root"
+    ]
+  },
+  {
+    "id": "genai_root",
+    "label": "6. Transformers & Generative AI",
+    "category": "genai",
+    "x": 450,
+    "y": 250,
+    "level": 1,
+    "def": "Modern foundation models, self-attention architectures, next-token prediction, parameter-efficient fine-tuning (PEFT), and autonomous agent frameworks.",
+    "formula": "$$\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{Q K^T}{\\sqrt{d_k}}\\right) V$$",
+    "logic": "Self-attention enables dynamic routing of semantic information between all pairs of tokens in parallel, scaling pre-training to trillions of tokens.",
+    "example": "Large Language Models generating code, summarizing legal documents, reasoning step-by-step, and calling external APIs autonomously.",
+    "subtopics": [
+      "Tokenization & Embeddings",
+      "Self-Attention Mechanism",
+      "Pre-training, SFT & LoRA",
+      "Alignment (RLHF, DPO)",
+      "RAG Ecosystem",
+      "Prompt Engineering & Agents"
+    ],
+    "connections": [
+      "root"
+    ]
+  }
+]

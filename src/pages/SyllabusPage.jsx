@@ -1,0 +1,274 @@
+import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { 
+  Search, 
+  BookOpen, 
+  Calculator, 
+  Lightbulb, 
+  Sparkles, 
+  Layers, 
+  ChevronDown, 
+  ChevronUp, 
+  Printer 
+} from 'lucide-react';
+import topicsData from '../data/topics.json';
+import hubNodesData from '../data/hubNodes.json';
+import KaTeXRenderer from '../components/KaTeXRenderer';
+
+export default function SyllabusPage() {
+  const [searchParams] = useSearchParams();
+  const initialTopic = searchParams.get('topic') || '';
+  const [searchQuery, setSearchQuery] = useState(initialTopic);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [expandedTopics, setExpandedTopics] = useState(() => {
+    // Default expand all
+    return new Set(topicsData.map((t) => t.id));
+  });
+
+  const categories = [
+    { id: 'all', label: 'All Modules (34)' },
+    { id: 'math', label: '1. Math Foundations' },
+    { id: 'data', label: '2. Data Preprocessing' },
+    { id: 'ml', label: '3. Classical ML' },
+    { id: 'eval', label: '4. Model Evaluation' },
+    { id: 'dl', label: '5. Deep Learning' },
+    { id: 'genai', label: '6. Transformers & GenAI' },
+  ];
+
+  const toggleTopic = (id) => {
+    setExpandedTopics((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = (expand) => {
+    if (expand) {
+      setExpandedTopics(new Set(topicsData.map((t) => t.id)));
+    } else {
+      setExpandedTopics(new Set());
+    }
+  };
+
+  const filteredTopics = useMemo(() => {
+    return topicsData.filter((topic) => {
+      if (activeCategory !== 'all' && topic.category !== activeCategory) {
+        return false;
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchTitle = topic.label?.toLowerCase().includes(q);
+        const matchDef = topic.def?.toLowerCase().includes(q);
+        const matchLogic = topic.logic?.toLowerCase().includes(q);
+        const matchSub = topic.subtopics?.some((s) => s.toLowerCase().includes(q));
+        if (!matchTitle && !matchDef && !matchLogic && !matchSub) return false;
+      }
+      return true;
+    });
+  }, [activeCategory, searchQuery]);
+
+  return (
+    <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 p-4 sm:p-6 md:p-10">
+      <div className="max-w-5xl mx-auto space-y-6 pb-20 print-container">
+        {/* Header Section */}
+        <div className="border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
+              <BookOpen className="w-3.5 h-3.5" />
+              Complete Curriculum
+            </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+              Line-wise Master AI & Machine Learning Syllabus
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
+              From vector calculus and classical optimization to modern LLMs, diffusion mechanisms, and production evaluation. Every single topic broken down with definition, mathematical formulas, intuitive logic, and real-world scenarios.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 no-print shrink-0">
+            <button
+              onClick={() => toggleAll(true)}
+              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:bg-slate-800 text-xs text-slate-300 font-medium transition"
+            >
+              Expand All
+            </button>
+            <button
+              onClick={() => toggleAll(false)}
+              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:bg-slate-800 text-xs text-slate-300 font-medium transition"
+            >
+              Collapse All
+            </button>
+          </div>
+        </div>
+
+        {/* Filter & Search Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
+          {/* Search Box */}
+          <div className="relative flex-1 max-w-md">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search syllabus by topic, formula, or keyword..."
+              className="w-full bg-slate-900 border border-slate-800 text-xs sm:text-sm text-white rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-500"
+            />
+            <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-2.5 text-slate-500 hover:text-white text-xs"
+              >
+                &times;
+              </button>
+            )}
+          </div>
+
+          {/* Category Filter Buttons */}
+          <div className="flex items-center overflow-x-auto no-scrollbar space-x-1.5 pb-1">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+                  activeCategory === cat.id
+                    ? 'bg-indigo-600 text-white shadow'
+                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results Counter */}
+        <div className="flex items-center justify-between text-xs text-slate-400 no-print">
+          <span>Showing {filteredTopics.length} of {topicsData.length} core syllabus modules</span>
+        </div>
+
+        {/* Topics List */}
+        <div className="space-y-4">
+          {filteredTopics.map((topic, index) => {
+            const isExpanded = expandedTopics.has(topic.id);
+
+            return (
+              <div
+                key={topic.id}
+                id={`topic-${topic.id}`}
+                className="bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-sm transition hover:border-slate-700"
+              >
+                {/* Topic Header Card */}
+                <div
+                  onClick={() => toggleTopic(topic.id)}
+                  className="p-4 sm:p-5 flex items-center justify-between cursor-pointer hover:bg-slate-800/40 select-none transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                      {index + 1}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                          {topic.label}
+                        </h2>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full uppercase font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                          {topic.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
+                        {topic.subtopics?.join(' • ')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="no-print text-slate-400">
+                    {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </div>
+                </div>
+
+                {/* Expanded Details Body */}
+                {isExpanded && (
+                  <div className="p-4 sm:p-6 border-t border-slate-800/80 bg-slate-950/40 space-y-4 text-xs sm:text-sm">
+                    {/* Definition */}
+                    {topic.def && (
+                      <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+                        <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5" />
+                          1. Core Definition & Role
+                        </h3>
+                        <p className="text-slate-300 leading-relaxed">{topic.def}</p>
+                      </div>
+                    )}
+
+                    {/* Formula */}
+                    {topic.formula && (
+                      <div className="bg-slate-900/80 rounded-xl p-4 border border-indigo-500/20">
+                        <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <Calculator className="w-3.5 h-3.5" />
+                          2. Mathematical Formulation
+                        </h3>
+                        <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 overflow-x-auto">
+                          <KaTeXRenderer math={topic.formula} block={true} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Grid of Logic & Real-World Scenario */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {topic.logic && (
+                        <div className="bg-amber-950/20 rounded-xl p-4 border border-amber-500/25">
+                          <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <Lightbulb className="w-3.5 h-3.5" />
+                            3. Intuition & When to Use
+                          </h3>
+                          <p className="text-amber-100/90 leading-relaxed text-xs sm:text-sm">
+                            {topic.logic}
+                          </p>
+                        </div>
+                      )}
+
+                      {topic.example && (
+                        <div className="bg-emerald-950/20 rounded-xl p-4 border border-emerald-500/25">
+                          <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            4. Real-World Practical Example
+                          </h3>
+                          <p className="text-emerald-100/90 leading-relaxed text-xs sm:text-sm">
+                            {topic.example}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Subtopics Checklist */}
+                    {topic.subtopics && topic.subtopics.length > 0 && (
+                      <div className="pt-2">
+                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5 text-slate-400" />
+                          Line-Wise Syllabus Modules:
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {topic.subtopics.map((sub, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="px-3 py-1 rounded-lg text-xs bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-1.5"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                              {sub}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
