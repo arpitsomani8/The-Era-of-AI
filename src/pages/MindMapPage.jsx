@@ -11,11 +11,13 @@ import {
   Layers,
   ChevronRight
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import allNodesData from '../data/allNodes.json';
 import crossLinksData from '../data/crossLinks.json';
 import NodeInspector from '../components/NodeInspector';
 
 export default function MindMapPage() {
+  const { theme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedNodeId, setSelectedNodeId] = useState(() => searchParams.get('node') || null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +62,60 @@ export default function MindMapPage() {
     genai: { fill: '#312e81', stroke: '#6366f1', text: '#c7d2fe', label: 'GenAI & LLMs' },
     mlops: { fill: '#134e4a', stroke: '#14b8a6', text: '#99f6e4', label: 'MLOps' }
   };
+
+  const getThemeCanvasColors = () => {
+    switch (theme) {
+      case 'bright':
+        return {
+          gridPath: '#cbd5e1',
+          gridDot: '#94a3b8',
+          lineNormal: '#94a3b8',
+          lineSelected: '#4f46e5',
+          nodeBg: '#ffffff',
+          nodeBgSelected: '#e0e7ff',
+          nodeRootBg: '#4f46e5',
+          nodeText: '#0f172a',
+          nodeRootText: '#ffffff',
+        };
+      case 'metallic-green':
+        return {
+          gridPath: '#064e3b',
+          gridDot: '#059669',
+          lineNormal: '#064e3b',
+          lineSelected: '#34d399',
+          nodeBg: '#042115',
+          nodeBgSelected: '#065f46',
+          nodeRootBg: '#047857',
+          nodeText: '#ecfdf5',
+          nodeRootText: '#ffffff',
+        };
+      case 'dark':
+        return {
+          gridPath: '#27272a',
+          gridDot: '#3f3f46',
+          lineNormal: '#27272a',
+          lineSelected: '#ffffff',
+          nodeBg: '#09090b',
+          nodeBgSelected: '#27272a',
+          nodeRootBg: '#18181b',
+          nodeText: '#ffffff',
+          nodeRootText: '#ffffff',
+        };
+      default:
+        return {
+          gridPath: '#334155',
+          gridDot: '#475569',
+          lineNormal: '#334155',
+          lineSelected: '#818cf8',
+          nodeBg: '#0f172a',
+          nodeBgSelected: '#1e1b4b',
+          nodeRootBg: '#312e81',
+          nodeText: '#f8fafc',
+          nodeRootText: '#ffffff',
+        };
+    }
+  };
+  const themeColors = getThemeCanvasColors();
 
   // Center the view on initial mount
   useEffect(() => {
@@ -275,8 +331,8 @@ export default function MindMapPage() {
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
           <defs>
             <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.8" className="text-slate-700" />
-              <circle cx="0" cy="0" r="1.2" fill="currentColor" className="text-slate-600" />
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke={themeColors.gridPath} strokeWidth="0.8" />
+              <circle cx="0" cy="0" r="1.2" fill={themeColors.gridDot} />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#gridPattern)" />
@@ -310,7 +366,7 @@ export default function MindMapPage() {
                     y1={link.source.y || 0}
                     x2={link.target.x || 0}
                     y2={link.target.y || 0}
-                    stroke={isSelected ? '#818cf8' : '#334155'}
+                    stroke={isSelected ? themeColors.lineSelected : themeColors.lineNormal}
                     strokeWidth={isSelected ? 2.5 : 1.5}
                     strokeDasharray={link.source.level === 0 ? '4 4' : 'none'}
                     className="transition-colors duration-200"
@@ -382,10 +438,10 @@ export default function MindMapPage() {
                       width={nodeWidth}
                       height={nodeHeight}
                       rx={rx}
-                      fill={isSelected ? '#1e1b4b' : isRoot ? '#312e81' : '#0f172a'}
-                      stroke={isSelected ? '#a5b4fc' : cfg.stroke}
+                      fill={isSelected ? themeColors.nodeBgSelected : isRoot ? themeColors.nodeRootBg : themeColors.nodeBg}
+                      stroke={isSelected ? themeColors.lineSelected : cfg.stroke}
                       strokeWidth={isSelected ? 3 : isHub ? 2 : 1.5}
-                      filter="drop-shadow(0 4px 6px rgba(0,0,0,0.4))"
+                      filter="drop-shadow(0 4px 6px rgba(0,0,0,0.3))"
                       className="transition-all duration-200 group-hover:scale-105"
                     />
 
@@ -401,7 +457,7 @@ export default function MindMapPage() {
                     <text
                       x={-nodeWidth / 2 + 28}
                       y={4}
-                      fill={isSelected ? '#ffffff' : '#f8fafc'}
+                      fill={isSelected ? '#ffffff' : isRoot ? themeColors.nodeRootText : themeColors.nodeText}
                       fontSize={isRoot ? 14 : isHub ? 12 : 11}
                       fontWeight={isRoot ? '700' : isHub ? '600' : '500'}
                       fontFamily="system-ui, sans-serif"

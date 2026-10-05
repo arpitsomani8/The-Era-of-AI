@@ -12,6 +12,7 @@ import {
   Sparkles,
   ExternalLink
 } from 'lucide-react';
+import ThemeSwitcher from './ThemeSwitcher';
 
 export default function Navbar({ onOpenSearch }) {
   const location = useLocation();
@@ -120,8 +121,10 @@ export default function Navbar({ onOpenSearch }) {
         })}
       </nav>
 
-      {/* Right Controls: Global Search & Print */}
+      {/* Right Controls: Theme Switcher, Global Search & Print */}
       <div className="flex items-center space-x-2">
+        <ThemeSwitcher />
+
         <button
           onClick={onOpenSearch}
           className="p-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-2 text-xs font-medium shadow-sm"
