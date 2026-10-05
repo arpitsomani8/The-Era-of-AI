@@ -140,7 +140,12 @@ export const COMPANION_QUIZ_QUESTIONS = [
 ];
 
 export default function GardenCompanion() {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return true; // Default to sleek minimized pill on mobile screens
+    }
+    return false;
+  });
   const [isClosed, setIsClosed] = useState(false);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [isWaving, setIsWaving] = useState(true);
@@ -374,7 +379,7 @@ export default function GardenCompanion() {
   const currentTip = companionTips[currentTipIndex];
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 max-w-[340px] sm:max-w-[380px] w-full select-none animate-slideUp">
+    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 max-w-[calc(100vw-24px)] w-[340px] sm:max-w-[380px] select-none animate-slideUp">
       <div className="relative bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden text-slate-100 flex flex-col">
         {/* Top Header Bar */}
         <div className="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800/80 flex items-center justify-between">

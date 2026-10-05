@@ -428,16 +428,16 @@ export default function MindMapPage() {
       <h1 className="sr-only">Interactive Machine Learning & AI Knowledge Graph Mind Map — The Era of AI</h1>
 
       {/* Mindmap Toolbar */}
-      <div className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-10 shrink-0">
-        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+      <div className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-3 sm:px-4 py-2 flex flex-col md:flex-row md:items-center justify-between gap-2 z-10 shrink-0">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {/* Search Box */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-none">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 34+ modules (AdamW, LoRA, ROC)..."
-              className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg pl-8 pr-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-52 md:w-72 placeholder-slate-500"
+              placeholder="Search 34+ modules (AdamW, LoRA)..."
+              className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg pl-8 pr-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-52 md:w-64 placeholder-slate-500"
             />
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" />
             {searchQuery && (
@@ -451,7 +451,7 @@ export default function MindMapPage() {
           </div>
 
           {/* Domain Filter Pills */}
-          <div className="hidden lg:flex items-center space-x-1 text-xs">
+          <div className="hidden 2xl:flex items-center space-x-1 text-xs">
             {[
               { id: 'all', label: 'All' },
               { id: 'math', label: 'Math' },
@@ -476,10 +476,10 @@ export default function MindMapPage() {
           </div>
 
           {/* Career Track Pathways Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-950/90 border border-slate-800 rounded-lg p-1 text-xs">
+          <div className="flex items-center gap-1.5 bg-slate-950/90 border border-slate-800 rounded-lg p-1 text-xs shrink-0 max-w-full">
             <span className="text-slate-400 font-semibold flex items-center gap-1 pl-1">
-              <Route className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden xl:inline">Track:</span>
+              <Route className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span className="hidden sm:inline">Track:</span>
             </span>
             <select
               value={selectedTrackId || 'none'}
@@ -492,19 +492,19 @@ export default function MindMapPage() {
                   focusNode(firstNodeId);
                 }
               }}
-              className="bg-slate-900 border border-slate-700/80 rounded-md text-xs font-semibold text-white px-2 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer"
+              className="bg-slate-900 border border-slate-700/80 rounded-md text-xs font-semibold text-white px-2 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer max-w-[190px] sm:max-w-none truncate"
             >
-              <option value="none">🌐 All Domains (Standard)</option>
-              <option value="genai_engineer">🤖 GenAI & LLM Engineer</option>
-              <option value="research_scientist">🔬 AI Research Scientist</option>
-              <option value="mlops_engineer">⚙️ MLOps & Systems Engineer</option>
-              <option value="data_scientist">📊 Classical ML & Data Scientist</option>
+              <option value="none">🌐 All Domains</option>
+              <option value="genai_engineer">🤖 GenAI & LLM</option>
+              <option value="research_scientist">🔬 AI Research</option>
+              <option value="mlops_engineer">⚙️ MLOps & Systems</option>
+              <option value="data_scientist">📊 Data Scientist</option>
             </select>
           </div>
         </div>
 
         {/* Zoom & View Controls */}
-        <div className="flex items-center space-x-1.5 text-xs">
+        <div className="flex items-center justify-between sm:justify-end space-x-1.5 text-xs overflow-x-auto scrollbar-none py-0.5">
           <button
             onClick={() => zoom(1)}
             title="Zoom In"
