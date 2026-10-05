@@ -15,11 +15,13 @@ import {
   Layers,
   ArrowRight,
   Cpu,
-  Binary
+  Binary,
+  Database
 } from 'lucide-react';
 import KaTeXRenderer from '../components/KaTeXRenderer';
 import NeuralNetworkPlayground from '../components/NeuralNetworkPlayground';
 import TokenizerPlayground from '../components/TokenizerPlayground';
+import RAGPipelinePlayground from '../components/RAGPipelinePlayground';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -311,6 +313,17 @@ export default function PlaygroundsPage() {
             >
               <Binary className="w-3.5 h-3.5" />
               <span>BPE & Embeddings</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('rag')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'rag'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span>RAG Pipeline</span>
             </button>
           </div>
         </div>
@@ -976,6 +989,13 @@ export default function PlaygroundsPage() {
         {/* ========================================================= */}
         {activeTab === 'tokenizer' && (
           <TokenizerPlayground />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 5: RAG ARCHITECTURE PIPELINE PLAYGROUND */}
+        {/* ========================================================= */}
+        {activeTab === 'rag' && (
+          <RAGPipelinePlayground />
         )}
       </div>
     </div>
