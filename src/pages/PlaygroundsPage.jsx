@@ -14,10 +14,12 @@ import {
   Activity,
   Layers,
   ArrowRight,
-  Cpu
+  Cpu,
+  Binary
 } from 'lucide-react';
 import KaTeXRenderer from '../components/KaTeXRenderer';
 import NeuralNetworkPlayground from '../components/NeuralNetworkPlayground';
+import TokenizerPlayground from '../components/TokenizerPlayground';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -298,6 +300,17 @@ export default function PlaygroundsPage() {
             >
               <Cpu className="w-3.5 h-3.5" />
               <span>Neural Net & Backprop</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('tokenizer')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'tokenizer'
+                  ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Binary className="w-3.5 h-3.5" />
+              <span>BPE & Embeddings</span>
             </button>
           </div>
         </div>
@@ -956,6 +969,13 @@ export default function PlaygroundsPage() {
         {/* ========================================================= */}
         {activeTab === 'neural' && (
           <NeuralNetworkPlayground />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 4: BPE TOKENIZER & EMBEDDING SPACE PLAYGROUND */}
+        {/* ========================================================= */}
+        {activeTab === 'tokenizer' && (
+          <TokenizerPlayground />
         )}
       </div>
     </div>
