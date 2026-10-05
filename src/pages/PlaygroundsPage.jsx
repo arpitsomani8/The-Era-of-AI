@@ -17,13 +17,15 @@ import {
   Cpu,
   Binary,
   Database,
-  Minimize2
+  Minimize2,
+  Brain
 } from 'lucide-react';
 import KaTeXRenderer from '../components/KaTeXRenderer';
 import NeuralNetworkPlayground from '../components/NeuralNetworkPlayground';
 import TokenizerPlayground from '../components/TokenizerPlayground';
 import RAGPipelinePlayground from '../components/RAGPipelinePlayground';
 import LoRAPlayground from '../components/LoRAPlayground';
+import PromptEngineeringPlayground from '../components/PromptEngineeringPlayground';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -337,6 +339,17 @@ export default function PlaygroundsPage() {
             >
               <Minimize2 className="w-3.5 h-3.5" />
               <span>LoRA Rank Explorer</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('prompting')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'prompting'
+                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Brain className="w-3.5 h-3.5" />
+              <span>Prompting &amp; Reasoning</span>
             </button>
           </div>
         </div>
@@ -1016,6 +1029,13 @@ export default function PlaygroundsPage() {
         {/* ========================================================= */}
         {activeTab === 'lora' && (
           <LoRAPlayground />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 7: PROMPTING & SYSTEM 2 REASONING ARENA */}
+        {/* ========================================================= */}
+        {activeTab === 'prompting' && (
+          <PromptEngineeringPlayground />
         )}
       </div>
     </div>
