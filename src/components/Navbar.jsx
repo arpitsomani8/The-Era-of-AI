@@ -140,9 +140,10 @@ export default function Navbar({
         {/* Brand & Logo */}
         <div className="flex items-center space-x-2.5 shrink-0">
           <NavLink 
-            to="/mindmap" 
+            to="/" 
             id="navbar-brand-logo"
             className="group flex items-center space-x-2.5 text-left focus:outline-none"
+            title="Return to The Era of AI Home Portal"
           >
             <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/25 ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-indigo-400/40 transition-all duration-200 shrink-0 bg-slate-900 flex items-center justify-center">
               {!logoError ? (
@@ -180,7 +181,7 @@ export default function Navbar({
               onClick={() => navigate('/mindmap')}
               id="navbar-toggle-mindmap-btn"
               className={`px-2.5 py-1.5 rounded-md text-[11px] 2xl:text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
-                location.pathname === '/mindmap' || location.pathname === '/'
+                location.pathname === '/mindmap'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
               }`}
@@ -467,7 +468,7 @@ export default function Navbar({
                 onClick={() => { navigate('/mindmap'); setMobileMenuOpen(false); }}
                 id="mobile-toggle-mindmap-btn"
                 className={`flex-1 p-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 ${
-                  location.pathname === '/mindmap' || location.pathname === '/'
+                  location.pathname === '/mindmap'
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                     : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
                 }`}

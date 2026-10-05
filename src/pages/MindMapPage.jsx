@@ -12,7 +12,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Download,
-  Compass,
   Route,
   Sparkles,
   X
@@ -138,7 +137,6 @@ export default function MindMapPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDomain, setActiveDomain] = useState('all');
   const [showInterlinks, setShowInterlinks] = useState(true);
-  const [showMinimap, setShowMinimap] = useState(true);
   const [selectedTrackId, setSelectedTrackId] = useState(null);
   const [currentTrackStep, setCurrentTrackStep] = useState(0);
 
@@ -541,20 +539,6 @@ export default function MindMapPage() {
             <span>Links: {showInterlinks ? 'ON' : 'OFF'}</span>
           </button>
 
-          {/* Radar Minimap Toggle */}
-          <button
-            onClick={() => setShowMinimap(!showMinimap)}
-            title="Toggle Radar Minimap"
-            className={`p-1.5 px-2.5 rounded-lg border transition text-xs font-semibold hidden md:flex items-center gap-1.5 ${
-              showMinimap
-                ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Radar</span>
-          </button>
-
           {/* Export PNG Dropdown */}
           <button
             onClick={handleExportPNG}
@@ -790,56 +774,6 @@ export default function MindMapPage() {
             </g>
           </g>
         </svg>
-
-        {/* Floating Radar Minimap */}
-        {showMinimap && (
-          <div className="absolute bottom-16 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 shadow-2xl hidden md:flex flex-col gap-1.5 z-20 animate-fadeIn">
-            <div className="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span className="flex items-center gap-1.5 text-emerald-400">
-                <Compass className="w-3.5 h-3.5" />
-                Radar View
-              </span>
-              <span className="text-[10px] font-mono text-indigo-300">
-                {Math.round(transform.k * 100)}% zoom
-              </span>
-            </div>
-            
-            {/* Radar Mini SVG canvas */}
-            <svg 
-              className="w-40 h-28 bg-slate-950/90 rounded-xl border border-slate-800"
-              viewBox="-800 -600 1600 1200"
-            >
-              {/* Nodes miniature points */}
-              {allNodesData.map((n) => {
-                const config = categoryConfig[n.category] || categoryConfig.ml;
-                const nodeColor = n.id === selectedNodeId ? '#38bdf8' : n.id === 'root' ? '#818cf8' : config.stroke;
-                return (
-                  <circle
-                    key={`radar-${n.id}`}
-                    cx={n.x}
-                    cy={n.y}
-                    r={n.id === selectedNodeId ? 28 : n.id === 'root' ? 24 : 16}
-                    fill={nodeColor}
-                    opacity={n.id === selectedNodeId ? 1 : 0.85}
-                  />
-                );
-              })}
-
-              {/* Viewport Box Indicator */}
-              <rect
-                x={(-transform.x - 400) / transform.k}
-                y={(-transform.y - 250) / transform.k}
-                width={800 / transform.k}
-                height={500 / transform.k}
-                fill="rgba(56, 189, 248, 0.08)"
-                stroke="#38bdf8"
-                strokeWidth={4 / transform.k}
-                strokeDasharray="10,10"
-                className="transition-all duration-75"
-              />
-            </svg>
-          </div>
-        )}
 
         {/* Legend Overlay at bottom-left */}
         <div className="absolute bottom-4 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 shadow-xl pointer-events-none hidden md:flex items-center space-x-3.5">

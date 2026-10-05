@@ -10,6 +10,7 @@ import AssessmentModal from './components/AssessmentModal';
 import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
 import TimelineModal from './components/TimelineModal';
 import PythonSandboxModal from './components/PythonSandboxModal';
+import LandingHeroPage from './pages/LandingHeroPage';
 import KnowledgeHubPage from './pages/KnowledgeHubPage';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
@@ -28,7 +29,8 @@ function HashListener() {
     const hash = window.location.hash.replace('#', '').toLowerCase();
     if (!hash) return;
 
-    if (hash === 'interview') navigate('/interview', { replace: true });
+    if (hash === 'home' || hash === 'hero') navigate('/', { replace: true });
+    else if (hash === 'interview') navigate('/interview', { replace: true });
     else if (hash === 'papers') navigate('/papers', { replace: true });
     else if (hash === 'projects' || hash === 'casestudies') navigate('/projects', { replace: true });
     else if (hash === 'syllabus') navigate('/syllabus', { replace: true });
@@ -48,7 +50,10 @@ function SEOManager() {
     let pageTitle = 'The Era of AI — Master Knowledge Graph & Portal';
     let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, and 150+ Interview Vault.';
 
-    if (path.includes('/mindmap')) {
+    if (path === '/' || path === '') {
+      pageTitle = 'The Era of AI — Enter the World of AI | Master Knowledge Portal';
+      metaDesc = 'Explore the complete multidimensional universe of Artificial Intelligence and Machine Learning: interactive mind map, line-wise curriculum, research papers, and technical interview vault.';
+    } else if (path.includes('/mindmap')) {
       pageTitle = 'Interactive Mind Map — The Era of AI | 41 Domain Graph Nodes';
       metaDesc = 'Explore the 2D interactive knowledge graph of AI, Classical ML, Deep Learning, and Transformers with dynamic cross-links and mathematical foundations.';
     } else if (path.includes('/syllabus')) {
@@ -132,7 +137,7 @@ export default function App() {
       {/* Main Routed Page Viewport */}
       <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
         <Routes>
-          <Route path="/" element={<KnowledgeHubPage />} />
+          <Route path="/" element={<LandingHeroPage />} />
           <Route path="/mindmap" element={<KnowledgeHubPage />} />
           <Route path="/syllabus" element={<KnowledgeHubPage />} />
           <Route path="/papers" element={<PapersPage />} />
@@ -143,7 +148,7 @@ export default function App() {
           <Route path="/concept" element={<ConceptsPage />} />
           <Route path="/playgrounds" element={<PlaygroundsPage />} />
           <Route path="/playground" element={<PlaygroundsPage />} />
-          <Route path="*" element={<Navigate to="/mindmap" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
