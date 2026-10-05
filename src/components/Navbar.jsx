@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 
-export default function Navbar({ onOpenSearch }) {
+export default function Navbar({ onOpenSearch, onOpenAbout }) {
   const location = useLocation();
 
   const navItems = [
@@ -74,18 +74,30 @@ export default function Navbar({ onOpenSearch }) {
       <div className="flex items-center space-x-3">
         <NavLink 
           to="/mindmap" 
+          id="navbar-brand-logo"
           className="group flex items-center space-x-3 text-left focus:outline-none"
         >
-          <div className="p-2 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-200">
-            <Sparkles className="w-5 h-5" />
+          <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/25 ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-indigo-400/40 transition-all duration-200 shrink-0 bg-slate-900 flex items-center justify-center">
+            <img 
+              src={`${import.meta.env.BASE_URL}logo.png`} 
+              alt="The Era of AI Logo" 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div className="hidden w-full h-full items-center justify-center bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 text-white">
+              <Sparkles className="w-5 h-5" />
+            </div>
           </div>
           <div>
-            <h1 className="font-bold text-sm md:text-base tracking-tight text-white flex items-center gap-2 group-hover:text-indigo-300 transition-colors">
+            <span className="font-bold text-sm md:text-base tracking-tight text-white flex items-center gap-2 group-hover:text-indigo-300 transition-colors">
               The Era of AI
               <span className="hidden sm:inline-block text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider">
                 React Edition
               </span>
-            </h1>
+            </span>
             <p className="text-[11px] text-slate-400 hidden sm:block">
               Interactive Universe &bull; Syllabus &bull; Papers &bull; 150+ Questions
             </p>
@@ -121,12 +133,13 @@ export default function Navbar({ onOpenSearch }) {
         })}
       </nav>
 
-      {/* Right Controls: Theme Switcher, Global Search & Print */}
+      {/* Right Controls: Theme Switcher, Global Search, About & Print */}
       <div className="flex items-center space-x-2">
         <ThemeSwitcher />
 
         <button
           onClick={onOpenSearch}
+          id="navbar-search-btn"
           className="p-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-2 text-xs font-medium shadow-sm"
           title="Universal Search (Ctrl+K / Cmd+K)"
         >
@@ -137,9 +150,20 @@ export default function Navbar({ onOpenSearch }) {
           </kbd>
         </button>
 
+        <button
+          onClick={onOpenAbout}
+          id="navbar-about-btn"
+          className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm"
+          title="About The Era of AI Portal"
+        >
+          <Info className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="hidden xl:inline">About</span>
+        </button>
+
         {(location.pathname === '/syllabus' || location.pathname === '/papers') && (
           <button
             onClick={handlePrint}
+            id="navbar-print-btn"
             title="Print or Save as PDF"
             className="p-1.5 px-3 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs shadow-md shadow-red-500/20 transition flex items-center gap-1.5"
           >

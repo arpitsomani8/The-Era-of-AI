@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://arpitsomani8.github.io/The-Era-of-AI/sitemap.xml

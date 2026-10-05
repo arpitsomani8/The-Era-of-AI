@@ -228,6 +228,9 @@ export default function MindMapPage() {
 
   return (
     <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col bg-slate-950 select-none">
+      {/* Semantic H1 for SEO */}
+      <h1 className="sr-only">Interactive Machine Learning & AI Knowledge Graph Mind Map — The Era of AI</h1>
+
       {/* Mindmap Toolbar */}
       <div className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-10 shrink-0">
         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
