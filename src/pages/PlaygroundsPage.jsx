@@ -260,7 +260,7 @@ export default function PlaygroundsPage() {
     <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 p-4 sm:p-6 md:p-10">
       <div className="max-w-6xl mx-auto space-y-6 pb-20">
         {/* Page Header */}
-        <div className="border-b border-slate-800 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="border-b border-slate-800 pb-5 space-y-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
               <PlayCircle className="w-3.5 h-3.5" />
@@ -274,96 +274,98 @@ export default function PlaygroundsPage() {
             </p>
           </div>
 
-          {/* Tab Selector */}
-          <div className="flex items-center flex-wrap gap-1 bg-slate-900 border border-slate-800 rounded-xl p-1 shrink-0 self-start md:self-auto">
-            <button
-              onClick={() => setActiveTab('transformer')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'transformer'
-                  ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-md shadow-cyan-600/30 ring-1 ring-cyan-400'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Token Journey & Blocks</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('attention')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'attention'
-                  ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Attention Heatmap</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('gradient')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'gradient'
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Activity className="w-3.5 h-3.5" />
-              <span>Gradient Descent Physics</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('neural')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'neural'
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Cpu className="w-3.5 h-3.5" />
-              <span>Neural Net & Backprop</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('tokenizer')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'tokenizer'
-                  ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Binary className="w-3.5 h-3.5" />
-              <span>BPE & Embeddings</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('rag')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'rag'
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>RAG Pipeline</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('lora')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'lora'
-                  ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Minimize2 className="w-3.5 h-3.5" />
-              <span>LoRA Rank Explorer</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('prompting')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
-                activeTab === 'prompting'
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Brain className="w-3.5 h-3.5" />
-              <span>Prompting &amp; Reasoning</span>
-            </button>
+          {/* Tab Selector - Dedicated responsive full-width scrolling container */}
+          <div className="w-full overflow-x-auto pb-1 scrollbar-thin">
+            <div className="inline-flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 rounded-xl p-1.5 shadow-inner min-w-full sm:min-w-0">
+              <button
+                onClick={() => setActiveTab('transformer')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'transformer'
+                    ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-md shadow-cyan-600/30 ring-1 ring-cyan-400'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Token Journey & Blocks</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('attention')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'attention'
+                    ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Attention Heatmap</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('gradient')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'gradient'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>Gradient Descent Physics</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('neural')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'neural'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Neural Net & Backprop</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('tokenizer')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'tokenizer'
+                    ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Binary className="w-3.5 h-3.5" />
+                <span>BPE & Embeddings</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('rag')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'rag'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Database className="w-3.5 h-3.5" />
+                <span>RAG Pipeline</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('lora')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'lora'
+                    ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Minimize2 className="w-3.5 h-3.5" />
+                <span>LoRA Rank Explorer</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('prompting')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                  activeTab === 'prompting'
+                    ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Brain className="w-3.5 h-3.5" />
+                <span>Prompting &amp; Reasoning</span>
+              </button>
+            </div>
           </div>
         </div>
 
