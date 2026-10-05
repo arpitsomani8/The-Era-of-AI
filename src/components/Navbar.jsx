@@ -11,11 +11,12 @@ import {
   Printer, 
   Sparkles,
   ExternalLink,
-  Info
+  Info,
+  Zap
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 
-export default function Navbar({ onOpenSearch, onOpenAbout }) {
+export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
 
@@ -160,6 +161,16 @@ export default function Navbar({ onOpenSearch, onOpenAbout }) {
         >
           <Info className="w-3.5 h-3.5 text-indigo-400" />
           <span className="hidden xl:inline">About</span>
+        </button>
+
+        <button
+          onClick={onOpenKinetic}
+          id="navbar-kinetic-btn"
+          className="p-1.5 px-2.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/25 text-indigo-300 hover:text-white border border-indigo-500/30 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+          title="Replay Kinetic Universe Visualization"
+        >
+          <Zap className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
+          <span className="hidden xl:inline">Kinetic</span>
         </button>
 
         {(location.pathname === '/syllabus' || location.pathname === '/papers') && (

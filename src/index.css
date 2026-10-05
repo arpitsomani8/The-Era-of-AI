@@ -509,3 +509,131 @@
     color: #0f172a !important;
   }
 }
+
+/* Kinetic & Garden Companion Keyframe Animations */
+@keyframes robotHover {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.animate-robot-hover {
+  animation: robotHover 3.2s ease-in-out infinite;
+}
+
+@keyframes robotWaveArm {
+  0%, 100% {
+    transform: rotate(0deg);
+    transform-origin: 35px 28px;
+  }
+  25% {
+    transform: rotate(-22deg);
+    transform-origin: 35px 28px;
+  }
+  75% {
+    transform: rotate(18deg);
+    transform-origin: 35px 28px;
+  }
+}
+
+.animate-wave {
+  animation: robotWaveArm 1.1s ease-in-out infinite;
+}
+
+@keyframes visorBlink {
+  0%, 92%, 100% {
+    transform: scaleY(1);
+    transform-origin: 20px 15px;
+  }
+  95% {
+    transform: scaleY(0.1);
+    transform-origin: 20px 15px;
+  }
+}
+
+.animate-visor-blink {
+  animation: visorBlink 4s ease-in-out infinite;
+}
+
+@keyframes butterflyFlutter {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  25% {
+    transform: translate(-3px, -5px) scale(0.9, 1.1);
+  }
+  50% {
+    transform: translate(4px, -10px) scale(1.1, 0.9);
+  }
+  75% {
+    transform: translate(2px, -4px) scale(0.95, 1.05);
+  }
+}
+
+.animate-butterfly {
+  animation: butterflyFlutter 3s ease-in-out infinite;
+}
+
+.animate-butterfly-slow {
+  animation: butterflyFlutter 4.5s ease-in-out infinite reverse;
+}
+
+@keyframes childReach {
+  0%, 100% {
+    transform: rotate(0deg);
+    transform-origin: 7px 28px;
+  }
+  50% {
+    transform: rotate(-10deg);
+    transform-origin: 7px 28px;
+  }
+}
+
+.animate-reach {
+  animation: childReach 4s ease-in-out infinite;
+}
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 2.5s ease-in-out infinite;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 20s linear infinite;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+

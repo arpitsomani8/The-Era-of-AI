@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import Navbar from './components/Navbar';
 import SearchModal from './components/SearchModal';
 import AboutModal from './components/AboutModal';
+import KineticIntro from './components/KineticIntro';
+import GardenCompanion from './components/GardenCompanion';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -77,6 +79,15 @@ function SEOManager() {
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [showKineticIntro, setShowKineticIntro] = useState(() => {
+    // Show kinetic intro on first visit of the session
+    return !sessionStorage.getItem('era_of_ai_kinetic_seen');
+  });
+
+  const handleCloseKinetic = () => {
+    sessionStorage.setItem('era_of_ai_kinetic_seen', 'true');
+    setShowKineticIntro(false);
+  };
 
   // Global keyboard shortcut: Cmd+K / Ctrl+K
   useEffect(() => {
@@ -99,6 +110,7 @@ export default function App() {
       <Navbar 
         onOpenSearch={() => setIsSearchOpen(true)} 
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenKinetic={() => setShowKineticIntro(true)}
       />
 
       {/* Main Routed Page Viewport */}
@@ -128,6 +140,15 @@ export default function App() {
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
       />
+
+      {/* Kinetic Physics Opening Visualization */}
+      <KineticIntro
+        isOpen={showKineticIntro}
+        onClose={handleCloseKinetic}
+      />
+
+      {/* Interactive Corner Companion: Moving Robot & Child in Garden */}
+      <GardenCompanion />
     </div>
   );
 }
