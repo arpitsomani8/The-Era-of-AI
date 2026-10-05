@@ -8,6 +8,7 @@ import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
 import AssessmentModal from './components/AssessmentModal';
 import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
+import TimelineModal from './components/TimelineModal';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -89,6 +90,7 @@ export default function App() {
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
+  const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [showKineticIntro, setShowKineticIntro] = useState(() => {
     // Show kinetic intro on first visit of the session
     return !sessionStorage.getItem('era_of_ai_kinetic_seen');
@@ -124,6 +126,7 @@ export default function App() {
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
         onOpenAssessment={() => setIsAssessmentOpen(true)}
         onOpenCheatsheet={() => setIsCheatsheetOpen(true)}
+        onOpenTimeline={() => setIsTimelineOpen(true)}
       />
 
       {/* Main Routed Page Viewport */}
@@ -166,6 +169,12 @@ export default function App() {
       <CheatsheetBuilderModal
         isOpen={isCheatsheetOpen}
         onClose={() => setIsCheatsheetOpen(false)}
+      />
+
+      {/* Interactive AI History Timeline Modal (1950–2026) */}
+      <TimelineModal
+        isOpen={isTimelineOpen}
+        onClose={() => setIsTimelineOpen(false)}
       />
 
       {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}

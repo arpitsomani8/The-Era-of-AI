@@ -16,12 +16,13 @@ import {
   Bookmark,
   CheckCircle2,
   PlayCircle,
-  Award
+  Award,
+  History
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
 
-export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks, onOpenAssessment, onOpenCheatsheet }) {
+export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks, onOpenAssessment, onOpenCheatsheet, onOpenTimeline }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
   const { bookmarkCount, completedCount } = useProgress();
@@ -204,6 +205,17 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
         >
           <FileText className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
           <span className="hidden lg:inline">Cheatsheet</span>
+        </button>
+
+        {/* Interactive AI History Timeline */}
+        <button
+          onClick={onOpenTimeline}
+          id="navbar-timeline-btn"
+          className="p-1.5 px-2.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-300 hover:text-white border border-amber-500/30 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+          title="Interactive AI History Timeline (1950–2026)"
+        >
+          <History className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+          <span className="hidden xl:inline">Timeline</span>
         </button>
 
         {/* Learning Mastery Counter (shows if any items completed) */}
