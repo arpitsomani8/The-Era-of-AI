@@ -42,7 +42,7 @@ export default function PapersPage() {
   const [syncToast, setSyncToast] = useState(null);
 
   const landmarkCategories = [
-    { id: 'all', label: 'All Seminal (22)' },
+    { id: 'all', label: `All Seminal (${papersData.length})` },
     { id: 'transformer', label: 'Transformers' },
     { id: 'llm', label: 'LLMs & Scaling' },
     { id: 'vision_dl', label: 'Vision & DL' },
@@ -53,7 +53,7 @@ export default function PapersPage() {
   ];
 
   const arxivCategories = [
-    { id: 'all', label: 'All Frontier (12)' },
+    { id: 'all', label: `All Frontier (${arxivLiveFeed.length})` },
     { id: 'alignment', label: 'Reasoning & Alignment' },
     { id: 'llm', label: 'LLMs & Scaling' },
     { id: 'efficient_llm', label: 'PEFT & Efficiency' },
@@ -142,7 +142,7 @@ export default function PapersPage() {
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
               {compendiumTab === 'landmark'
-                ? '22 foundational landmark papers (2012–2023) that defined modern artificial intelligence, complete with mathematical formulations, breakthrough innovations, audio explainer, and one-click BibTeX.'
+                ? `${papersData.length} foundational landmark papers that defined modern artificial intelligence, complete with mathematical formulations, breakthrough innovations, audio explainer, and one-click BibTeX.`
                 : 'Real-time tracked 2024–2026 frontier breakthroughs including DeepSeek-R1, FlashAttention-3, Llama 3 Herd, DPO, BitNet, Mamba-2, and test-time reasoning compute.'}
             </p>
           </div>
@@ -189,7 +189,7 @@ export default function PapersPage() {
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>Landmark Compendium (22)</span>
+              <span>Landmark Compendium ({papersData.length})</span>
             </button>
 
             <button
@@ -207,7 +207,7 @@ export default function PapersPage() {
                 <Radio className="w-4 h-4" />
                 <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               </div>
-              <span>Live ArXiv Ingestion Feed (12)</span>
+              <span>Live ArXiv Ingestion Feed ({arxivLiveFeed.length})</span>
             </button>
           </div>
 

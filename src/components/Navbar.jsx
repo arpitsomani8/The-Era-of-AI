@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
+import papersData from '../data/papers.json';
 
 export default function Navbar({ 
   onOpenSearch, 
@@ -85,7 +86,7 @@ export default function Navbar({
       label: 'Landmark Papers',
       icon: FileText,
       color: 'amber',
-      badge: '22',
+      badge: String(papersData.length),
       badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     },
     {
