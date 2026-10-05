@@ -16,12 +16,14 @@ import {
   ArrowRight,
   Cpu,
   Binary,
-  Database
+  Database,
+  Minimize2
 } from 'lucide-react';
 import KaTeXRenderer from '../components/KaTeXRenderer';
 import NeuralNetworkPlayground from '../components/NeuralNetworkPlayground';
 import TokenizerPlayground from '../components/TokenizerPlayground';
 import RAGPipelinePlayground from '../components/RAGPipelinePlayground';
+import LoRAPlayground from '../components/LoRAPlayground';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -324,6 +326,17 @@ export default function PlaygroundsPage() {
             >
               <Database className="w-3.5 h-3.5" />
               <span>RAG Pipeline</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('lora')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'lora'
+                  ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Minimize2 className="w-3.5 h-3.5" />
+              <span>LoRA Rank Explorer</span>
             </button>
           </div>
         </div>
@@ -996,6 +1009,13 @@ export default function PlaygroundsPage() {
         {/* ========================================================= */}
         {activeTab === 'rag' && (
           <RAGPipelinePlayground />
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 6: LORA RANK DECOMPOSITION PLAYGROUND */}
+        {/* ========================================================= */}
+        {activeTab === 'lora' && (
+          <LoRAPlayground />
         )}
       </div>
     </div>
