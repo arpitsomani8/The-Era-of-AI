@@ -13,9 +13,11 @@ import {
   HelpCircle,
   Activity,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Cpu
 } from 'lucide-react';
 import KaTeXRenderer from '../components/KaTeXRenderer';
+import NeuralNetworkPlayground from '../components/NeuralNetworkPlayground';
 
 // PRESET SENTENCES FOR ATTENTION VISUALIZER
 const ATTENTION_PRESETS = [
@@ -285,6 +287,17 @@ export default function PlaygroundsPage() {
             >
               <Activity className="w-3.5 h-3.5" />
               <span>Gradient Descent Physics</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('neural')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                activeTab === 'neural'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5" />
+              <span>Neural Net & Backprop</span>
             </button>
           </div>
         </div>
@@ -936,6 +949,13 @@ export default function PlaygroundsPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 3: NEURAL NETWORK & BACKPROP PLAYGROUND */}
+        {/* ========================================================= */}
+        {activeTab === 'neural' && (
+          <NeuralNetworkPlayground />
         )}
       </div>
     </div>
