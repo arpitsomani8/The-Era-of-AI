@@ -148,7 +148,7 @@ export default function AboutModal({ isOpen, onClose }) {
             </h4>
             <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
               <li>Interactive SVG Mind Map with physics-inspired hierarchy and cross-domain links</li>
-              <li>Multi-Theme Support: Default Slate, OLED Dark, Bright Day &amp; Metallic Green</li>
+              <li>Multi-Theme Support: Default Theme, OLED Dark, Bright Day &amp; Metallic Green</li>
               <li>KaTeX Math Engine rendering inline and block mathematical formulas</li>
               <li>Instant Universal Search with <kbd className="px-1 py-0.5 bg-slate-800 rounded font-mono text-[10px]">⌘K</kbd> / <kbd className="px-1 py-0.5 bg-slate-800 rounded font-mono text-[10px]">Ctrl+K</kbd></li>
               <li>Automated daily arXiv AI paper crawler powered by GitHub Actions</li>

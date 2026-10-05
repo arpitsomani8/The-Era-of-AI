@@ -5,7 +5,7 @@ const ThemeContext = createContext();
 export const THEMES = [
   {
     id: 'default',
-    name: 'Default Slate',
+    name: 'Default Theme',
     description: 'Deep navy midnight slate with indigo accents',
     iconColor: '#6366f1',
     badgeBg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
