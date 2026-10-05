@@ -1,6 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { X, Minus, Sparkles, MessageSquare, Volume2, VolumeX, Heart, ChevronUp, Bot } from 'lucide-react';
+import { 
+  X, 
+  Minus, 
+  Sparkles, 
+  MessageSquare, 
+  Volume2, 
+  VolumeX, 
+  Heart, 
+  ChevronUp, 
+  Bot,
+  Brain,
+  Flame,
+  CheckCircle2,
+  XCircle,
+  RotateCcw
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+
+export const COMPANION_QUIZ_QUESTIONS = [
+  {
+    question: "What scaling factor does Scaled Dot-Product Attention divide QK^T by?",
+    options: ["d_k", "sqrt(d_k)", "2 * d_k", "d_model^2"],
+    correct: 1,
+    tip: "1/sqrt(d_k) keeps the dot-product variance around 1, preventing softmax gradients from saturating."
+  },
+  {
+    question: "Which matrix is initialized to all zeros in standard LoRA?",
+    options: ["Matrix A", "Matrix B", "Both A & B", "Neither"],
+    correct: 1,
+    tip: "B starts at 0 and A is Gaussian, guaranteeing Delta W = 0 at training step 0!"
+  },
+  {
+    question: "What is the recommended token overlap percentage in standard RAG chunking?",
+    options: ["0%", "10% – 20%", "50%", "80%"],
+    correct: 1,
+    tip: "10%–20% overlap (~50-100 tokens) prevents semantic boundary fracture between adjacent chunks."
+  },
+  {
+    question: "Which optimizer decouples L2 weight decay directly from gradient updates?",
+    options: ["SGD + Momentum", "RMSProp", "AdamW", "AdaGrad"],
+    correct: 2,
+    tip: "AdamW fixes standard Adam's broken L2 regularization by penalizing weights directly."
+  },
+  {
+    question: "In FlashAttention, which ultra-fast on-chip GPU memory is used for online softmax tiling?",
+    options: ["HBM (High Bandwidth Memory)", "SRAM", "PCIe Bus", "SSD Page File"],
+    correct: 1,
+    tip: "FlashAttention computes softmax in GPU SRAM, turning O(N^2) memory IO into O(N)!"
+  },
+  {
+    question: "What landmark 1957 algorithm could not compute the non-linear XOR function?",
+    options: ["Neocognitron", "Single-Layer Perceptron", "ResNet-18", "LSTM"],
+    correct: 1,
+    tip: "Rosenblatt's Perceptron was proved incapable of XOR by Minsky & Papert in 1969."
+  },
+  {
+    question: "Which evaluation metric is mathematically equal to exp(Cross-Entropy Loss)?",
+    options: ["BLEU Score", "Perplexity (PPL)", "F1 Score", "AUC-ROC"],
+    correct: 1,
+    tip: "Perplexity reflects the model's effective branching uncertainty over vocabulary tokens."
+  },
+  {
+    question: "What does GRPO in DeepSeek-R1 eliminate compared to standard PPO?",
+    options: ["The Critic / Value Model", "The Actor Model", "Reward Functions", "Tokens"],
+    correct: 0,
+    tip: "GRPO computes relative advantages by grouping sample rollouts, discarding the memory-heavy critic!"
+  }
+];
 
 export default function GardenCompanion() {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -9,6 +75,14 @@ export default function GardenCompanion() {
   const [isWaving, setIsWaving] = useState(true);
   const [robotMood, setRobotMood] = useState('happy'); // 'happy', 'curious', 'love'
   const { theme } = useTheme();
+
+  // Mode: 'tips' or 'quiz'
+  const [companionMode, setCompanionMode] = useState('tips');
+  const [quizIndex, setQuizIndex] = useState(0);
+  const [selectedQuizOption, setSelectedQuizOption] = useState(null);
+  const [quizStreak, setQuizStreak] = useState(0);
+  const [quizScore, setQuizScore] = useState(0);
+  const [quizFeedback, setQuizFeedback] = useState(null); // 'correct' | 'wrong' | null
 
   const companionTips = [
     {
@@ -93,6 +167,31 @@ export default function GardenCompanion() {
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + 0.5);
+      } else if (type === 'correct') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } else if (type === 'wrong') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(160, ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
       }
     } catch {
       // Audio context might be restricted before gesture
@@ -118,6 +217,41 @@ export default function GardenCompanion() {
     setPetalsBurst(true);
     playSound('chime');
     setTimeout(() => setPetalsBurst(false), 1500);
+  };
+
+  const handleSelectQuizOption = (optIndex) => {
+    if (selectedQuizOption !== null) return;
+    setSelectedQuizOption(optIndex);
+    const q = COMPANION_QUIZ_QUESTIONS[quizIndex];
+    if (optIndex === q.correct) {
+      setQuizFeedback('correct');
+      setQuizScore((prev) => prev + 1);
+      setQuizStreak((prev) => prev + 1);
+      playSound('correct');
+      triggerPetals();
+      setRobotMood('love');
+    } else {
+      setQuizFeedback('wrong');
+      setQuizStreak(0);
+      playSound('wrong');
+      setRobotMood('curious');
+    }
+  };
+
+  const handleNextQuizQuestion = () => {
+    setSelectedQuizOption(null);
+    setQuizFeedback(null);
+    setRobotMood('happy');
+    setQuizIndex((prev) => (prev + 1) % COMPANION_QUIZ_QUESTIONS.length);
+  };
+
+  const handleResetQuiz = () => {
+    setSelectedQuizOption(null);
+    setQuizFeedback(null);
+    setQuizScore(0);
+    setQuizStreak(0);
+    setQuizIndex(0);
+    setRobotMood('happy');
   };
 
   if (isClosed) return null;
@@ -354,14 +488,14 @@ export default function GardenCompanion() {
 
                 {/* Antenna */}
                 <line x1="20" y1="6" x2="20" y2="0" stroke="#818cf8" strokeWidth="1.5" />
-                <circle cx="20" cy="0" r="2.5" fill="#38bdf8" className="animate-ping" style={{ animationDuration: '1.8s' }} />
-                <circle cx="20" cy="0" r="2" fill="#38bdf8" />
+                <circle cx="20" cy="0" r="2.5" fill={companionMode === 'quiz' ? '#f59e0b' : '#38bdf8'} className="animate-ping" style={{ animationDuration: '1.8s' }} />
+                <circle cx="20" cy="0" r="2" fill={companionMode === 'quiz' ? '#f59e0b' : '#38bdf8'} />
 
                 {/* Visor Screen with Animated Blinking Eyes */}
                 <rect x="10" y="10" width="20" height="10" rx="3" fill="#020617" />
                 <g className="animate-visor-blink">
-                  <ellipse cx="15" cy="15" rx="2.5" ry="3" fill="#06b6d4" />
-                  <ellipse cx="25" cy="15" rx="2.5" ry="3" fill="#06b6d4" />
+                  <ellipse cx="15" cy="15" rx="2.5" ry="3" fill={quizFeedback === 'correct' ? '#10b981' : quizFeedback === 'wrong' ? '#f43f5e' : companionMode === 'quiz' ? '#fbbf24' : '#06b6d4'} />
+                  <ellipse cx="25" cy="15" rx="2.5" ry="3" fill={quizFeedback === 'correct' ? '#10b981' : quizFeedback === 'wrong' ? '#f43f5e' : companionMode === 'quiz' ? '#fbbf24' : '#06b6d4'} />
                   <circle cx="16" cy="14" r="1" fill="#ffffff" />
                   <circle cx="26" cy="14" r="1" fill="#ffffff" />
                 </g>
@@ -409,64 +543,185 @@ export default function GardenCompanion() {
           </svg>
         </div>
 
-        {/* Speech Bubble / Dialogue Area */}
-        <div className="p-3 bg-slate-950/90 border-t border-slate-800/80 space-y-2.5">
-          <div className="flex items-start gap-2.5">
-            <div className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 mt-0.5">
-              <MessageSquare className="w-3.5 h-3.5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-indigo-300">
-                  {currentTip.author}
-                </span>
-                <span className="text-[10px] text-slate-500 font-mono">
-                  {currentTipIndex + 1}/{companionTips.length}
-                </span>
+        {/* Dialogue / Speech Bubble or Quiz Interface */}
+        <div className="p-3 bg-slate-950/95 border-t border-slate-800/80 space-y-2.5">
+          {companionMode === 'tips' ? (
+            <>
+              <div className="flex items-start gap-2.5">
+                <div className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                  <MessageSquare className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-indigo-300">
+                      {currentTip.author}
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-mono">
+                      {currentTipIndex + 1}/{companionTips.length}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-200 mt-0.5 leading-relaxed font-normal">
+                    {currentTip.text}
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-slate-200 mt-0.5 leading-relaxed font-normal">
-                {currentTip.text}
+
+              {/* Interactive Button Strip */}
+              <div className="flex items-center justify-between gap-1.5 pt-1 text-xs flex-wrap">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    onClick={triggerWave}
+                    className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                    title="Wave back at Aero"
+                  >
+                    <Sparkles className="w-3 h-3 text-cyan-400" />
+                    <span>Wave 👋</span>
+                  </button>
+
+                  <button
+                    onClick={launchAirplane}
+                    className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-cyan-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                    title="Little Leo throws a paper airplane to Aero"
+                  >
+                    <span>Fly Plane ✈️</span>
+                  </button>
+
+                  <button
+                    onClick={triggerPetals}
+                    className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-pink-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
+                    title="Bloom garden flowers"
+                  >
+                    <span>Bloom 🌸</span>
+                  </button>
+
+                  {/* Switch to Quiz Mode Button */}
+                  <button
+                    onClick={() => {
+                      setCompanionMode('quiz');
+                      playSound('chime');
+                    }}
+                    className="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 font-semibold text-[11px] flex items-center gap-1 shadow-sm"
+                    title="Start Quick-Fire AI Quiz Mini-Game"
+                  >
+                    <Brain className="w-3 h-3 text-amber-400" />
+                    <span>Quiz Me! 🧠</span>
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleNextTip}
+                  className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition text-[11px] flex items-center gap-1 shadow-sm ml-auto"
+                >
+                  <span>Next</span>
+                  <ChevronUp className="w-3 h-3 rotate-90" />
+                </button>
+              </div>
+            </>
+          ) : (
+            /* Quiz Mode Interface */
+            <div className="space-y-2.5 animate-in fade-in duration-200">
+              {/* Quiz Header Bar */}
+              <div className="flex items-center justify-between text-[11px] border-b border-slate-800 pb-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                  <Brain className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Aero's Quick-Fire Quiz</span>
+                  <span className="text-[10px] font-mono text-slate-400 font-normal">
+                    (Q{quizIndex + 1}/{COMPANION_QUIZ_QUESTIONS.length})
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {quizStreak > 0 && (
+                    <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-orange-400 bg-orange-500/15 border border-orange-500/30 px-1.5 py-0.2 rounded-full">
+                      <Flame className="w-3 h-3 text-orange-400 fill-orange-400" />
+                      {quizStreak} Streak
+                    </span>
+                  )}
+                  <button
+                    onClick={() => setCompanionMode('tips')}
+                    className="text-[10px] text-slate-400 hover:text-white px-1.5 py-0.5 rounded hover:bg-slate-800 transition"
+                  >
+                    Back to Tips
+                  </button>
+                </div>
+              </div>
+
+              {/* Question Text */}
+              <p className="text-xs text-white font-semibold leading-snug">
+                {COMPANION_QUIZ_QUESTIONS[quizIndex].question}
               </p>
+
+              {/* 4 Answer Options */}
+              <div className="grid grid-cols-2 gap-1.5">
+                {COMPANION_QUIZ_QUESTIONS[quizIndex].options.map((opt, oIdx) => {
+                  const isSelected = selectedQuizOption === oIdx;
+                  const isCorrect = oIdx === COMPANION_QUIZ_QUESTIONS[quizIndex].correct;
+                  const hasAnswered = selectedQuizOption !== null;
+
+                  let btnStyle = 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white';
+                  if (hasAnswered) {
+                    if (isCorrect) {
+                      btnStyle = 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 font-bold';
+                    } else if (isSelected) {
+                      btnStyle = 'bg-rose-500/20 border-rose-500/60 text-rose-300 font-bold';
+                    } else {
+                      btnStyle = 'bg-slate-900/40 border-slate-800/40 text-slate-600 opacity-60';
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={oIdx}
+                      disabled={hasAnswered}
+                      onClick={() => handleSelectQuizOption(oIdx)}
+                      className={`p-1.5 rounded-lg border text-left text-[11px] transition flex items-center gap-1.5 ${btnStyle}`}
+                    >
+                      <span className="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 text-[9px] font-mono flex items-center justify-center shrink-0">
+                        {String.fromCharCode(65 + oIdx)}
+                      </span>
+                      <span className="truncate">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Answer Feedback / Tip */}
+              {selectedQuizOption !== null && (
+                <div className={`p-2 rounded-lg border text-[11px] leading-snug flex items-start gap-2 ${
+                  quizFeedback === 'correct'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'
+                    : 'bg-amber-500/10 border-amber-500/30 text-amber-200'
+                }`}>
+                  {quizFeedback === 'correct' ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  )}
+                  <div className="flex-1">
+                    <span className="font-bold">
+                      {quizFeedback === 'correct' ? 'Correct! 🌟 ' : 'Good try! 💡 '}
+                    </span>
+                    {COMPANION_QUIZ_QUESTIONS[quizIndex].tip}
+                  </div>
+                </div>
+              )}
+
+              {/* Quiz Footer Controls */}
+              {selectedQuizOption !== null && (
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    Score: {quizScore} / {COMPANION_QUIZ_QUESTIONS.length}
+                  </span>
+                  <button
+                    onClick={handleNextQuizQuestion}
+                    className="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center gap-1 shadow-sm"
+                  >
+                    <span>Next Question</span>
+                    <ChevronUp className="w-3 h-3 rotate-90" />
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
-
-          {/* Interactive Button Strip */}
-          <div className="flex items-center justify-between gap-1.5 pt-1 text-xs flex-wrap">
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={triggerWave}
-                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
-                title="Wave back at Aero"
-              >
-                <Sparkles className="w-3 h-3 text-cyan-400" />
-                <span>Wave 👋</span>
-              </button>
-
-              <button
-                onClick={launchAirplane}
-                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-cyan-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
-                title="Little Leo throws a paper airplane to Aero"
-              >
-                <span>Fly Plane ✈️</span>
-              </button>
-
-              <button
-                onClick={triggerPetals}
-                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-pink-600/30 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1 text-[11px] font-medium"
-                title="Bloom garden flowers"
-              >
-                <span>Bloom 🌸</span>
-              </button>
-            </div>
-
-            <button
-              onClick={handleNextTip}
-              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition text-[11px] flex items-center gap-1 shadow-sm ml-auto"
-            >
-              <span>Next</span>
-              <ChevronUp className="w-3 h-3 rotate-90" />
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </div>
