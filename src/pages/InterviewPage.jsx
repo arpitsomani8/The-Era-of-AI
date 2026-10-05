@@ -18,8 +18,9 @@ import {
   Shuffle
 } from 'lucide-react';
 import interviewData from '../data/interviewQuestions.json';
-import KaTeXRenderer from '../components/KaTeXRenderer';
+import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
+import InterviewFlashcardDeck from '../components/InterviewFlashcardDeck';
 
 export default function InterviewPage() {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -318,124 +319,13 @@ export default function InterviewPage() {
           <span>Showing {filteredQuestions.length} of {interviewData.length} technical questions</span>
         </div>
 
-        {/* FLASHCARD STUDY MODE */}
-        {isFlashcardMode && currentCard && (
-          <div className="bg-slate-900/90 border border-purple-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl relative flex flex-col min-h-[420px] justify-between animate-fadeIn">
-            {/* Card Header Info */}
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/30 font-mono text-xs font-bold flex items-center justify-center">
-                  #{currentCard.id}
-                </span>
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                  {currentCard.category_label || currentCard.category}
-                </span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full border ${getDifficultyBadge(currentCard.difficulty)}`}>
-                  {currentCard.difficulty}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => toggleCompleted(`interview-${currentCard.id}`)}
-                  className={`p-1.5 rounded-lg border transition ${
-                    isCompleted(`interview-${currentCard.id}`)
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                      : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
-                  }`}
-                  title={isCompleted(`interview-${currentCard.id}`) ? 'Mark Incomplete' : 'Mark Mastered'}
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => toggleBookmark({
-                    id: `interview-${currentCard.id}`,
-                    type: 'interview',
-                    title: currentCard.question,
-                    subtitle: `${currentCard.category} • ${currentCard.difficulty}`,
-                    link: `/interview?search=${encodeURIComponent(currentCard.question.slice(0, 30))}`
-                  })}
-                  className={`p-1.5 rounded-lg border transition ${
-                    isBookmarked(`interview-${currentCard.id}`)
-                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                      : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
-                  }`}
-                  title="Bookmark question"
-                >
-                  <Bookmark className={`w-4 h-4 ${isBookmarked(`interview-${currentCard.id}`) ? 'fill-amber-400 text-amber-400' : ''}`} />
-                </button>
-              </div>
-            </div>
-
-            {/* Question / Answer View */}
-            <div 
-              onClick={() => setIsCardFlipped(!isCardFlipped)}
-              className="my-6 p-6 rounded-2xl bg-slate-950/70 border border-slate-800 cursor-pointer hover:border-purple-500/50 transition flex-1 flex flex-col justify-center select-none"
-            >
-              {!isCardFlipped ? (
-                <div className="space-y-4 text-center py-8">
-                  <div className="text-xs uppercase font-bold text-purple-400 tracking-wider">
-                    Question • Tap Card to Flip
-                  </div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-white max-w-2xl mx-auto leading-relaxed">
-                    {currentCard.question}
-                  </h2>
-                  <div className="text-xs text-slate-500 flex items-center justify-center gap-1.5 pt-2">
-                    <RotateCw className="w-3.5 h-3.5 animate-spin-slow" />
-                    <span>Click anywhere on card to reveal answer & proof</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4 py-2 animate-fadeIn">
-                  <div className="flex items-center justify-between text-xs uppercase font-bold text-emerald-400 tracking-wider">
-                    <span>Detailed Technical Solution</span>
-                    <span className="text-[11px] text-slate-400 normal-case font-normal">Tap to flip back</span>
-                  </div>
-                  <div className="text-sm text-slate-200 leading-relaxed whitespace-pre-line max-h-72 overflow-y-auto pr-2">
-                    {currentCard.answer}
-                  </div>
-                  {currentCard.tip && (
-                    <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 text-xs text-amber-200/90 flex items-start gap-2 mt-2">
-                      <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                      <span>{currentCard.tip}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Flashcard Bottom Navigation Bar */}
-            <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs">
-              <span className="text-slate-400 font-mono">
-                Card {cardIndex + 1} of {filteredQuestions.length}
-              </span>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handlePrevCard}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium flex items-center gap-1 transition"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
-                </button>
-                <button
-                  onClick={handleShuffleCards}
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition"
-                  title="Random question"
-                >
-                  <Shuffle className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={handleNextCard}
-                  className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium flex items-center gap-1 transition shadow-sm"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* 3D ACTIVE RECALL FLASHCARD STUDY DECK */}
+        {isFlashcardMode && (
+          <InterviewFlashcardDeck
+            questions={filteredQuestions}
+            onClose={() => setIsFlashcardMode(false)}
+            getDifficultyBadge={getDifficultyBadge}
+          />
         )}
 
         {/* STANDARD LIST OF QUESTIONS */}
@@ -500,7 +390,7 @@ export default function InterviewPage() {
                       <h2 className={`text-base sm:text-lg font-bold tracking-tight leading-snug ${
                         isDone ? 'text-emerald-100' : 'text-white'
                       }`}>
-                        {item.question}
+                        <MathText text={item.question} />
                       </h2>
                     </div>
 
@@ -575,7 +465,7 @@ export default function InterviewPage() {
                           Comprehensive Technical Answer:
                         </h3>
                         <div className="text-slate-200 leading-relaxed whitespace-pre-line">
-                          {item.answer}
+                          <MathText text={item.answer} />
                         </div>
                       </div>
 

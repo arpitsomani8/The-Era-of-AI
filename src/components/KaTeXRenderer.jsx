@@ -52,30 +52,43 @@ export function MathText({ text, className = '' }) {
   if (!text) return null;
   const str = String(text);
 
-  // If no math markers, render as-is
   if (!str.includes('$')) {
     return <span className={className}>{str}</span>;
   }
 
-  // Split string by $ delimiters
-  const segments = str.split('$');
+  // Match $$...$$ (block math) first, then $...$ (inline math)
+  const regex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(str)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ type: 'text', content: str.slice(lastIndex, match.index) });
+    }
+    const token = match[0];
+    if (token.startsWith('$$') && token.endsWith('$$')) {
+      parts.push({ type: 'block', content: token.slice(2, -2) });
+    } else {
+      parts.push({ type: 'inline', content: token.slice(1, -1) });
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < str.length) {
+    parts.push({ type: 'text', content: str.slice(lastIndex) });
+  }
 
   return (
     <span className={className}>
-      {segments.map((segment, index) => {
-        // Odd index means it was inside $...$
-        if (index % 2 === 1) {
-          if (!segment.trim()) return null;
-          return (
-            <KaTeXRenderer
-              key={index}
-              math={segment}
-              block={false}
-              className="inline-math px-0.5"
-            />
-          );
+      {parts.map((p, i) => {
+        if (p.type === 'block') {
+          return <KaTeXRenderer key={i} math={p.content} block={true} />;
         }
-        return segment;
+        if (p.type === 'inline') {
+          return <KaTeXRenderer key={i} math={p.content} block={false} className="inline-math px-0.5" />;
+        }
+        return <span key={i}>{p.content}</span>;
       })}
     </span>
   );
