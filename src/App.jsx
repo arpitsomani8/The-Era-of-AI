@@ -7,6 +7,7 @@ import BookmarksDrawer from './components/BookmarksDrawer';
 import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
 import AssessmentModal from './components/AssessmentModal';
+import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -87,6 +88,7 @@ export default function App() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [showKineticIntro, setShowKineticIntro] = useState(() => {
     // Show kinetic intro on first visit of the session
     return !sessionStorage.getItem('era_of_ai_kinetic_seen');
@@ -121,6 +123,7 @@ export default function App() {
         onOpenKinetic={() => setShowKineticIntro(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
         onOpenAssessment={() => setIsAssessmentOpen(true)}
+        onOpenCheatsheet={() => setIsCheatsheetOpen(true)}
       />
 
       {/* Main Routed Page Viewport */}
@@ -159,10 +162,20 @@ export default function App() {
         onClose={() => setIsAssessmentOpen(false)}
       />
 
+      {/* High-Yield Cheatsheet Builder & PDF Exporter Modal */}
+      <CheatsheetBuilderModal
+        isOpen={isCheatsheetOpen}
+        onClose={() => setIsCheatsheetOpen(false)}
+      />
+
       {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}
       <BookmarksDrawer
         isOpen={isBookmarksOpen}
         onClose={() => setIsBookmarksOpen(false)}
+        onOpenCheatsheet={() => {
+          setIsBookmarksOpen(false);
+          setIsCheatsheetOpen(true);
+        }}
       />
 
       {/* Kinetic Physics Opening Visualization */}

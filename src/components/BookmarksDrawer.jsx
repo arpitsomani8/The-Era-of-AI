@@ -16,7 +16,7 @@ import {
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 
-export default function BookmarksDrawer({ isOpen, onClose }) {
+export default function BookmarksDrawer({ isOpen, onClose, onOpenCheatsheet }) {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { 
@@ -201,26 +201,38 @@ export default function BookmarksDrawer({ isOpen, onClose }) {
 
         {/* Footer Actions */}
         {bookmarkedItems.length > 0 && (
-          <div className="p-4 border-t border-slate-800/80 bg-slate-950/70 flex items-center justify-between gap-2">
-            <button
-              onClick={exportBookmarksToMarkdown}
-              className="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-sm transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export Cheatsheet (.md)</span>
-            </button>
+          <div className="p-4 border-t border-slate-800/80 bg-slate-950/70 flex flex-col gap-2">
+            {onOpenCheatsheet && (
+              <button
+                onClick={onOpenCheatsheet}
+                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-600/25 transition active:scale-95"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Open in Cheatsheet Builder & PDF</span>
+              </button>
+            )}
 
-            <button
-              onClick={() => {
-                if (window.confirm('Clear all saved bookmarks?')) {
-                  clearBookmarks();
-                }
-              }}
-              className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-300 border border-slate-700/60 font-medium text-xs transition"
-              title="Clear all bookmarks"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center justify-between gap-2">
+              <button
+                onClick={exportBookmarksToMarkdown}
+                className="flex-1 py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs flex items-center justify-center gap-2 border border-slate-700/60 transition"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Quick Markdown (.md)</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (window.confirm('Clear all saved bookmarks?')) {
+                    clearBookmarks();
+                  }
+                }}
+                className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-300 border border-slate-700/60 font-medium text-xs transition"
+                title="Clear all bookmarks"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         )}
       </aside>

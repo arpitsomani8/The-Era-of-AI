@@ -21,7 +21,7 @@ import {
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
 
-export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks, onOpenAssessment }) {
+export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks, onOpenAssessment, onOpenCheatsheet }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
   const { bookmarkCount, completedCount } = useProgress();
@@ -193,6 +193,17 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
         >
           <Award className="w-3.5 h-3.5 text-purple-400 group-hover:scale-110 transition-transform" />
           <span className="hidden lg:inline">Diagnostic</span>
+        </button>
+
+        {/* High-Yield Cheatsheet Builder & PDF Exporter */}
+        <button
+          onClick={onOpenCheatsheet}
+          id="navbar-cheatsheet-btn"
+          className="p-1.5 px-2.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/25 text-cyan-300 hover:text-white border border-cyan-500/30 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+          title="Custom Cheatsheet Builder & PDF/Markdown Exporter"
+        >
+          <FileText className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
+          <span className="hidden lg:inline">Cheatsheet</span>
         </button>
 
         {/* Learning Mastery Counter (shows if any items completed) */}
