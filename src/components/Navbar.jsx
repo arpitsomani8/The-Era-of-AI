@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Network, 
@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   PlayCircle,
   Award,
-  History
+  History,
+  Download
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
@@ -26,6 +27,29 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
   const { bookmarkCount, completedCount } = useProgress();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    }
+  };
+
 
   const navItems = [
     {
@@ -219,6 +243,7 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
         </button>
 
         {/* Learning Mastery Counter (shows if any items completed) */}
+        {/* Learning Mastery Counter (shows if any items completed) */}
         {completedCount > 0 && (
           <div 
             className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-xs font-medium"
@@ -227,6 +252,19 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
             <span>{completedCount} Mastered</span>
           </div>
+        )}
+
+        {/* Install PWA App Button */}
+        {isInstallable && (
+          <button
+            onClick={handleInstallClick}
+            id="navbar-install-app-btn"
+            className="p-1.5 px-2.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 transition flex items-center gap-1.5 text-xs font-semibold shadow-sm animate-pulse"
+            title="Install The Era of AI as Desktop / Mobile App"
+          >
+            <Download className="w-3.5 h-3.5 text-cyan-300" />
+            <span className="hidden sm:inline">Install App</span>
+          </button>
         )}
 
         <button

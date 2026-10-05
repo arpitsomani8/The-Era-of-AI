@@ -1,0 +1,31 @@
+{
+  "name": "The Era of AI — Master Knowledge Graph & Portal",
+  "short_name": "Era of AI",
+  "description": "Interactive Knowledge Graph, AI Playgrounds, Syllabus, 150+ Interview Questions, and Landmark Research Papers.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "categories": ["education", "developer", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

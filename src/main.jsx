@@ -17,3 +17,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </ThemeProvider>
   </React.StrictMode>
 );
+
+// Register PWA Service Worker for offline access and performance caching
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
+        console.log('[PWA] Service Worker registered successfully:', registration.scope);
+      })
+      .catch((err) => {
+        console.debug('[PWA] Service Worker registration failed:', err);
+      });
+  });
+}
+
