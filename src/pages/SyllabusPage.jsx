@@ -188,12 +188,6 @@ export default function SyllabusPage() {
     return new Map(allNodesData.map((n) => [n.id, n]));
   }, []);
 
-  const completedSyllabusCount = useMemo(() => {
-    return topicsData.filter((t) => isCompleted(t.id)).length;
-  }, [isCompleted]);
-
-  const completionPercentage = Math.round((completedSyllabusCount / topicsData.length) * 100);
-
   const categories = [
     { id: 'all', label: 'All Modules (34)' },
     { id: 'math', label: '1. Math Foundations' },
@@ -272,38 +266,6 @@ export default function SyllabusPage() {
             >
               Collapse All
             </button>
-          </div>
-        </div>
-
-        {/* Curriculum Mastery Progress Banner */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print shadow-sm">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-white flex items-center gap-2.5">
-                <span>Curriculum Mastery Progress</span>
-                <span className="text-emerald-400 font-mono text-xs bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                  {completedSyllabusCount} / {topicsData.length} Modules ({completionPercentage}%)
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Track your study roadmap across topics and subtopics.
-              </p>
-            </div>
-          </div>
-          <div className="w-full sm:w-56 flex flex-col gap-1.5 shrink-0">
-            <div className="flex justify-between text-[11px] text-slate-400 font-mono">
-              <span>Progress</span>
-              <span className="text-emerald-300 font-bold">{completionPercentage}%</span>
-            </div>
-            <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-slate-700/60 p-0.5">
-              <div 
-                className="bg-gradient-to-r from-indigo-500 via-emerald-500 to-teal-400 h-full transition-all duration-500 rounded-full"
-                style={{ width: `${completionPercentage}%` }}
-              />
-            </div>
           </div>
         </div>
 

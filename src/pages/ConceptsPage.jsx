@@ -13,7 +13,8 @@ import {
   Check,
   Bookmark,
   CheckCircle2,
-  Copy
+  Copy,
+  Download
 } from 'lucide-react';
 import conceptsData from '../data/concepts.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
@@ -35,6 +36,44 @@ export default function ConceptsPage() {
   const [activeCategory, setActiveCategory] = useState(() => categoryParam || 'all');
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedFormula, setCopiedFormula] = useState(false);
+
+  const completedConceptsCount = useMemo(() => {
+    return conceptsData.filter((c) => isCompleted(`concept-${c.id}`)).length;
+  }, [isCompleted]);
+
+  const completionPercentage = Math.round(
+    (completedConceptsCount / (conceptsData.length || 1)) * 100
+  );
+
+  const handleExportRevisionGuide = () => {
+    const masteredConcepts = conceptsData.filter((c) => isCompleted(`concept-${c.id}`));
+    let md = `# The Era of AI — Concept Mastery Revision Guide\n`;
+    md += `*Generated: ${new Date().toLocaleDateString()} • Progress: ${completedConceptsCount}/${conceptsData.length} Concepts (${completionPercentage}%)*\n\n`;
+    
+    if (masteredConcepts.length === 0) {
+      md += `*No concepts marked as mastered yet. Click "Mark Done" on any concept in the encyclopedia to build your revision guide.*\n\n`;
+    } else {
+      md += `## 🏆 Mastered Concepts (${masteredConcepts.length})\n\n`;
+      masteredConcepts.forEach((c, idx) => {
+        md += `### ${idx + 1}. ${c.title} (${c.category_label || c.category})\n`;
+        md += `- **Module:** ${c.topic_label}\n`;
+        if (c.def) md += `- **Definition:** ${c.def}\n`;
+        if (c.formula) md += `- **Formulation:** \`${c.formula}\`\n`;
+        if (c.logic) md += `- **Key Intuition:** ${c.logic}\n`;
+        md += `\n---\n\n`;
+      });
+    }
+
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `The-Era-of-AI-Revision-Guide-${new Date().toISOString().slice(0, 10)}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   // Sync state with URL search params whenever they change
   useEffect(() => {
@@ -82,14 +121,14 @@ export default function ConceptsPage() {
   }, [conceptIdParam, topicParam, categoryParam, searchParam]);
 
   const categories = [
-    { id: 'all', label: 'All (170)' },
-    { id: 'math', label: 'Math' },
-    { id: 'data', label: 'Data' },
-    { id: 'ml', label: 'Classical ML' },
-    { id: 'eval', label: 'Evaluation' },
-    { id: 'dl', label: 'Deep Learning' },
-    { id: 'genai', label: 'GenAI & LLMs' },
-    { id: 'mlops', label: 'MLOps' }
+    { id: 'all', label: 'All Modules (170)' },
+    { id: 'math', label: '1. Math Foundations' },
+    { id: 'data', label: '2. Data Preprocessing' },
+    { id: 'ml', label: '3. Classical ML' },
+    { id: 'eval', label: '4. Model Evaluation' },
+    { id: 'dl', label: '5. Deep Learning' },
+    { id: 'genai', label: '6. Transformers & GenAI' },
+    { id: 'mlops', label: '7. MLOps' }
   ];
 
   const filteredConcepts = useMemo(() => {
@@ -172,7 +211,7 @@ export default function ConceptsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Filter 170 concepts..."
+              placeholder="Search concepts by topic, formula, or keyword..."
               className="w-full bg-slate-900 border border-slate-800 text-xs text-white rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-rose-500 placeholder-slate-500"
             />
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" />
@@ -249,6 +288,50 @@ export default function ConceptsPage() {
       <main className="flex-1 h-2/3 md:h-full overflow-y-auto p-4 sm:p-6 md:p-10">
         {selectedConcept ? (
           <div className="max-w-4xl mx-auto space-y-6 pb-20">
+            {/* Curriculum Mastery Progress Banner */}
+            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 no-print shadow-sm">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-white flex items-center gap-2.5 flex-wrap">
+                    <span>Curriculum Mastery Progress</span>
+                    <span className="text-emerald-400 font-mono text-xs bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                      {completedConceptsCount} / {conceptsData.length} Concepts ({completionPercentage}%)
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Mark modules and concepts as mastered to track your study roadmap and export personalized revision guides.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                <div className="w-full sm:w-44 flex flex-col gap-1.5">
+                  <div className="flex justify-between text-[11px] text-slate-400 font-mono">
+                    <span>Progress</span>
+                    <span className="text-emerald-300 font-bold">{completionPercentage}%</span>
+                  </div>
+                  <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-slate-700/60 p-0.5">
+                    <div 
+                      className="bg-gradient-to-r from-rose-500 via-indigo-500 to-emerald-400 h-full transition-all duration-500 rounded-full"
+                      style={{ width: `${completionPercentage}%` }}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleExportRevisionGuide}
+                  title="Download Personalized Revision Guide (Markdown)"
+                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-indigo-600/30 text-slate-200 hover:text-white border border-slate-700 hover:border-indigo-500/50 text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-sm cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Export Revision Guide</span>
+                </button>
+              </div>
+            </div>
+
             {/* Concept Header */}
             <div className="border-b border-slate-800 pb-5 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
