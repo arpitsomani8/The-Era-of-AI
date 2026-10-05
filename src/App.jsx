@@ -6,6 +6,7 @@ import AboutModal from './components/AboutModal';
 import BookmarksDrawer from './components/BookmarksDrawer';
 import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
+import AssessmentModal from './components/AssessmentModal';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -85,6 +86,7 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
   const [showKineticIntro, setShowKineticIntro] = useState(() => {
     // Show kinetic intro on first visit of the session
     return !sessionStorage.getItem('era_of_ai_kinetic_seen');
@@ -118,6 +120,7 @@ export default function App() {
         onOpenAbout={() => setIsAboutOpen(true)}
         onOpenKinetic={() => setShowKineticIntro(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
+        onOpenAssessment={() => setIsAssessmentOpen(true)}
       />
 
       {/* Main Routed Page Viewport */}
@@ -129,7 +132,7 @@ export default function App() {
           <Route path="/papers" element={<PapersPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/case-studies" element={<ProjectsPage />} />
-          <Route path="/interview" element={<InterviewPage />} />
+          <Route path="/interview" element={<InterviewPage onOpenAssessment={() => setIsAssessmentOpen(true)} />} />
           <Route path="/concepts" element={<ConceptsPage />} />
           <Route path="/concept" element={<ConceptsPage />} />
           <Route path="/playgrounds" element={<PlaygroundsPage />} />
@@ -148,6 +151,12 @@ export default function App() {
       <AboutModal
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+      />
+
+      {/* AI Readiness Diagnostic Assessment Modal */}
+      <AssessmentModal
+        isOpen={isAssessmentOpen}
+        onClose={() => setIsAssessmentOpen(false)}
       />
 
       {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}

@@ -15,14 +15,15 @@ import {
   RotateCw,
   ChevronLeft,
   ChevronRight,
-  Shuffle
+  Shuffle,
+  Award
 } from 'lucide-react';
 import interviewData from '../data/interviewQuestions.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
 import InterviewFlashcardDeck from '../components/InterviewFlashcardDeck';
 
-export default function InterviewPage() {
+export default function InterviewPage({ onOpenAssessment }) {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
@@ -220,7 +221,7 @@ export default function InterviewPage() {
               </p>
             </div>
           </div>
-          <div className="w-full sm:w-56 flex flex-col gap-1.5 shrink-0">
+          <div className="w-full sm:w-60 flex flex-col gap-2 shrink-0">
             <div className="flex justify-between text-[11px] text-slate-400 font-mono">
               <span>Readiness</span>
               <span className="text-purple-300 font-bold">{masteredPercentage}%</span>
@@ -231,6 +232,15 @@ export default function InterviewPage() {
                 style={{ width: `${masteredPercentage}%` }}
               />
             </div>
+            {onOpenAssessment && (
+              <button
+                onClick={onOpenAssessment}
+                className="mt-0.5 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-md shadow-purple-600/25 transition active:scale-95"
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span>Take Diagnostic Test</span>
+              </button>
+            )}
           </div>
         </div>
 

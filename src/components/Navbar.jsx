@@ -15,12 +15,13 @@ import {
   Zap,
   Bookmark,
   CheckCircle2,
-  PlayCircle
+  PlayCircle,
+  Award
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
 
-export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks }) {
+export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpenBookmarks, onOpenAssessment }) {
   const location = useLocation();
   const [logoError, setLogoError] = useState(false);
   const { bookmarkCount, completedCount } = useProgress();
@@ -181,6 +182,17 @@ export default function Navbar({ onOpenSearch, onOpenAbout, onOpenKinetic, onOpe
               {bookmarkCount}
             </span>
           )}
+        </button>
+
+        {/* AI Readiness Diagnostic Assessment Button */}
+        <button
+          onClick={onOpenAssessment}
+          id="navbar-assessment-btn"
+          className="p-1.5 px-2.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/25 text-purple-300 hover:text-white border border-purple-500/30 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
+          title="Take AI Readiness Diagnostic (10 Questions & Radar Chart)"
+        >
+          <Award className="w-3.5 h-3.5 text-purple-400 group-hover:scale-110 transition-transform" />
+          <span className="hidden lg:inline">Diagnostic</span>
         </button>
 
         {/* Learning Mastery Counter (shows if any items completed) */}
