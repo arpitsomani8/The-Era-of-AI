@@ -93,13 +93,9 @@ export default function App() {
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [isPythonLabOpen, setIsPythonLabOpen] = useState(false);
-  const [showKineticIntro, setShowKineticIntro] = useState(() => {
-    // Show kinetic intro on first visit of the session
-    return !sessionStorage.getItem('era_of_ai_kinetic_seen');
-  });
+  const [showKineticIntro, setShowKineticIntro] = useState(false);
 
   const handleCloseKinetic = () => {
-    sessionStorage.setItem('era_of_ai_kinetic_seen', 'true');
     setShowKineticIntro(false);
   };
 
