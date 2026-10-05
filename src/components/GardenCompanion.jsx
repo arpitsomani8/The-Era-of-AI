@@ -70,6 +70,72 @@ export const COMPANION_QUIZ_QUESTIONS = [
     options: ["The Critic / Value Model", "The Actor Model", "Reward Functions", "Tokens"],
     correct: 0,
     tip: "GRPO computes relative advantages by grouping sample rollouts, discarding the memory-heavy critic!"
+  },
+  {
+    question: "In Rotary Position Embedding (RoPE), how are relative token positions encoded?",
+    options: ["Scalar addition to embeddings", "2D orthogonal rotation matrices", "Concatenating binary digits", "Learned absolute embeddings"],
+    correct: 1,
+    tip: "RoPE multiplies adjacent 2D vector pairs by rotation matrices, making inner products depend solely on (m - n)!"
+  },
+  {
+    question: "What does Grouped-Query Attention (GQA) reduce compared to Multi-Head Attention?",
+    options: ["Vocabulary size", "KV Cache GPU memory footprint", "Model depth", "Feedforward dimension"],
+    correct: 1,
+    tip: "GQA shares KV heads across query groups (e.g. 8:1 ratio in Llama 3), cutting memory bandwidth bottlenecks during generation."
+  },
+  {
+    question: "In Mixture of Experts (MoE), what decides which expert MLPs process each token?",
+    options: ["A Top-K Router Gating Network", "Random dropout selection", "Round-robin scheduler", "Hardcoded token modulo"],
+    correct: 0,
+    tip: "A learned softmax gating router evaluates token representations and selects the top-1 or top-2 most specialized experts."
+  },
+  {
+    question: "What does setting temperature T < 1.0 do to the output Softmax distribution?",
+    options: ["Flattens it towards uniform random", "Sharpens it towards argmax peak", "Inverts token probabilities", "Zeros out top predictions"],
+    correct: 1,
+    tip: "Dividing logits by T < 1.0 amplifies differences, making the model more deterministic and confident."
+  },
+  {
+    question: "In Diffusion Models, what neural network objective is trained during the reverse denoising process?",
+    options: ["Predicting the exact pixel output directly", "Predicting the injected Gaussian noise epsilon", "Classifying image categories", "Compressing images to 1 bit"],
+    correct: 1,
+    tip: "DDPM models are trained with MSE loss to predict the epsilon noise added to latent x_t at timestep t!"
+  },
+  {
+    question: "What is the primary benefit of BitNet's 1.58-bit ternary quantization {-1, 0, 1}?",
+    options: ["Eliminates GPU matrix multiplication in favor of integer addition", "Reduces dataset token count", "Increases vocabulary to 1 million", "Removes attention heads"],
+    correct: 0,
+    tip: "Multiplying by {-1, 0, 1} requires only sign flips and additions, drastically cutting datacenter power consumption!"
+  },
+  {
+    question: "Which index structure enables sub-linear O(log N) approximate nearest neighbor vector search in Vector DBs?",
+    options: ["Bubble Sort Tree", "Hierarchical Navigable Small World (HNSW)", "Single-linked list", "Hash map collision array"],
+    correct: 1,
+    tip: "HNSW builds multi-layer proximity graphs where top layers allow fast skips and bottom layers refine precision."
+  },
+  {
+    question: "What does Direct Preference Optimization (DPO) optimize directly without an RL reward model?",
+    options: ["Implicit log-likelihood ratio of chosen vs rejected responses", "The cross-attention mask", "Quantization bit width", "Token batch size"],
+    correct: 0,
+    tip: "DPO proves the optimal policy implicitly acts as its own Bradley-Terry reward model, bypassing unstable PPO loops."
+  },
+  {
+    question: "In the Adam optimizer, what does the second moment vector (v_t) track?",
+    options: ["Exponential moving average of squared gradients", "Gradient sign changes", "Total step count", "Model weight magnitude"],
+    correct: 0,
+    tip: "v_t estimates the uncentered gradient variance, allowing Adam to scale step sizes inversely with gradient magnitude."
+  },
+  {
+    question: "What theoretical advantage does the Mamba-2 SSM architecture have over standard Transformers?",
+    options: ["O(N) linear time and memory inference over unbounded sequences", "Zero matrix multiplications", "Uses no parameters", "Can only process text backwards"],
+    correct: 0,
+    tip: "State Space Models maintain a fixed-size recurrent state, avoiding the quadratic O(N^2) KV cache memory explosion."
+  },
+  {
+    question: "What mathematical function is used to calculate Cross-Entropy Loss for multi-class classification?",
+    options: ["-sum(y_i * log(p_i))", "sum(abs(y_i - p_i))", "sqrt(y_i^2 + p_i^2)", "y_i / p_i"],
+    correct: 0,
+    tip: "Cross-entropy measures the negative log-likelihood assigned by the model to the true target class distribution."
   }
 ];
 
