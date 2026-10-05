@@ -366,8 +366,8 @@ export default function PlaygroundsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    <span>Softmax Temp ($\tau$):</span>
+                  <div className="flex justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider items-center">
+                    <span className="flex items-center gap-1">Softmax Temp (<KaTeXRenderer math="\tau" inline={true} />):</span>
                     <span className="text-cyan-400 font-mono">{temperature.toFixed(2)}</span>
                   </div>
                   <input
@@ -480,9 +480,12 @@ export default function PlaygroundsPage() {
               {/* Full Matrix Heatmap View */}
               <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                    <Calculator className="w-3.5 h-3.5 text-cyan-400" />
-                    Attention Weight Matrix ($A = \text{softmax}(QK^T / \sqrt{d_k})$)
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5 flex-wrap">
+                    <Calculator className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <span>Attention Weight Matrix</span>
+                    <span className="text-slate-400 font-normal">
+                      (<KaTeXRenderer math="A = \text{softmax}(QK^T / \sqrt{d_k})" inline={true} />)
+                    </span>
                   </h3>
                   <div className="flex items-center gap-1 text-[10px] font-mono text-slate-400">
                     <span>Head {activeHead + 1}</span>
@@ -897,7 +900,7 @@ export default function PlaygroundsPage() {
                   {Math.abs(currentPos.x) > 6 && (
                     <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
                       <Flame className="w-4 h-4 text-rose-400 shrink-0" />
-                      <span><strong>Exploding Gradient!</strong> Lower learning rate ($\alpha$) to avoid divergence.</span>
+                      <span className="inline-flex items-center gap-1"><strong>Exploding Gradient!</strong> Lower learning rate (<KaTeXRenderer math="\alpha" inline={true} />) to avoid divergence.</span>
                     </div>
                   )}
                 </div>
