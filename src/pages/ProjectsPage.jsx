@@ -9,11 +9,14 @@ import {
   Layers, 
   CheckCircle2, 
   Cpu, 
-  ExternalLink 
+  ExternalLink,
+  Bookmark
 } from 'lucide-react';
 import projectsData from '../data/projects.json';
+import { useProgress } from '../context/ProgressContext';
 
 export default function ProjectsPage() {
+  const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -93,6 +96,12 @@ export default function ProjectsPage() {
                     <span className="text-xs text-slate-400">
                       {project.category}
                     </span>
+                    {isCompleted(`project-${project.id}`) && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        Studied
+                      </span>
+                    )}
                   </div>
                   <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                     {project.title}
@@ -100,6 +109,39 @@ export default function ProjectsPage() {
                   <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
                     {project.subtitle}
                   </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => toggleCompleted(`project-${project.id}`)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition flex items-center gap-1.5 ${
+                      isCompleted(`project-${project.id}`)
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                        : 'bg-slate-800 text-slate-400 hover:text-white border-slate-700'
+                    }`}
+                    title={isCompleted(`project-${project.id}`) ? 'Mark Incomplete' : 'Mark Case Study Studied'}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{isCompleted(`project-${project.id}`) ? 'Studied' : 'Mark Done'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleBookmark({
+                      id: `project-${project.id}`,
+                      type: 'concept',
+                      title: project.title,
+                      subtitle: `${project.category} Case Study`,
+                      link: `/projects?search=${encodeURIComponent(project.title.slice(0, 20))}`
+                    })}
+                    className={`p-1.5 rounded-lg border transition ${
+                      isBookmarked(`project-${project.id}`)
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                        : 'bg-slate-800 text-slate-400 hover:text-white border-slate-700'
+                    }`}
+                    title="Bookmark case study"
+                  >
+                    <Bookmark className={`w-4 h-4 ${isBookmarked(`project-${project.id}`) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  </button>
                 </div>
               </div>
 

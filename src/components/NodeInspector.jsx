@@ -1,9 +1,19 @@
-import React from 'react';
-import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers } from 'lucide-react';
-import KaTeXRenderer from './KaTeXRenderer';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { X, ExternalLink, Lightbulb, Calculator, Sparkles, BookOpen, Layers, ArrowUpRight, Bookmark, CheckCircle2, Copy, Check } from 'lucide-react';
+import KaTeXRenderer, { MathText } from './KaTeXRenderer';
+import { findConceptForSubtopic } from '../utils/conceptLookup';
+import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export default function NodeInspector({ node, crossLinks = [], onClose, onSelectNode }) {
+  const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
+  const [copiedFormula, setCopiedFormula] = useState(false);
   if (!node) return null;
+
+  const nKey = `node-${node.id}`;
+  const isDone = isCompleted(nKey);
+  const isSaved = isBookmarked(nKey);
 
   const relevantLinks = crossLinks.filter(
     (l) => l.from === node.id || l.to === node.id
@@ -37,17 +47,68 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
           >
             {node.category?.toUpperCase() || 'TOPIC'}
           </span>
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
-            {node.label}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
+              {node.label}
+            </h2>
+            {isDone && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                Mastered
+              </span>
+            )}
+          </div>
         </div>
-        <button
-          onClick={onClose}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          title="Close Inspector"
-        >
-          <X className="w-5 h-5" />
-        </button>
+
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+          {/* Audio Explainer */}
+          <AudioExplainerButton
+            title={node.label}
+            definition={node.def}
+            intuition={node.logic}
+            example={node.example}
+          />
+
+          {/* Mark Done button */}
+          <button
+            onClick={() => toggleCompleted(nKey)}
+            className={`p-1.5 rounded-lg border transition ${
+              isDone 
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+            }`}
+            title={isDone ? 'Mark Incomplete' : 'Mark Node Mastered'}
+          >
+            <CheckCircle2 className={`w-4 h-4 ${isDone ? 'text-emerald-400' : ''}`} />
+          </button>
+
+          {/* Bookmark button */}
+          <button
+            onClick={() => toggleBookmark({
+              id: nKey,
+              type: 'concept',
+              title: node.label,
+              subtitle: `Mind Map Node • ${node.category}`,
+              link: `/mindmap?node=${node.id}`
+            })}
+            className={`p-1.5 rounded-lg border transition ${
+              isSaved 
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+            }`}
+            title={isSaved ? 'Remove Bookmark' : 'Bookmark Node'}
+          >
+            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+          </button>
+
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            title="Close Inspector"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Body Content */}
@@ -59,17 +120,43 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
               1. Formal Definition
             </h3>
-            <p className="text-slate-200 leading-relaxed">{node.def}</p>
+            <p className="text-slate-200 leading-relaxed">
+              <MathText text={node.def} />
+            </p>
           </div>
         )}
 
         {/* 2. Mathematical Formula */}
         {node.formula && (
           <div className="bg-slate-950/80 rounded-xl p-4 border border-indigo-500/25">
-            <h3 className="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-              2. Core Mathematical Formulation
-            </h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-semibold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Calculator className="w-3.5 h-3.5 text-indigo-400" />
+                2. Core Mathematical Formulation
+              </h3>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(node.formula);
+                  setCopiedFormula(true);
+                  setTimeout(() => setCopiedFormula(false), 2000);
+                }}
+                className="p-1 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1"
+                title="Copy raw LaTeX equation"
+              >
+                {copiedFormula ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    <span className="text-emerald-400">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>Copy LaTeX</span>
+                  </>
+                )}
+              </button>
+            </div>
             <div className="py-2 px-1 overflow-x-auto bg-slate-900/90 rounded-lg border border-slate-800">
               <KaTeXRenderer math={node.formula} block={true} />
             </div>
@@ -83,7 +170,9 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
               3. Intuition & When to Use
             </h3>
-            <p className="text-amber-100/90 leading-relaxed">{node.logic}</p>
+            <p className="text-amber-100/90 leading-relaxed">
+              <MathText text={node.logic} />
+            </p>
           </div>
         )}
 
@@ -94,26 +183,43 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
               <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
               4. Real-World Practical Example
             </h3>
-            <p className="text-emerald-100/90 leading-relaxed">{node.example}</p>
+            <p className="text-emerald-100/90 leading-relaxed">
+              <MathText text={node.example} />
+            </p>
           </div>
         )}
 
         {/* 5. Subtopics Breakdown */}
         {node.subtopics && node.subtopics.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-slate-400" />
-              Key Subtopics & Architectural Components ({node.subtopics.length})
-            </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {node.subtopics.map((sub, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 rounded-md text-xs bg-slate-800/80 text-slate-300 border border-slate-700/60"
-                >
-                  {sub}
-                </span>
-              ))}
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-slate-400" />
+                Key Subtopics & Architectural Components ({node.subtopics.length})
+              </h3>
+              <span className="text-[11px] text-indigo-400 font-medium hidden sm:inline">
+                Click to explore &rarr;
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {node.subtopics.map((sub, idx) => {
+                const concept = findConceptForSubtopic(sub, node.id);
+                const targetUrl = concept
+                  ? `/concepts?id=${encodeURIComponent(concept.id)}`
+                  : `/concepts?search=${encodeURIComponent(sub)}`;
+
+                return (
+                  <Link
+                    key={idx}
+                    to={targetUrl}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-indigo-600/20 text-slate-200 hover:text-indigo-300 border border-slate-700/60 hover:border-indigo-500/50 transition-all duration-150 group shadow-sm"
+                    title={`View full explanation, formulas & examples for "${sub}"`}
+                  >
+                    <span>{sub}</span>
+                    <ArrowUpRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

@@ -43,3 +43,53 @@ export default function KaTeXRenderer({ math, block = false, className = '' }) {
     />
   );
 }
+
+/**
+ * MathText renders text containing inline LaTeX expressions wrapped in $...$
+ * as rich KaTeX formulas, while keeping the rest as regular text.
+ */
+export function MathText({ text, className = '' }) {
+  if (!text) return null;
+  const str = String(text);
+
+  if (!str.includes('$')) {
+    return <span className={className}>{str}</span>;
+  }
+
+  // Match $$...$$ (block math) first, then $...$ (inline math)
+  const regex = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(str)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ type: 'text', content: str.slice(lastIndex, match.index) });
+    }
+    const token = match[0];
+    if (token.startsWith('$$') && token.endsWith('$$')) {
+      parts.push({ type: 'block', content: token.slice(2, -2) });
+    } else {
+      parts.push({ type: 'inline', content: token.slice(1, -1) });
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < str.length) {
+    parts.push({ type: 'text', content: str.slice(lastIndex) });
+  }
+
+  return (
+    <span className={className}>
+      {parts.map((p, i) => {
+        if (p.type === 'block') {
+          return <KaTeXRenderer key={i} math={p.content} block={true} />;
+        }
+        if (p.type === 'inline') {
+          return <KaTeXRenderer key={i} math={p.content} block={false} className="inline-math px-0.5" />;
+        }
+        return <span key={i}>{p.content}</span>;
+      })}
+    </span>
+  );
+}

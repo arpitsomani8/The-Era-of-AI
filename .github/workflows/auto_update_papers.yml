@@ -1,0 +1,55 @@
+name: Daily Auto-Update AI Research Papers
+
+on:
+  schedule:
+    # Runs everyday at 02:00 UTC (07:30 AM IST)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-papers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node Dependencies
+        run: npm ci || npm install
+
+      - name: Fetch Latest Trending AI Papers
+        run: python scripts/fetch_latest_papers.py
+
+      - name: Build React Application
+        run: npm run build
+
+      - name: Commit & Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Check if papers.json or build changed
+          git add src/data/papers.json scripts/data_sources/papers_data.py
+          if git diff --staged --quiet; then
+            echo "No new papers were discovered today. Everything is up to date."
+          else
+            git commit -m "chore(papers): auto-update daily trending AI research papers [skip ci]"
+            git push origin main
+            echo "Successfully updated papers and pushed commit to main!"
+          fi
