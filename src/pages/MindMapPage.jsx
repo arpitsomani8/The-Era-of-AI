@@ -10,13 +10,126 @@ import {
   Info,
   Layers,
   ChevronRight,
+  ChevronLeft,
   Download,
-  Compass
+  Compass,
+  Route,
+  Sparkles,
+  X
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import allNodesData from '../data/allNodes.json';
 import crossLinksData from '../data/crossLinks.json';
 import NodeInspector from '../components/NodeInspector';
+
+export const CAREER_TRACKS = {
+  genai_engineer: {
+    id: 'genai_engineer',
+    title: 'GenAI & LLM Engineer',
+    icon: '🤖',
+    badge: 'Trending #1',
+    color: '#06b6d4',
+    bg: 'rgba(6, 182, 212, 0.15)',
+    border: 'rgba(6, 182, 212, 0.4)',
+    summary: 'Master Transformers, Attention mechanisms, Vector RAG pipelines, LoRA fine-tuning, and Agentic workflows.',
+    path: [
+      'root',
+      'genai_root',
+      'genai_embed',
+      'genai_attention',
+      'genai_rag',
+      'genai_train',
+      'genai_align',
+      'genai_prompt_agents',
+      'dl_root',
+      'dl_neurons',
+      'dl_opt',
+      'mlops_root'
+    ]
+  },
+  research_scientist: {
+    id: 'research_scientist',
+    title: 'AI Research Scientist',
+    icon: '🔬',
+    badge: 'Deep Theory',
+    color: '#a855f7',
+    bg: 'rgba(168, 85, 247, 0.15)',
+    border: 'rgba(168, 85, 247, 0.4)',
+    summary: 'Vector spaces, optimization calculus, backpropagation proofs, generative diffusion mathematics, and alignment.',
+    path: [
+      'root',
+      'math_root',
+      'math_linalg',
+      'math_calc',
+      'math_prob',
+      'math_info',
+      'dl_root',
+      'dl_backprop',
+      'dl_norm',
+      'dl_generative',
+      'genai_root',
+      'genai_attention',
+      'genai_align',
+      'eval_root',
+      'eval_tradeoff'
+    ]
+  },
+  mlops_engineer: {
+    id: 'mlops_engineer',
+    title: 'MLOps & Systems Engineer',
+    icon: '⚙️',
+    badge: 'Production & Infra',
+    color: '#10b981',
+    bg: 'rgba(16, 185, 129, 0.15)',
+    border: 'rgba(16, 185, 129, 0.4)',
+    summary: 'Data scrub pipelines, model evaluation curves, drift detection, inference serving, and vector DB infrastructure.',
+    path: [
+      'root',
+      'mlops_root',
+      'data_root',
+      'data_scrub',
+      'data_scale',
+      'data_split',
+      'eval_root',
+      'eval_matrix',
+      'eval_curves',
+      'genai_train',
+      'genai_rag',
+      'dl_opt'
+    ]
+  },
+  data_scientist: {
+    id: 'data_scientist',
+    title: 'Classical ML & Data Scientist',
+    icon: '📊',
+    badge: 'Statistical Modeling',
+    color: '#f59e0b',
+    bg: 'rgba(245, 158, 11, 0.15)',
+    border: 'rgba(245, 158, 11, 0.4)',
+    summary: 'Feature engineering, tabular predictive modeling, tree ensembles (XGBoost/LightGBM), and ROC/PR metric validation.',
+    path: [
+      'root',
+      'data_root',
+      'data_scrub',
+      'data_impute',
+      'data_scale',
+      'data_fe',
+      'data_split',
+      'ml_root',
+      'ml_linear',
+      'ml_loss',
+      'ml_opt',
+      'ml_logistic',
+      'ml_reg',
+      'ml_trees',
+      'ml_unsupervised',
+      'eval_root',
+      'eval_matrix',
+      'eval_curves',
+      'eval_tradeoff'
+    ]
+  }
+};
 
 export default function MindMapPage() {
   const { theme } = useTheme();
@@ -26,12 +139,46 @@ export default function MindMapPage() {
   const [activeDomain, setActiveDomain] = useState('all');
   const [showInterlinks, setShowInterlinks] = useState(true);
   const [showMinimap, setShowMinimap] = useState(true);
+  const [selectedTrackId, setSelectedTrackId] = useState(null);
+  const [currentTrackStep, setCurrentTrackStep] = useState(0);
+
+  const activeTrack = selectedTrackId ? CAREER_TRACKS[selectedTrackId] : null;
+  const trackNodeSet = useMemo(() => {
+    return activeTrack ? new Set(activeTrack.path) : null;
+  }, [activeTrack]);
 
   // SVG Pan & Zoom Transform State
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 0.85 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const svgRef = useRef(null);
+
+  const focusNode = useCallback((nodeId) => {
+    const node = allNodesData.find((n) => n.id === nodeId);
+    if (!node || !svgRef.current) return;
+    setSelectedNodeId(nodeId);
+    setSearchParams({ node: nodeId });
+    const rect = svgRef.current.getBoundingClientRect();
+    setTransform({
+      x: rect.width / 2 - (node.x || 0) * 0.85,
+      y: rect.height / 2 - (node.y || 0) * 0.85,
+      k: 0.85
+    });
+  }, [setSearchParams]);
+
+  const handleNextTrackStep = () => {
+    if (!activeTrack) return;
+    const nextIdx = Math.min(currentTrackStep + 1, activeTrack.path.length - 1);
+    setCurrentTrackStep(nextIdx);
+    focusNode(activeTrack.path[nextIdx]);
+  };
+
+  const handlePrevTrackStep = () => {
+    if (!activeTrack) return;
+    const prevIdx = Math.max(currentTrackStep - 1, 0);
+    setCurrentTrackStep(prevIdx);
+    focusNode(activeTrack.path[prevIdx]);
+  };
 
   // Export as SVG
   const handleExportSVG = () => {
@@ -327,6 +474,33 @@ export default function MindMapPage() {
               </button>
             ))}
           </div>
+
+          {/* Career Track Pathways Selector */}
+          <div className="flex items-center gap-1.5 bg-slate-950/90 border border-slate-800 rounded-lg p-1 text-xs">
+            <span className="text-slate-400 font-semibold flex items-center gap-1 pl-1">
+              <Route className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden xl:inline">Track:</span>
+            </span>
+            <select
+              value={selectedTrackId || 'none'}
+              onChange={(e) => {
+                const val = e.target.value === 'none' ? null : e.target.value;
+                setSelectedTrackId(val);
+                setCurrentTrackStep(0);
+                if (val && CAREER_TRACKS[val]) {
+                  const firstNodeId = CAREER_TRACKS[val].path[1] || CAREER_TRACKS[val].path[0];
+                  focusNode(firstNodeId);
+                }
+              }}
+              className="bg-slate-900 border border-slate-700/80 rounded-md text-xs font-semibold text-white px-2 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer"
+            >
+              <option value="none">🌐 All Domains (Standard)</option>
+              <option value="genai_engineer">🤖 GenAI & LLM Engineer</option>
+              <option value="research_scientist">🔬 AI Research Scientist</option>
+              <option value="mlops_engineer">⚙️ MLOps & Systems Engineer</option>
+              <option value="data_scientist">📊 Classical ML & Data Scientist</option>
+            </select>
+          </div>
         </div>
 
         {/* Zoom & View Controls */}
@@ -436,6 +610,9 @@ export default function MindMapPage() {
             <g id="hierarchyLines">
               {hierarchyLinks.map((link) => {
                 const isSelected = selectedNodeId === link.source.id || selectedNodeId === link.target.id;
+                const isTrackLink = trackNodeSet && trackNodeSet.has(link.source.id) && trackNodeSet.has(link.target.id);
+                const isDimmed = trackNodeSet && !isTrackLink;
+
                 return (
                   <line
                     key={link.id}
@@ -443,9 +620,10 @@ export default function MindMapPage() {
                     y1={link.source.y || 0}
                     x2={link.target.x || 0}
                     y2={link.target.y || 0}
-                    stroke={isSelected ? themeColors.lineSelected : themeColors.lineNormal}
-                    strokeWidth={isSelected ? 2.5 : 1.5}
-                    strokeDasharray={link.source.level === 0 ? '4 4' : 'none'}
+                    stroke={isTrackLink ? activeTrack.color : isSelected ? themeColors.lineSelected : themeColors.lineNormal}
+                    strokeWidth={isTrackLink ? 3.5 : isSelected ? 2.5 : 1.5}
+                    strokeDasharray={isTrackLink ? '6 3' : link.source.level === 0 ? '4 4' : 'none'}
+                    strokeOpacity={isDimmed ? 0.12 : 1}
                     className="transition-colors duration-200"
                   />
                 );
@@ -462,6 +640,8 @@ export default function MindMapPage() {
                   if (!fromNode || !toNode) return null;
 
                   const isLinkedToSelected = selectedNodeId === link.from || selectedNodeId === link.to;
+                  const isTrackCrossLink = trackNodeSet && trackNodeSet.has(link.from) && trackNodeSet.has(link.to);
+                  const isDimmed = trackNodeSet && !isTrackCrossLink;
 
                   // Curved path calculation
                   const dx = (toNode.x || 0) - (fromNode.x || 0);
@@ -474,10 +654,10 @@ export default function MindMapPage() {
                       <path
                         d={`M ${fromNode.x || 0} ${fromNode.y || 0} Q ${cx} ${cy} ${toNode.x || 0} ${toNode.y || 0}`}
                         fill="none"
-                        stroke={isLinkedToSelected ? '#fbbf24' : '#f59e0b'}
-                        strokeWidth={isLinkedToSelected ? 2.5 : 1.2}
+                        stroke={isTrackCrossLink ? activeTrack.color : isLinkedToSelected ? '#fbbf24' : '#f59e0b'}
+                        strokeWidth={isTrackCrossLink ? 3.5 : isLinkedToSelected ? 2.5 : 1.2}
                         strokeDasharray="5,5"
-                        strokeOpacity={isLinkedToSelected ? 0.95 : 0.45}
+                        strokeOpacity={isDimmed ? 0.08 : isTrackCrossLink ? 1 : isLinkedToSelected ? 0.95 : 0.45}
                         markerEnd="url(#arrowhead-cross)"
                       />
                     </g>
@@ -494,6 +674,12 @@ export default function MindMapPage() {
                 const isRoot = node.level === 0;
                 const isHub = node.level === 1;
 
+                // Career track highlights
+                const isTrackNode = trackNodeSet ? trackNodeSet.has(node.id) : false;
+                const isDimmed = trackNodeSet ? !isTrackNode : false;
+                const stepIndex = isTrackNode ? activeTrack.path.indexOf(node.id) + 1 : null;
+                const isCurrentTrackStep = isTrackNode && activeTrack.path[currentTrackStep] === node.id;
+
                 // Dynamically calculate node width based on character count so text never spills out of the box
                 const labelLen = (node.label || '').length;
                 const charWidth = isRoot ? 8.6 : isHub ? 7.6 : 6.8;
@@ -509,12 +695,33 @@ export default function MindMapPage() {
                   <g
                     key={node.id}
                     transform={`translate(${node.x || 0}, ${node.y || 0})`}
+                    opacity={isDimmed ? 0.2 : 1}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleSelectNode(node.id);
+                      if (isTrackNode) {
+                        const idx = activeTrack.path.indexOf(node.id);
+                        if (idx !== -1) setCurrentTrackStep(idx);
+                      }
                     }}
-                    className="cursor-pointer group"
+                    className="cursor-pointer group transition-opacity duration-300"
                   >
+                    {/* Pulsing ring for current career track step */}
+                    {isCurrentTrackStep && (
+                      <rect
+                        x={-nodeWidth / 2 - 6}
+                        y={-nodeHeight / 2 - 6}
+                        width={nodeWidth + 12}
+                        height={nodeHeight + 12}
+                        rx={rx + 4}
+                        fill="none"
+                        stroke={activeTrack.color}
+                        strokeWidth="2.5"
+                        strokeDasharray="6,4"
+                        className="animate-pulse"
+                      />
+                    )}
+
                     {/* Node background pill */}
                     <rect
                       x={-nodeWidth / 2}
@@ -523,8 +730,8 @@ export default function MindMapPage() {
                       height={nodeHeight}
                       rx={rx}
                       fill={isSelected ? themeColors.nodeBgSelected : isRoot ? themeColors.nodeRootBg : themeColors.nodeBg}
-                      stroke={isSelected ? themeColors.lineSelected : cfg.stroke}
-                      strokeWidth={isSelected ? 3 : isHub ? 2 : 1.5}
+                      stroke={isTrackNode ? activeTrack.color : isSelected ? themeColors.lineSelected : cfg.stroke}
+                      strokeWidth={isCurrentTrackStep ? 3.5 : isTrackNode ? 2.5 : isSelected ? 3 : isHub ? 2 : 1.5}
                       filter="drop-shadow(0 4px 6px rgba(0,0,0,0.3))"
                       className="transition-all duration-200 group-hover:scale-105"
                     />
@@ -534,7 +741,7 @@ export default function MindMapPage() {
                       cx={-nodeWidth / 2 + 14}
                       cy={0}
                       r={isRoot ? 5.5 : 4}
-                      fill={cfg.stroke}
+                      fill={isTrackNode ? activeTrack.color : cfg.stroke}
                     />
 
                     {/* Node text label */}
@@ -549,6 +756,34 @@ export default function MindMapPage() {
                     >
                       {node.label}
                     </text>
+
+                    {/* Milestone Sequence Badge on Track Nodes */}
+                    {isTrackNode && (
+                      <g transform={`translate(${nodeWidth / 2 - 14}, ${-nodeHeight / 2 - 5})`}>
+                        <rect
+                          x="-14"
+                          y="-8"
+                          width="28"
+                          height="16"
+                          rx="8"
+                          fill={activeTrack.color}
+                          stroke="#ffffff"
+                          strokeWidth="1.2"
+                          filter="drop-shadow(0 2px 4px rgba(0,0,0,0.4))"
+                        />
+                        <text
+                          x="0"
+                          y="3.5"
+                          fill="#ffffff"
+                          fontSize="9"
+                          fontWeight="800"
+                          textAnchor="middle"
+                          fontFamily="ui-monospace, monospace"
+                        >
+                          #{stepIndex}
+                        </text>
+                      </g>
+                    )}
                   </g>
                 );
               })}
@@ -640,6 +875,56 @@ export default function MindMapPage() {
             Drag to pan &bull; Scroll to zoom &bull; Click node to inspect details
           </div>
         </div>
+
+        {/* Floating Career Track HUD (When a track is active) */}
+        {activeTrack && (
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl px-4 py-2.5 shadow-2xl animate-in slide-in-from-bottom-4 duration-200 max-w-[94vw]">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-xl shrink-0">{activeTrack.icon}</span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-white tracking-wide truncate">{activeTrack.title}</span>
+                  <span 
+                    className="text-[10px] font-mono px-2 py-0.2 rounded-full font-bold shrink-0" 
+                    style={{ backgroundColor: activeTrack.bg, color: activeTrack.color, border: `1px solid ${activeTrack.border}` }}
+                  >
+                    Step {currentTrackStep + 1} / {activeTrack.path.length}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 truncate max-w-[200px] sm:max-w-xs md:max-w-md">
+                  Target: <span className="font-semibold text-white">{allNodesData.find(n => n.id === activeTrack.path[currentTrackStep])?.label || 'Milestone'}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 ml-2 pl-2 border-l border-slate-800 shrink-0">
+              <button
+                onClick={handlePrevTrackStep}
+                disabled={currentTrackStep === 0}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-slate-200 transition"
+                title="Previous Milestone in Track"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleNextTrackStep}
+                disabled={currentTrackStep === activeTrack.path.length - 1}
+                className="p-1.5 px-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white font-medium text-xs flex items-center gap-1 transition shadow-md shadow-indigo-600/30"
+                title="Next Milestone in Track"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setSelectedTrackId(null)}
+                className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition ml-1"
+                title="Exit Career Track View"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Slide-over Inspector Drawer for Node Details */}
