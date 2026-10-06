@@ -5887,35 +5887,51 @@
   {
     "id": "artificial-neurons-perceptrons",
     "topic_id": "dl_neurons",
-    "topic_label": "Neural Networks & Hidden Layers",
+    "topic_label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "category": "dl",
     "category_label": "Deep Learning",
-    "title": "Artificial Neurons & Perceptrons",
-    "raw_sub": "Artificial Neurons / Perceptrons (Linear sum + activation)",
+    "title": "Artificial Neural Networks (ANN & Perceptrons)",
+    "raw_sub": "Artificial Neural Networks (ANN & Perceptrons)",
     "definition": "An artificial neuron (perceptron) is the fundamental computational cell of a neural network. It takes multiple numerical inputs, computes a weighted sum plus an adjustable bias, and passes that scalar through a non-linear activation function to produce an output signal.",
-    "formula": "$$z = \\sum_{i=1}^{n} w_i x_i + b = \\mathbf{w}^T \\mathbf{x} + b, \\quad a = \\sigma(z)$$",
+    "formula": "z = \\sum_{j=1}^d w_j x_j + b = \\mathbf{w}^T \\mathbf{x} + b, \\quad a = \\sigma(z)",
     "formula_explanation": "$\\mathbf{x}$ is the input feature vector, $\\mathbf{w}$ is the learned weight vector, $b$ is the scalar bias (allowing the decision boundary to shift away from the origin), and $\\sigma(\\cdot)$ is a non-linear activation function producing final activation $a$.",
-    "logic": "A single linear combination $\\mathbf{w}^T\\mathbf{x} + b$ can only construct flat linear hyperplanes. By feeding the linear combination into a non-linear activation $\\sigma(z)$, the neuron gains the ability to fire selectively, creating non-linear decision boundaries when chained in networks.",
-    "example": "A loan approval neuron: inputs are income $x_1$ and credit score $x_2$. If $w_1 \\cdot x_1 + w_2 \\cdot x_2 + b > 0$, the activation outputs close to 1 (approved); otherwise close to 0 (rejected).",
-    "raw_subtopic": "Artificial Neurons / Perceptrons (Linear sum + activation)",
-    "def": "An artificial neuron (perceptron) is the fundamental computational cell of a neural network. It takes multiple numerical inputs, computes a weighted sum plus an adjustable bias, and passes that scalar through a non-linear activation function to produce an output signal.",
+    "logic": "Biological brains learn by adjusting synaptic connection strengths between neurons. In an ANN, learnable numerical weights (w) and biases (b) replace biological synapses, while non-linear activation functions (sigma) decide whether and how strongly each artificial neuron fires.",
+    "example": "Multi-tenant credit scoring and loan risk assessment where an ANN processes hundreds of customer financial indicators simultaneously to predict default probability.",
+    "raw_subtopic": "Artificial Neural Networks (ANN & Perceptrons)",
+    "def": "An Artificial Neural Network (ANN) is a computational model inspired by biological brains, structured as interconnected layers of artificial neurons (perceptrons) that map inputs to outputs via weighted sums and non-linear activations.",
     "tags": [
+      "ANN",
+      "Artificial Neural Network",
       "Deep Learning",
-      "Neural Networks & Hidden Layers"
+      "Perceptron",
+      "Multi-Layer Perceptron",
+      "Hidden Layers"
     ],
     "simple_summary": "Artificial Neurons & Perceptrons explained simply: An artificial neuron (perceptron) is the fundamental computational cell of a neural network. It ensures machine learning models can learn and generalize effectively.",
     "core_terms": [
       {
-        "term": "Artificial Neurons",
-        "what_is_it": "Artificial Neurons is a key building block in Neural Networks & Hidden Layers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-        "analogy": "Think of Artificial Neurons like a specific tool in a toolbox: it solves one distinct step in the machine learning process so the rest of the model can work accurately.",
-        "why_it_matters": "Essential in Neural Networks & Hidden Layers to ensure the model trains stably, avoids overfitting, and delivers reliable predictions."
+        "term": "Artificial Neural Network (ANN)",
+        "what_is_it": "A multi-layered network of artificial processing nodes that learns complex patterns and non-linear functions from data through training.",
+        "analogy": "An interconnected team of analysts where entry-level staff process raw facts and pass summary insights to senior managers for final decisions.",
+        "why_it_matters": "The foundational bedrock of all modern deep learning, computer vision, and generative foundation models."
       },
       {
-        "term": "Perceptrons",
-        "what_is_it": "Perceptrons is a key building block in Neural Networks & Hidden Layers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-        "analogy": "Think of Perceptrons like a specific tool in a toolbox: it solves one distinct step in the machine learning process so the rest of the model can work accurately.",
-        "why_it_matters": "Essential in Neural Networks & Hidden Layers to ensure the model trains stably, avoids overfitting, and delivers reliable predictions."
+        "term": "Artificial Neuron (Perceptron)",
+        "what_is_it": "The basic computational building block that takes inputs, multiplies them by weights, adds a bias offset, and applies an activation function.",
+        "analogy": "A decision maker weighing multiple pros and cons before deciding whether to take an umbrella.",
+        "why_it_matters": "Enables computing linear decision boundaries in feature space."
+      },
+      {
+        "term": "Synaptic Weights & Bias",
+        "what_is_it": "Weights (w) represent the strength/importance of an input connection; bias (b) is an adjustable threshold offset independent of inputs.",
+        "analogy": "The volume knob on individual instruments (weights) and the master baseline volume setting (bias).",
+        "why_it_matters": "The actual parameters adjusted during backpropagation via gradient descent to train the model."
+      },
+      {
+        "term": "Non-Linear Activation Function",
+        "what_is_it": "A mathematical curve (e.g. ReLU, GELU, Sigmoid) applied to the neuron's weighted sum to introduce non-linearity.",
+        "analogy": "An on/off trigger switch that only fires once a certain threshold of electrical current is reached.",
+        "why_it_matters": "Without non-linear activations, stacking 100 neural layers mathematically collapses into a single boring linear equation."
       }
     ],
     "symbol_guide": [
@@ -5945,19 +5961,20 @@
     "core_logic": "Why this matters: In Neural Networks & Hidden Layers, Artificial Neurons & Perceptrons provides the essential logic to connect input data with mathematical optimization. A single linear combination $\\mathbf{w}^T\\mathbf{x} + b$ can only construct flat linear hyperplanes. By feeding the linear combination into a non-linear activation $\\sigma(z)$, the neuron gains the ability to fire selectively, creating non-linear decision boundaries when chained in networks.",
     "architectural_logic": "In modern AI systems, Artificial Neurons & Perceptrons is applied during data ingestion, hidden layer transformations, or loss calculation to guarantee numerical stability and fast convergence.",
     "key_takeaways": [
-      "Core Role: Foundational concept in Neural Networks & Hidden Layers under Deep Learning.",
-      "Key Principle: An artificial neuron (perceptron) is the fundamental computational cell of a neural network.",
-      "Production Impact: Critical for accurate training, stable evaluation, and scalable inference."
+      "An Artificial Neural Network (ANN) consists of input, hidden, and output layers of interconnected neurons.",
+      "Each neuron computes z = w^T x + b, followed by a non-linear activation a = sigma(z).",
+      "Non-linear activation functions are mandatory; otherwise, multi-layer networks collapse into simple linear regression."
     ],
     "definition_bullets": [
-      "Artificial Neurons: Artificial Neurons is a key building block in Neural Networks & Hidden Layers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-      "Perceptrons: Perceptrons is a key building block in Neural Networks & Hidden Layers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns."
+      "**Core Architecture:** Layered graph of mathematical neurons connected by adjustable synaptic weights.",
+      "**Forward Equation:** Computes linear combination z = w^T x + b, then applies non-linear activation a = sigma(z).",
+      "**Foundation of AI:** Forms the core substrate upon which CNNs, RNNs, and Transformers are constructed."
     ]
   },
   {
     "id": "input-hidden-output-layers",
     "topic_id": "dl_neurons",
-    "topic_label": "Neural Networks & Hidden Layers",
+    "topic_label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Input, Hidden, and Output Layers",
@@ -6039,7 +6056,7 @@
   {
     "id": "non-linear-separability",
     "topic_id": "dl_neurons",
-    "topic_label": "Neural Networks & Hidden Layers",
+    "topic_label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Non-linear Separability (XOR Problem)",
@@ -6087,7 +6104,7 @@
   {
     "id": "forward-propagation-matrix-arithmetic",
     "topic_id": "dl_neurons",
-    "topic_label": "Neural Networks & Hidden Layers",
+    "topic_label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Forward Propagation Matrix Arithmetic",
@@ -6140,7 +6157,7 @@
   {
     "id": "universal-approximation-theorem",
     "topic_id": "dl_neurons",
-    "topic_label": "Neural Networks & Hidden Layers",
+    "topic_label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Universal Approximation Theorem",
@@ -7390,29 +7407,52 @@
   {
     "id": "convolutions-kernels-stride-padding",
     "topic_id": "dl_vision",
-    "topic_label": "Computer Vision: CNNs & Vision Transformers",
+    "topic_label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "category": "dl",
     "category_label": "Deep Learning",
-    "title": "Convolutions (Kernels, Stride & Padding)",
-    "raw_sub": "Convolutions (Kernels, Filters, Stride, Padding)",
+    "title": "Convolutional Neural Networks (CNN & Feature Extraction)",
+    "raw_sub": "Convolutional Neural Networks (CNN & Feature Extraction)",
     "definition": "Convolution is a specialized linear operation where small learnable weight matrices (kernels/filters) slide across an input feature grid to compute dot products, creating spatially shift-invariant feature maps that detect local patterns regardless of position.",
-    "formula": "$$S(i, j) = (I * K)(i, j) = \\sum_{m} \\sum_{n} I(i-m, j-n) K(m, n)$$ $$W_{out} = \\left\\lfloor \\frac{W_{in} - K + 2P}{S} \\right\\rfloor + 1$$",
+    "formula": "S(i, j) = (I * K)(i, j) = \\sum_{m} \\sum_{n} I(i - m, j - n) K(m, n)",
     "formula_explanation": "$I$ is the input image tensor, $K$ is kernel size (e.g. $3 \\times 3$), $P$ is zero-padding count, and $S$ is stride step size.",
-    "logic": "Convolutions enforce two critical visual inductive biases: local spatial connectivity (nearby pixels correlate strongly) and translation invariance (a cat in the corner has the same visual features as a cat in the center).",
-    "example": "A $3 \\times 3$ Sobel edge-detection filter sliding over a $256 \\times 256$ photo highlights vertical sharp edges by taking positive weights on the right column and negative on the left.",
-    "raw_subtopic": "Convolutions (Kernels, Filters, Stride, Padding)",
-    "def": "Convolution is a specialized linear operation where small learnable weight matrices (kernels/filters) slide across an input feature grid to compute dot products, creating spatially shift-invariant feature maps that detect local patterns regardless of position.",
+    "logic": "Fully connected ANNs fail on high-resolution images because a 1000x1000 pixel image creates millions of weights, causing massive overfitting. CNNs solve this via local receptive fields and parameter sharing (the exact same 3x3 filter slides across the entire image).",
+    "example": "Automated medical diagnosis detecting micro-fractures in high-resolution digital X-rays with millimeter precision.",
+    "raw_subtopic": "Convolutional Neural Networks (CNN & Feature Extraction)",
+    "def": "A Convolutional Neural Network (CNN) is a deep neural network tailored for grid-like data (images, video, spectrograms) that uses learnable spatial filters (kernels) to automatically detect visual hierarchies from simple edges to complex objects.",
     "tags": [
-      "Deep Learning",
-      "Computer Vision: CNNs & Vision Transformers"
+      "CNN",
+      "Convolutional Neural Network",
+      "Computer Vision",
+      "Kernels",
+      "Filters",
+      "Feature Maps",
+      "Deep Learning"
     ],
     "simple_summary": "Convolutions (Kernels, Stride & Padding) explained simply: Convolution is a specialized linear operation where small learnable weight matrices (kernels/filters) slide across an input feature grid to compute dot products, creating spatially shift-invariant feature maps that detect local patterns regardless of position.. It ensures machine learning models can learn and generalize effectively.",
     "core_terms": [
       {
-        "term": "Convolutions",
-        "what_is_it": "Convolutions is a key building block in Computer Vision: CNNs & Vision Transformers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-        "analogy": "Think of Convolutions like a specific tool in a toolbox: it solves one distinct step in the machine learning process so the rest of the model can work accurately.",
-        "why_it_matters": "Essential in Computer Vision: CNNs & Vision Transformers to ensure the model trains stably, avoids overfitting, and delivers reliable predictions."
+        "term": "Convolutional Neural Network (CNN)",
+        "what_is_it": "A specialized neural network architecture that extracts hierarchical spatial patterns from images using convolutional sliding filters.",
+        "analogy": "A detective scanning a crime scene with a magnifying glass, noting clues box by box.",
+        "why_it_matters": "Dominates computer vision, medical imaging, autonomous vehicle perception, and visual quality inspection."
+      },
+      {
+        "term": "Convolutional Kernel / Filter",
+        "what_is_it": "A small learnable matrix of weights (typically 3x3 or 5x5) that slides over the image computing element-wise dot products.",
+        "analogy": "A stencil or magnifying stamp designed to glow whenever it slides over a specific shape like a vertical edge or diagonal line.",
+        "why_it_matters": "Extracts low-level textures, horizontal edges, circular curves, and high-level visual features."
+      },
+      {
+        "term": "Parameter Sharing",
+        "what_is_it": "The engineering principle where the same filter weights are reused across every single spatial position of the input grid.",
+        "analogy": "Using one metal coin detector to scan an entire beach rather than burying 10,000 separate sensors.",
+        "why_it_matters": "Drastically slashes the parameter count from billions down to thousands, eliminating overfitting."
+      },
+      {
+        "term": "Translation Invariance",
+        "what_is_it": "The property that a visual feature (e.g. an eye, a wheel, or a crack) is recognized regardless of where it appears in the frame.",
+        "analogy": "Recognizing a stop sign whether it stands on the left sidewalk or the right shoulder of the road.",
+        "why_it_matters": "Allows models to generalize to objects positioned anywhere in the camera field of view."
       }
     ],
     "symbol_guide": [
@@ -7432,18 +7472,20 @@
     "core_logic": "Why this matters: In Computer Vision: CNNs & Vision Transformers, Convolutions (Kernels, Stride & Padding) provides the essential logic to connect input data with mathematical optimization. Convolutions enforce two critical visual inductive biases: local spatial connectivity (nearby pixels correlate strongly) and translation invariance (a cat in the corner has the same visual features as a cat in the center).",
     "architectural_logic": "In modern AI systems, Convolutions (Kernels, Stride & Padding) is applied during data ingestion, hidden layer transformations, or loss calculation to guarantee numerical stability and fast convergence.",
     "key_takeaways": [
-      "Core Role: Foundational concept in Computer Vision: CNNs & Vision Transformers under Deep Learning.",
-      "Key Principle: Convolution is a specialized linear operation where small learnable weight matrices (kernels/filters) slide across an input feature grid to compute dot products, creating spatially shift-invariant feature maps that detect local patterns regardless of position..",
-      "Production Impact: Critical for accurate training, stable evaluation, and scalable inference."
+      "CNNs use learnable sliding kernels to extract spatial feature maps from 2D and 3D grid data.",
+      "Parameter sharing and local receptive fields reduce parameter counts by 99.9% compared to dense ANNs.",
+      "Hierarchical feature representation: early layers detect edges; middle layers detect textures; deep layers recognize full objects."
     ],
     "definition_bullets": [
-      "Convolutions: Convolutions is a key building block in Computer Vision: CNNs & Vision Transformers. In plain English, it provides the foundation to process, evaluate, or optimize data patterns."
+      "**Core Architecture:** Spatial filter convolutions combined with activation and pooling layers.",
+      "**Convolution Operation:** (I * K)(i, j) computes sliding inner products across the image plane.",
+      "**Visual Inductive Bias:** Translation invariance and local spatial connectivity make CNNs the premier visual architecture."
     ]
   },
   {
     "id": "pooling-max-pooling",
     "topic_id": "dl_vision",
-    "topic_label": "Computer Vision: CNNs & Vision Transformers",
+    "topic_label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Pooling & Max Pooling",
@@ -7503,7 +7545,7 @@
   {
     "id": "resnet-residual-connections",
     "topic_id": "dl_vision",
-    "topic_label": "Computer Vision: CNNs & Vision Transformers",
+    "topic_label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "ResNet Skip & Residual Connections",
@@ -7578,7 +7620,7 @@
   {
     "id": "object-detection-yolo",
     "topic_id": "dl_vision",
-    "topic_label": "Computer Vision: CNNs & Vision Transformers",
+    "topic_label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Object Detection & YOLO Architecture",
@@ -7643,7 +7685,7 @@
   {
     "id": "vision-transformers-vit",
     "topic_id": "dl_vision",
-    "topic_label": "Computer Vision: CNNs & Vision Transformers",
+    "topic_label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "category": "dl",
     "category_label": "Deep Learning",
     "title": "Vision Transformers (ViT)",

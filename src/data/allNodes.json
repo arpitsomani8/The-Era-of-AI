@@ -586,7 +586,7 @@
   {
     "id": "dl_neurons",
     "category": "dl",
-    "label": "Neural Networks & Hidden Layers",
+    "label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "level": 2,
     "x": 840,
     "y": -420,
@@ -595,7 +595,7 @@
     "logic": "Google MLCC Key Insight: Stacking linear layers without non-linear activations only produces another linear model. Non-linear activations allow networks to learn non-linear decision boundaries.",
     "example": "Self-driving car computer vision: Layer 1 detects horizontal and vertical edges; Layer 2 combines edges into shapes (wheels, stop signs); Layer 3 identifies complete pedestrians and vehicles.",
     "subtopics": [
-      "Artificial Neurons & Perceptrons",
+      "Artificial Neural Networks (ANN & Perceptrons)",
       "Input, Hidden, and Output Layers",
       "Non-linear Separability (XOR Problem)",
       "Forward Propagation Matrix Arithmetic",
@@ -696,7 +696,7 @@
   {
     "id": "dl_vision",
     "category": "dl",
-    "label": "Computer Vision: CNNs & Vision Transformers",
+    "label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "level": 2,
     "x": 1260,
     "y": -160,
@@ -705,7 +705,7 @@
     "logic": "A 1080p image has 6 million values — dense layers would require billions of weights. CNNs share tiny 3x3 filters across the whole image; ResNet skip connections prevent gradients from dying in 100+ layers.",
     "example": "Facial recognition: A 3x3 filter scans an image to detect eye corners regardless of whether the face is in the top-left or bottom-right corner of the photo.",
     "subtopics": [
-      "Convolutions (Kernels, Stride & Padding)",
+      "Convolutional Neural Networks (CNN & Feature Extraction)",
       "Pooling & Max Pooling",
       "ResNet Skip & Residual Connections",
       "Object Detection & YOLO Architecture",

@@ -69,6 +69,11 @@ const hubSubtopicToConceptId = {
   "cross-validation": "concept_stratified_kfold",
 
   // 5. Deep Learning Root
+  "ann": "artificial-neurons-perceptrons",
+  "artificial neural network": "artificial-neurons-perceptrons",
+  "artificial neural networks": "artificial-neurons-perceptrons",
+  "artificial neural networks (ann & perceptrons)": "artificial-neurons-perceptrons",
+  "artificial neural networks (ann) & hidden layers": "artificial-neurons-perceptrons",
   "neurons & perceptrons": "artificial-neurons-perceptrons",
   "neural networks & hidden layers": "artificial-neurons-perceptrons",
   "activation functions": "relu-activation",
@@ -79,6 +84,11 @@ const hubSubtopicToConceptId = {
   "deep learning optimizers (adam, adamw)": "sgd-momentum",
   "normalization (batchnorm, layernorm)": "dropout-regularization",
   "normalization & regularization (dropout, layernorm)": "dropout-regularization",
+  "cnn": "convolutions-kernels-stride-padding",
+  "convolutional neural network": "convolutions-kernels-stride-padding",
+  "convolutional neural networks": "convolutions-kernels-stride-padding",
+  "convolutional neural networks (cnn & feature extraction)": "convolutions-kernels-stride-padding",
+  "convolutional neural networks (cnn) & vision transformers": "convolutions-kernels-stride-padding",
   "vision (cnn, vit)": "convolutions-kernels-stride-padding",
   "computer vision: cnns & vision transformers": "convolutions-kernels-stride-padding",
   "sequence models (lstm)": "recurrent-neural-networks-rnn",
