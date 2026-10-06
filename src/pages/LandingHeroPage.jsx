@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Sparkles, 
@@ -138,6 +138,31 @@ export default function LandingHeroPage() {
   const [aeroOffset, setAeroOffset] = useState({ x: 0, y: 0 });
   const [tiltStyle, setTiltStyle] = useState({});
   const aeroContainerRef = useRef(null);
+  const waveTimerRef = useRef(null);
+
+  // Initially wave once on page load (1.8s) to welcome the user, then rest arm
+  useEffect(() => {
+    setIsWaving(true);
+    waveTimerRef.current = setTimeout(() => {
+      setIsWaving(false);
+    }, 1800);
+
+    return () => {
+      if (waveTimerRef.current) clearTimeout(waveTimerRef.current);
+    };
+  }, []);
+
+  // User-triggered wave on click
+  const triggerWave = () => {
+    if (waveTimerRef.current) clearTimeout(waveTimerRef.current);
+    setIsWaving(true);
+    playSynthSound('wave', soundEnabled);
+
+    // Wave for 2.2 seconds, then return arm to relaxed posture
+    waveTimerRef.current = setTimeout(() => {
+      setIsWaving(false);
+    }, 2200);
+  };
 
   // Mouse move handler to make Big Aero movable and gently lean towards cursor
   const handleAeroMouseMove = (e) => {
@@ -165,17 +190,10 @@ export default function LandingHeroPage() {
     });
   };
 
-  const handleAeroClick = () => {
-    setIsWaving(false);
-    playSynthSound('wave', soundEnabled);
-    setTimeout(() => setIsWaving(true), 50);
-  };
-
   const handleSelectDress = (dress) => {
     setSelectedDress(dress);
     playSynthSound('dress', soundEnabled);
-    setIsWaving(false);
-    setTimeout(() => setIsWaving(true), 50);
+    triggerWave();
   };
 
   const handleEnterWorld = (e) => {
@@ -276,7 +294,7 @@ export default function LandingHeroPage() {
           ref={aeroContainerRef}
           onMouseMove={handleAeroMouseMove}
           onMouseLeave={handleAeroMouseLeave}
-          onClick={handleAeroClick}
+          onClick={triggerWave}
           style={tiltStyle}
           className="relative group cursor-pointer my-2 flex flex-col items-center justify-center transition-transform duration-150"
           title="Click Aero to wave!"
@@ -377,22 +395,41 @@ export default function LandingHeroPage() {
                   {/* Left Arm (Resting) */}
                   <path d="M 40 58 Q 30 70 34 82" fill="none" stroke={selectedDress.bodyGrad[0]} strokeWidth="6" strokeLinecap="round" />
 
-                  {/* Right Arm: MOVABLE WAVING ARM */}
-                  <g className={isWaving ? "animate-wave" : ""}>
-                    <path d="M 100 58 Q 118 42 122 22" fill="none" stroke={selectedDress.bodyGrad[0]} strokeWidth="6.5" strokeLinecap="round" />
-                    <circle cx="124" cy="20" r="5.5" fill={selectedDress.beaconColor} />
-                    <circle cx="124" cy="20" r="2.5" fill="#ffffff" />
-                  </g>
+                  {/* Right Arm: Natural resting arm when idle, rises up & waves when isWaving is true */}
+                  {isWaving ? (
+                    <g className="animate-aero-wave">
+                      <path d="M 100 58 Q 118 40 122 20" fill="none" stroke={selectedDress.bodyGrad[0]} strokeWidth="6.5" strokeLinecap="round" />
+                      <circle cx="124" cy="18" r="5.5" fill={selectedDress.beaconColor} />
+                      <circle cx="124" cy="18" r="2.5" fill="#ffffff" />
+                    </g>
+                  ) : (
+                    <g className="transition-all duration-300">
+                      <path d="M 100 58 Q 110 70 106 82" fill="none" stroke={selectedDress.bodyGrad[0]} strokeWidth="6" strokeLinecap="round" />
+                      <circle cx="106" cy="82" r="4.5" fill={selectedDress.beaconColor} />
+                      <circle cx="106" cy="82" r="2" fill="#ffffff" />
+                    </g>
+                  )}
                 </g>
               </g>
             </svg>
           </div>
 
-          {/* Interactive Tap Hint */}
-          <div className="mt-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/70 border border-slate-800 text-[11px] text-slate-300 pointer-events-none">
-            <Sparkles className="w-3 h-3 text-cyan-400" />
-            <span>Click Aero to wave back</span>
-          </div>
+          {/* Interactive Wave Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              triggerWave();
+            }}
+            className={`mt-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer ${
+              isWaving 
+                ? 'bg-indigo-600/30 border-cyan-400 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.3)] scale-105' 
+                : 'bg-slate-900/90 hover:bg-slate-800 border-slate-700/80 text-slate-300 hover:text-white'
+            }`}
+            title="Click to make Aero wave"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{isWaving ? 'Aero is waving! 👋' : 'Wave at Aero 👋'}</span>
+          </button>
         </div>
 
         {/* INTERACTIVE DRESS / OUTFIT CHANGER */}
