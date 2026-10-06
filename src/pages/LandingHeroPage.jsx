@@ -212,28 +212,28 @@ export default function LandingHeroPage({ onOpenAbout }) {
     {
       to: '/mindmap',
       title: 'Interactive Mind Map',
-      subtitle: '41 interconnected domain nodes',
+      subtitle: '63 interconnected domain nodes',
       icon: Network,
       color: 'from-indigo-500/10 to-indigo-600/5 border-indigo-500/20 text-indigo-400'
     },
     {
       to: '/syllabus',
       title: 'Line-Wise Syllabus',
-      subtitle: '34 structured curriculum modules',
+      subtitle: '55 structured curriculum modules',
       icon: BookOpen,
       color: 'from-blue-500/10 to-blue-600/5 border-blue-500/20 text-blue-400'
     },
     {
       to: '/papers',
       title: 'Landmark Papers',
-      subtitle: '22+ milestone arXiv research papers',
+      subtitle: '24 milestone arXiv research papers',
       icon: FileText,
       color: 'from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400'
     },
     {
       to: '/concepts',
       title: 'Core Concepts & Math',
-      subtitle: '170+ in-depth technical breakdowns',
+      subtitle: '270+ in-depth technical breakdowns',
       icon: Layers,
       color: 'from-rose-500/10 to-rose-600/5 border-rose-500/20 text-rose-400'
     },
@@ -552,7 +552,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">22+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">24+</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Landmark Papers</div>
           </div>
         </div>

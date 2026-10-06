@@ -127,8 +127,8 @@ const hubSubtopicToConceptId = {
   "big data infrastructure & distributed feature stores": "concept_big_data_feature_stores",
 
   // NLP Foundations
-  "nlp foundations: n-grams, tokens & word2vec": "concept_tokens_tokenization",
-  "tokens, tokenization (bpe, wordpiece) & vocabulary bounds": "concept_tokens_tokenization",
+  "nlp foundations: n-grams, tokens & word2vec": "tokenizers-bpe-wordpiece-sentencepiece",
+  "tokens, tokenization (bpe, wordpiece) & vocabulary bounds": "tokenizers-bpe-wordpiece-sentencepiece",
   "n-grams, bigrams & statistical language modeling": "concept_ngrams_language_models",
   "sparse vs dense representations & word2vec (skip-gram & cbow)": "concept_word2vec_embeddings",
   "contextual embeddings (bert, elmo) vs static word vectors": "concept_contextual_embeddings",
@@ -155,7 +155,7 @@ const hubSubtopicToConceptId = {
   "feed forward neural networks (multilayer perceptrons & dense layers)": "concept_feed_forward_mlp",
   "recurrent neural networks (rnns) & hidden state recurrence": "concept_rnns_sequence_recurrence",
   "vanishing gradient & exploding gradient dynamics": "concept_vanishing_exploding_gradients",
-  "principal component analysis (pca & dimensionality reduction)": "concept_pca_dimensionality_reduction",
+  "principal component analysis (pca & dimensionality reduction)": "concept_pca",
 
   // MLOps Root
   "production ml systems & mlops": "model-registry-experiment-tracking",
