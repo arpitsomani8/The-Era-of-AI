@@ -264,7 +264,8 @@ export default function MindMapPage() {
     eval: { fill: '#78350f', stroke: '#f59e0b', text: '#fcd34d', label: 'Evaluation' },
     dl: { fill: '#831843', stroke: '#ec4899', text: '#fbcfe8', label: 'Deep Learning' },
     genai: { fill: '#312e81', stroke: '#6366f1', text: '#c7d2fe', label: 'GenAI & LLMs' },
-    mlops: { fill: '#134e4a', stroke: '#14b8a6', text: '#99f6e4', label: 'MLOps' }
+    mlops: { fill: '#134e4a', stroke: '#14b8a6', text: '#99f6e4', label: 'MLOps' },
+    swe_cloud: { fill: '#0f172a', stroke: '#38bdf8', text: '#bae6fd', label: 'SWE & Cloud Infra' }
   };
 
   const getThemeCanvasColors = () => {
@@ -502,7 +503,9 @@ export default function MindMapPage() {
               { id: 'ml', label: 'Classical ML' },
               { id: 'eval', label: 'Evaluation' },
               { id: 'dl', label: 'Deep Learning' },
-              { id: 'genai', label: 'GenAI & LLM' }
+              { id: 'genai', label: 'GenAI & LLM' },
+              { id: 'mlops', label: 'MLOps' },
+              { id: 'swe_cloud', label: 'SWE & Cloud' }
             ].map((dom) => (
               <button
                 key={dom.id}
@@ -849,6 +852,10 @@ export default function MindMapPage() {
           <div className="flex items-center space-x-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span>
             <span>MLOps</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-sm shadow-sky-400/50"></span>
+            <span>SWE &amp; Cloud</span>
           </div>
           <div className="text-slate-500 border-l border-slate-700 pl-3 hidden lg:block">
             Drag to pan &bull; Scroll to zoom &bull; Click node to inspect details

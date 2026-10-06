@@ -2869,5 +2869,194 @@
     "tip": "Explain that the scale gives ternary feedback ($3^k$), so dividing into 3 equal groups maximizes entropy at each step.",
     "experience_level": "0-2",
     "experience_label": "0–2 Yrs (Junior / Fresher)"
+  },
+  {
+    "id": "mock_coding_01",
+    "category": "swe_cloud",
+    "category_label": "Software Engineering & Cloud",
+    "interview_round": "round_coding",
+    "round_label": "Coding Round (Python / DSA)",
+    "experience_level": "2-4",
+    "experience_label": "2–4 Yrs (Mid-Level)",
+    "difficulty": "Mid / Senior",
+    "company_tags": [
+      "Google",
+      "Meta",
+      "Amazon",
+      "Databricks"
+    ],
+    "question": "Phase 13 Coding Round: Implement a thread-safe Least Recently Used (LRU) Cache in Python supporting O(1) time complexity for get(key) and put(key, value) operations.",
+    "answer": "**Problem Breakdown & Algorithmic Strategy:**\nTo achieve strictly O(1) time complexity for both `get` and `put`, we combine two classic data structures:\n1. **Hash Map (`dict`):** Provides instantaneous O(1) key-to-node lookup.\n2. **Doubly Linked List (DLL):** Enables O(1) node deletion and insertion at the head (Most Recently Used - MRU) and tail (Least Recently Used - LRU) without shifting contiguous memory arrays.\n\n```python\nfrom threading import Lock\n\nclass Node:\n    def __init__(self, key=0, val=0):\n        self.key, self.val = key, val\n        self.prev = self.next = None\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = {}  # key -> Node\n        self.lock = Lock()\n        # Dummy sentinel head and tail nodes\n        self.head, self.tail = Node(), Node()\n        self.head.next = self.tail\n        self.tail.prev = self.head\n\n    def _remove(self, node: Node):\n        prev_node, next_node = node.prev, node.next\n        prev_node.next = next_node\n        next_node.prev = prev_node\n\n    def _insert_at_head(self, node: Node):\n        node.next = self.head.next\n        node.prev = self.head\n        self.head.next.prev = node\n        self.head.next = node\n\n    def get(self, key: int) -> int:\n        with self.lock:\n            if key not in self.cache:\n                return -1\n            node = self.cache[key]\n            self._remove(node)\n            self._insert_at_head(node)  # Mark as MRU\n            return node.val\n\n    def put(self, key: int, value: int) -> None:\n        with self.lock:\n            if key in self.cache:\n                self._remove(self.cache[key])\n            node = Node(key, value)\n            self.cache[key] = node\n            self._insert_at_head(node)\n            if len(self.cache) > self.capacity:\n                # Evict least recently used (node right before tail)\n                lru = self.tail.prev\n                self._remove(lru)\n                del self.cache[lru.key]\n```\n\n**Complexity Analysis:**\n- **Time Complexity:** `get`: O(1), `put`: O(1).\n- **Space Complexity:** O(capacity) to store elements in memory.\n- **Production Extension:** In Python production code, `collections.OrderedDict` provides the exact same behavior with C-level optimizations.",
+    "tip": "Interviewers specifically test whether you use dummy head and tail sentinel nodes. Sentinels eliminate edge-case `if self.head is None` checks, demonstrating senior coding maturity."
+  },
+  {
+    "id": "mock_coding_02",
+    "category": "dl",
+    "category_label": "Deep Learning",
+    "interview_round": "round_coding",
+    "round_label": "Coding Round (Python / DSA)",
+    "experience_level": "2-4",
+    "experience_label": "2–4 Yrs (Mid-Level)",
+    "difficulty": "Mid / Senior",
+    "company_tags": [
+      "OpenAI",
+      "Anthropic",
+      "Apple",
+      "NVIDIA"
+    ],
+    "question": "Phase 13 Coding Round: Write a clean, vectorized implementation of Scaled Dot-Product Self-Attention with causal masking in NumPy or PyTorch from scratch without using torch.nn.MultiheadAttention.",
+    "answer": "**Vectorized Self-Attention Implementation:**\n\n$$\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{Q K^T}{\\sqrt{d_k}} + M\\right) V$$\n\n```python\nimport torch\nimport torch.nn.functional as F\n\ndef scaled_dot_product_attention(Q, K, V, mask=None):\n    \"\"\"\n    Q, K, V: [batch_size, num_heads, seq_len, head_dim]\n    mask: Optional [seq_len, seq_len] causal mask\n    \"\"\"\n    d_k = Q.size(-1)\n    \n    # 1. Batched matrix multiplication: Q @ K^T\n    # Shape: [batch, heads, seq_len, seq_len]\n    scores = torch.matmul(Q, K.transpose(-2, -1)) / (d_k ** 0.5)\n    \n    # 2. Apply causal mask (set upper triangle above diagonal to -inf)\n    if mask is not None:\n        scores = scores.masked_fill(mask == 0, float('-inf'))\n        \n    # 3. Softmax across last dimension (key sequence dimension)\n    attention_weights = F.softmax(scores, dim=-1)\n    \n    # 4. Context aggregation: Weights @ V\n    output = torch.matmul(attention_weights, V)\n    return output, attention_weights\n```\n\n**Numerical Stability Nuance:**\nDividing by $\\sqrt{d_k}$ prevents dot product scores from growing excessively large for high-dimensional vectors ($d_k=64, 128$), which would push softmax into flat saturation zones with near-zero gradients during backpropagation.",
+    "tip": "Explain to the interviewer why we use `-inf` before softmax: $\\exp(-\\infty) = 0$, which ensures future tokens receive strictly zero attention weight during autoregressive text generation."
+  },
+  {
+    "id": "mock_ml_theory_01",
+    "category": "ml",
+    "category_label": "Classical Machine Learning",
+    "interview_round": "round_ml_theory",
+    "round_label": "ML Theory Rapid-Fire",
+    "experience_level": "0-2",
+    "experience_label": "0–2 Yrs (Junior / Fresher)",
+    "difficulty": "Junior / Mid",
+    "company_tags": [
+      "Stripe",
+      "Visa",
+      "PayPal",
+      "Amazon"
+    ],
+    "question": "Phase 13 ML Theory Rapid-Fire: When tuning classification decision thresholds on an extremely imbalanced credit card fraud dataset (0.01% fraud rate), should you optimize for Precision, Recall, or F1, and why?",
+    "answer": "**Structured Answer:**\n\n1. **Business Cost Asymmetry:**\nIn fraud detection, the business cost of a **False Negative** (allowing a $10,000 fraudulent transaction to pass through unchecked) is vastly greater than the cost of a **False Positive** (sending an automated 2-second SMS confirmation alert to a legitimate customer).\n\n2. **Target Metric Priority:**\n- **Primary Metric: High Recall (Sensitivity):** We want to catch $\\ge 98\\%$ of all fraudulent transactions: $\\text{Recall} = \\frac{\\text{TP}}{\\text{TP} + \\text{FN}}$.\n- **Secondary Constraint: Precision Budget:** While maximizing recall, we maintain a minimum acceptable Precision (e.g. $\\ge 15\\%$) so customer support agents aren't overwhelmed investigating false alarms.\n\n3. **Decision Threshold Tuning:**\nInstead of the default `0.50` probability cutoff, we calibrate the threshold downwards (e.g. to `0.08` or `0.12`) based on the empirical Precision-Recall (PR) curve or custom financial loss matrix:\n$$\\text{Total Cost} = C_{\\text{FN}} \\cdot \\text{FN} + C_{\\text{FP}} \\cdot \\text{FP}$$",
+    "tip": "Never say 'Accuracy' in an imbalanced classification interview! A naive model predicting 100% legitimate transactions gets 99.99% accuracy while letting all fraud through."
+  },
+  {
+    "id": "mock_ml_theory_02",
+    "category": "dl",
+    "category_label": "Deep Learning",
+    "interview_round": "round_ml_theory",
+    "round_label": "ML Theory Rapid-Fire",
+    "experience_level": "2-4",
+    "experience_label": "2–4 Yrs (Mid-Level)",
+    "difficulty": "Mid / Senior",
+    "company_tags": [
+      "Meta",
+      "Google DeepMind",
+      "Anthropic"
+    ],
+    "question": "Phase 13 ML Theory Rapid-Fire: Why did Loshchilov & Hutter create AdamW, and how does decoupling weight decay from the moving average gradients fundamentally fix L2 regularization in adaptive optimizers?",
+    "answer": "**The AdamW Breakthrough:**\n\n1. **The Flaw in Standard Adam:**\nIn standard SGD, L2 weight decay and gradient penalties are mathematically identical. However, in Adam, L2 regularization was historically implemented by adding $\\lambda \\theta$ directly to the gradient $g_t$.\nBecause Adam divides gradients by $\\sqrt{v_t}$ (the moving average of squared gradients), weights with large historical gradients had their regularization penalties **divided and shrunk**, while weights with tiny historical gradients had their regularization **amplified**.\n\n2. **The AdamW Solution (Decoupled Weight Decay):**\nAdamW subtracts weight decay directly from the weights at the final step, completely bypassing the first and second moment running averages:\n$$\\theta_{t+1} = \\theta_t - \\eta_t \\left( \\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon} + \\lambda \\theta_t \\right)$$\n\n3. **Empirical Impact:**\nDecoupling weight decay restored true exponential weight shrinkage across all parameters, drastically improving test generalization and becoming the universal optimizer for BERT, GPT-3/4, and Llama.",
+    "tip": "Draw the equation or write it out clearly. Explaining that standard Adam scales down L2 decay on high-frequency weights shows you have deep mathematical mastery of optimizer internals."
+  },
+  {
+    "id": "mock_sys_design_01",
+    "category": "mlops",
+    "category_label": "System Design",
+    "interview_round": "round_system_design",
+    "round_label": "System Design (AI / LLM Systems)",
+    "experience_level": "5+",
+    "experience_label": "5+ Yrs (Senior / Lead)",
+    "difficulty": "Senior / Staff",
+    "company_tags": [
+      "Microsoft",
+      "Google",
+      "Amazon",
+      "OpenAI"
+    ],
+    "question": "Phase 13 System Design: Design an Enterprise Hybrid RAG System for 10 Million Internal Technical Documents with sub-200ms P95 latency and Role-Based Access Control (RBAC).",
+    "answer": "**Comprehensive System Design Blueprint:**\n\n**1. High-Level Requirements:**\n- 10M documents (PDF, Markdown, Confluence, Word), average 5 pages.\n- P95 query latency < 200 ms; availability 99.9%.\n- Strict RBAC: Users only see documents permitted by their active directory security groups.\n\n**2. Architecture Components:**\n- **Asynchronous Ingestion Service:** Kafka queue receives document update webhooks. Celery worker fleet parses text, creates semantic chunks (512 tokens with 50-token overlap), and extracts document ACL metadata tags (e.g. `allowed_groups: ['eng', 'finance']`).\n- **Storage Layer:** Dual-Index Strategy:\n  * Dense Vectors: Pinecone Serverless (HNSW, 1536-dim) with namespace separation.\n  * Sparse Lexical: Elasticsearch / OpenSearch BM25 inverted index for exact error codes.\n- **Query Gateway (FastAPI ASGI):**\n  * Step 1: Redis Semantic Cache lookup (sub-10ms hit for frequent questions).\n  * Step 2: Extract User JWT token -> Inject user group claims into Pinecone metadata query filter: `{'groups': {'$in': user.groups}}`.\n  * Step 3: Run parallel Dense Vector + Sparse BM25 retrieval.\n  * Step 4: Reciprocal Rank Fusion (RRF) combines top 50 dense and top 50 sparse hits.\n  * Step 5: Lightweight Cross-Encoder Reranker (BGE-Reranker-Large on GPU) narrows top 100 down to the top 4 most relevant chunks.\n  * Step 6: vLLM engine generates streamed response using Llama-3-70B.\n\n**3. Bottlenecks & Mitigations:**\n- *Cold Start / Cache misses:* Pre-warm Redis cache with top 10,000 frequently asked employee queries.\n- *Context Window Bloat:* Limit generator context strictly to 4 reranked chunks (< 2k tokens) to prevent 'Lost in the Middle' degradation.",
+    "tip": "Start your system design by clarifying functional requirements (RPS, doc size) and non-functional requirements (latency, RBAC security) before drawing boxes."
+  },
+  {
+    "id": "mock_sys_design_02",
+    "category": "mlops",
+    "category_label": "System Design",
+    "interview_round": "round_system_design",
+    "round_label": "System Design (AI / LLM Systems)",
+    "experience_level": "5+",
+    "experience_label": "5+ Yrs (Senior / Lead)",
+    "difficulty": "Senior / Staff",
+    "company_tags": [
+      "Uber",
+      "Stripe",
+      "Snowflake",
+      "Databricks"
+    ],
+    "question": "Phase 13 System Design: Design a High-Throughput Multi-Tenant Machine Learning Classification Platform serving 5,000 enterprise tenants with sub-15ms P99 latency and strict data isolation.",
+    "answer": "**Multi-Tenant ML Platform Architecture:**\n\n**1. Key Challenges:**\n- 5,000 distinct enterprise models; cannot load all into GPU RAM simultaneously.\n- P99 latency < 15 ms; tenant data must never leak across customer boundaries.\n\n**2. Core Architecture:**\n- **API Gateway & Rate Limiter:** Envoy / FastAPI gateway enforcing Token Bucket rate limiting per tenant ID. Authenticates tenant API keys and extracts tenant model routing IDs.\n- **Tiered Model Serving Layer (Triton Inference Server):**\n  * Tier 1 (Hot Models - Top 200 active tenants): Kept pinned in GPU VRAM with Dynamic Batching (max_batch_size=32, max_queue_delay=2ms).\n  * Tier 2 (Warm Models - Next 1,000 tenants): Cached in Host System RAM (pinned memory); loaded to GPU in < 5 ms via CUDA streams.\n  * Tier 3 (Cold Models - Remaining 3,800 tenants): Serialized ONNX / Joblib artifacts stored in Amazon S3; fetched on-demand and cached via LRU eviction policy.\n- **Feature Store Integration:** Low-latency online feature store (Redis / Feast) providing pre-computed real-time entity features in < 2 ms via primary key lookups.\n- **Automated Retraining & Canary Pipeline:** Airflow / Kubeflow jobs train models weekly on tenant-isolated S3 buckets. New models deploy to a 2% traffic canary slice; if drift or error rates exceed 0.5%, traffic rolls back automatically.\n\n**3. Security & Disaster Recovery:**\nTenant-isolated encryption keys (AWS KMS BYOK) ensure that even at the storage layer, one tenant's raw model weights cannot be decrypted by unauthorized processes.",
+    "tip": "Highlight the Hot/Warm/Cold tiered memory model! Interviewers love seeing practical awareness of GPU VRAM hardware cost constraints."
+  },
+  {
+    "id": "mock_behavioral_01",
+    "category": "system_mlops",
+    "category_label": "System & MLOps",
+    "interview_round": "round_behavioral",
+    "round_label": "Behavioral & Experience",
+    "experience_level": "2-4",
+    "experience_label": "2–4 Yrs (Mid-Level)",
+    "difficulty": "Mid / Senior",
+    "company_tags": [
+      "Amazon",
+      "Google",
+      "Airbnb",
+      "Netflix"
+    ],
+    "question": "Phase 13 Behavioral Round: Tell me about a time your production machine learning model suffered from Training-Serving Skew or Label Leakage. How did you identify the root cause and resolve it?",
+    "answer": "**STAR Method Response Framework:**\n\n- **Situation:** At our previous e-commerce analytics company, we deployed a customer conversion prediction model that achieved an astounding 99.4% ROC-AUC in offline cross-validation notebooks. However, within 48 hours of production deployment, real-world conversion precision plummeted to 32%.\n\n- **Task:** As lead ML engineer, I had to identify why the offline validation failed to predict production reality, stop inaccurate customer targeting, and fix the feature pipeline without disrupting marketing campaigns.\n\n- **Action:**\n  1. I immediately audited the feature generation SQL queries and compared production log timestamps against database transaction timestamps.\n  2. I discovered **Label Leakage (Future Data Leakage)**: A feature called `last_checkout_session_id` was being populated by the payment processor webhook *during* the transaction. In offline historical dumps, this column was non-empty for all successful checkouts, giving the model a backdoor cheat code into the target label.\n  3. In live production, however, this field was still `NULL` when the model was queried before payment completion.\n  4. I purged the leaking feature, introduced **point-in-time joins** in our feature store (Feast), and implemented automated data validation tests in CI that assert all feature timestamps precede the prediction event timestamp strictly by $\\ge 1$ second.\n\n- **Result:** Offline validation ROC-AUC re-normalized to a realistic 83.2%, which matched production performance within 0.8% variance over the subsequent 6 months, saving $45,000 in wasted ad spend.",
+    "tip": "Own the problem honestly! Interviewers respect engineers who understand subtle real-world gotchas like future timestamp leakage over candidates who claim their models never fail."
+  },
+  {
+    "id": "mock_behavioral_02",
+    "category": "system_mlops",
+    "category_label": "System & MLOps",
+    "interview_round": "round_behavioral",
+    "round_label": "Behavioral & Experience",
+    "experience_level": "5+",
+    "experience_label": "5+ Yrs (Senior / Lead)",
+    "difficulty": "Senior / Staff",
+    "company_tags": [
+      "LinkedIn",
+      "Meta",
+      "Uber",
+      "Microsoft"
+    ],
+    "question": "Phase 13 Behavioral Round: How do you balance trade-offs between model accuracy, inference latency, and cloud infrastructure costs when shipping an enterprise AI solution?",
+    "answer": "**Senior Engineering Philosophy:**\n\n1. **Business-First SLA Definition:**\nBefore choosing an architecture, I define the hard non-negotiable boundaries: What is the maximum acceptable latency for the user experience? (e.g. < 250 ms for interactive autocomplete vs < 5 seconds for batch reporting) and what is the unit economics budget per query? (e.g. $0.001 per call).\n\n2. **The 80/20 Accuracy vs Cost Curve:**\nA frontier 70B parameter model might achieve 92% benchmark accuracy at $0.04 per query and 1,800 ms latency. A fine-tuned 8B model might achieve 89% accuracy at $0.001 per query and 80 ms latency.\nFor 95% of customer interactions, the 3% accuracy difference is completely unnoticeable, while the 40x cost reduction and 20x latency boost make the product commercially viable.\n\n3. **Practical Hybrid Compromise:**\nI implement **Cascaded / Tiered Model Routing**:\n- Route all queries to a fast, cheap quantized model (e.g. Llama-3-8B INT8 via vLLM) with a confidence scoring head.\n- If confidence is $\\ge 0.85$, return the answer immediately.\n- Only escalate the remaining 15% of ambiguous or complex queries to frontier models (GPT-4o / Claude 3.5 Sonnet).\nThis delivers 99th percentile quality while slashing 80%+ off cloud compute bills.",
+    "tip": "Frame model selection as an engineering ROI decision rather than a pure academic pursuit of decimal points on leaderboards."
+  },
+  {
+    "id": "mock_terminology_01",
+    "category": "genai_llm",
+    "category_label": "GenAI & LLMs",
+    "interview_round": "round_terminology",
+    "round_label": "Rapid-Fire Terminology Blitz",
+    "experience_level": "2-4",
+    "experience_label": "2–4 Yrs (Mid-Level)",
+    "difficulty": "Mid / Senior",
+    "company_tags": [
+      "OpenAI",
+      "Anthropic",
+      "Google",
+      "Mistral"
+    ],
+    "question": "Phase 13 Terminology Blitz: In under 30 seconds each, contrast: 1) GQA vs MHA vs MQA, 2) SwiGLU vs GeLU, and 3) RoPE vs Absolute Positional Encoding.",
+    "answer": "**Rapid-Fire Flashcard Answers:**\n\n**1. Attention Variants (MHA vs MQA vs GQA):**\n- **MHA (Multi-Head Attention):** Every query head has its own private key and value head. Highest representational capacity, but massive KV-cache memory footprint.\n- **MQA (Multi-Query Attention):** All query heads share a single key and single value head. Slashes KV-cache by 95%, but causes noticeable quality degradation in reasoning.\n- **GQA (Grouped-Query Attention):** The sweet-spot compromise where subsets of query heads (e.g. 8 Q heads) share one KV head pair. Used in Llama 3, Mistral, and Gemma.\n\n**2. Activation Functions (GeLU vs SwiGLU):**\n- **GeLU (Gaussian Error Linear Unit):** Multiplies input by the standard Gaussian cumulative distribution; standard in original BERT and GPT-2.\n- **SwiGLU (Swish Gated Linear Unit):** A bilinear gating mechanism: $\\text{Swish}(x W_1) \\otimes (x W_2)$. Requires three weight matrices instead of two in the feed-forward layer, but converges significantly faster with lower final validation perplexity.\n\n**3. Positional Embeddings (Absolute vs RoPE):**\n- **Absolute Positional Embeddings:** Add fixed lookup vectors to token embeddings at input layer. Cannot generalize beyond the pre-training context length.\n- **RoPE (Rotary Position Embeddings):** Multiplies query and key vectors by 2D rotation matrices based on token position index. Mathematically ensures that the inner product depends strictly on relative distance $(m - n)$, enabling seamless context window extrapolation.",
+    "tip": "Keep each definition under 3 crisp sentences. Rapid-fire rounds reward precision, confident terminology, and zero waffle."
+  },
+  {
+    "id": "mock_terminology_02",
+    "category": "genai_llm",
+    "category_label": "GenAI & LLMs",
+    "interview_round": "round_terminology",
+    "round_label": "Rapid-Fire Terminology Blitz",
+    "experience_level": "0-2",
+    "experience_label": "0–2 Yrs (Junior / Fresher)",
+    "difficulty": "Junior / Mid",
+    "company_tags": [
+      "Google",
+      "Meta",
+      "Amazon",
+      "Microsoft"
+    ],
+    "question": "Phase 13 Terminology Blitz: In under 30 seconds each, contrast: 1) Temperature vs Top-P vs Top-K, 2) Precision vs Recall, and 3) L1 Lasso vs L2 Ridge regularization.",
+    "answer": "**Rapid-Fire Flashcard Answers:**\n\n**1. Decoding Parameters (Temperature vs Top-P vs Top-K):**\n- **Temperature:** Divides raw logits before softmax; scales the sharpness of the distribution ($T \\to 0$ is deterministic greedy; $T > 1$ is creative randomness).\n- **Top-K:** Truncates candidate pool to the fixed top $K$ most probable tokens before sampling.\n- **Top-P (Nucleus):** Dynamically sums token probabilities until reaching cumulative threshold $p$ (e.g. 90%), expanding for diverse contexts and contracting for obvious next tokens.\n\n**2. Evaluation Metrics (Precision vs Recall):**\n- **Precision:** $\\frac{\\text{TP}}{\\text{TP} + \\text{FP}}$ — Out of everything the model predicted as positive, how many were actually correct? (Focuses on minimizing false alarms).\n- **Recall:** $\\frac{\\text{TP}}{\\text{TP} + \\text{FN}}$ — Out of all real positive instances in the world, how many did the model successfully find? (Focuses on avoiding missed detections).\n\n**3. Regularization (L1 Lasso vs L2 Ridge):**\n- **L1 Lasso:** Adds sum of absolute weights $\\lambda \\sum |w_i|$. Produces sparse models by driving uninformative feature weights strictly to zero (automatic feature selection).\n- **L2 Ridge:** Adds sum of squared weights $\\lambda \\sum w_i^2$. Shrinks weights smoothly toward zero without zeroing them out completely, handling collinear features gracefully.",
+    "tip": "Deliver with energetic, confident pacing. Nailing these basic foundational distinctions in 60 seconds immediately establishes candidate credibility."
   }
 ]

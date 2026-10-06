@@ -189,13 +189,15 @@ export default function SyllabusPage() {
   }, []);
 
   const categories = [
-    { id: 'all', label: 'All Modules (34)' },
+    { id: 'all', label: `All Modules (${topicsData.length})` },
     { id: 'math', label: '1. Math Foundations' },
     { id: 'data', label: '2. Data Preprocessing' },
     { id: 'ml', label: '3. Classical ML' },
     { id: 'eval', label: '4. Model Evaluation' },
     { id: 'dl', label: '5. Deep Learning' },
     { id: 'genai', label: '6. Transformers & GenAI' },
+    { id: 'mlops', label: '7. MLOps & Production' },
+    { id: 'swe_cloud', label: '8. SWE & Cloud Infra' }
   ];
 
   const toggleTopic = (id) => {

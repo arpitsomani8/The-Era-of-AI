@@ -42,7 +42,7 @@ for t in topics:
                 print(f"TITLE MISMATCH in {tid}: '{s}' != '{c['title']}'")
 
 if subtopic_mismatches == 0:
-    print("SUCCESS: All 199 subtopics in topics.json match concepts.json 1-to-1 perfectly!")
+    print(f"SUCCESS: All {len(concepts)} subtopics in topics.json match concepts.json 1-to-1 perfectly!")
 
 # Mind Map connections check
 node_id_set = set(n['id'] for n in nodes)

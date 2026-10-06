@@ -147,7 +147,8 @@ export default function ConceptsPage() {
     { id: 'eval', label: '4. Model Evaluation', shortLabel: '4. Evaluation' },
     { id: 'dl', label: '5. Deep Learning', shortLabel: '5. Deep Learning' },
     { id: 'genai', label: '6. Transformers & GenAI', shortLabel: '6. GenAI' },
-    { id: 'mlops', label: '7. MLOps', shortLabel: '7. MLOps' }
+    { id: 'mlops', label: '7. MLOps & Production', shortLabel: '7. MLOps' },
+    { id: 'swe_cloud', label: '8. SWE & Cloud Infra', shortLabel: '8. SWE/Cloud' }
   ];
 
   const filteredConcepts = useMemo(() => {

@@ -167,7 +167,19 @@ const hubSubtopicToConceptId = {
   "deep learning foundations": "artificial-neurons-perceptrons",
   "generative ai & llms": "tokenizers-bpe-wordpiece-sentencepiece",
   "transformers & generative ai": "tokenizers-bpe-wordpiece-sentencepiece",
-  "mlops & production": "model-registry-experiment-tracking"
+  "mlops & production": "model-registry-experiment-tracking",
+  "software engineering & cloud infrastructure": "concept_swe_design_patterns_ai",
+  "swe & cloud infra": "concept_swe_design_patterns_ai",
+
+  // New Curriculum Topics
+  "support vector machines & production ensembles": "concept_svm_max_margin",
+  "deep learning framework internals & real-time cv inference": "concept_pytorch_tensorflow_internals",
+  "llm decoding dynamics & gpt vs llama architecture": "concept_llm_decoding_strategies",
+  "vector databases, pinecone & enterprise hybrid retrieval": "concept_hnsw_ivfpq_indexing",
+  "multimodal foundation models & advanced agentic workflows": "concept_clip_contrastive_multimodal",
+  "llmops, multi-tenancy & ai system design": "concept_semantic_caching_latency_cost",
+  "software engineering patterns & clean architecture for ai": "concept_swe_design_patterns_ai",
+  "cloud infrastructure, containerization & production tooling": "concept_cloud_ecosystems_aws_vs_azure"
 };
 
 /**

@@ -39,6 +39,7 @@ export default function InterviewPage({ onOpenAssessment }) {
   const [cardIndex, setCardIndex] = useState(0);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState('0-2'); // '0-2', '2-4', '5+', 'all'
+  const [selectedRound, setSelectedRound] = useState('all'); // 'all', 'round_coding', 'round_ml_theory', 'round_system_design', 'round_behavioral', 'round_terminology'
 
   const experienceCounts = useMemo(() => {
     const counts = { all: interviewData.length, '0-2': 0, '2-4': 0, '5+': 0 };
@@ -57,6 +58,7 @@ export default function InterviewPage({ onOpenAssessment }) {
     { id: 'rag', label: 'RAG & Vector DB' },
     { id: 'metrics_data', label: 'Metrics & Data' },
     { id: 'system_mlops', label: 'System & MLOps' },
+    { id: 'swe_cloud', label: 'SWE & Cloud Infra' },
     { id: 'logic_prob', label: 'Logic & Quant' }
   ];
 
@@ -109,6 +111,11 @@ export default function InterviewPage({ onOpenAssessment }) {
       if (statusFilter === 'bookmarked' && !isSaved) return false;
       if (statusFilter === 'mastered' && !isDone) return false;
       if (statusFilter === 'unmastered' && isDone) return false;
+
+      // Filter by Phase 13 Mock Interview Round
+      if (selectedRound !== 'all' && item.interview_round !== selectedRound) {
+        return false;
+      }
 
       // Filter by Experience Tier
       if (selectedExperience !== 'all') {
@@ -276,6 +283,51 @@ export default function InterviewPage({ onOpenAssessment }) {
                 <span>Take Diagnostic Test</span>
               </button>
             )}
+          </div>
+        </div>
+
+        {/* Phase 13: Mock Interview Simulator Rounds */}
+        <div className="bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/40 border border-purple-500/35 rounded-2xl p-4 space-y-3 shadow-md">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎯</span>
+              <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">
+                Phase 13 &bull; Mock Interview Simulator Rounds
+              </h3>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-semibold">
+              5 Specialized Tracks
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {[
+              { id: 'all', label: 'All Questions', icon: '📋' },
+              { id: 'round_coding', label: '1. Coding (DSA)', icon: '💻' },
+              { id: 'round_ml_theory', label: '2. ML Theory', icon: '🧠' },
+              { id: 'round_system_design', label: '3. System Design', icon: '🏗️' },
+              { id: 'round_behavioral', label: '4. Behavioral', icon: '🤝' },
+              { id: 'round_terminology', label: '5. Terminology Blitz', icon: '⚡' }
+            ].map((round) => {
+              const isActive = selectedRound === round.id;
+              return (
+                <button
+                  key={round.id}
+                  onClick={() => {
+                    setSelectedRound(round.id);
+                    if (round.id !== 'all') setSelectedExperience('all');
+                  }}
+                  className={`p-2.5 rounded-xl border text-xs font-semibold transition flex flex-col items-center justify-center text-center gap-1 ${
+                    isActive
+                      ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-600/30 ring-1 ring-purple-400'
+                      : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border-slate-800'
+                  }`}
+                >
+                  <span className="text-base">{round.icon}</span>
+                  <span className="text-[11px] leading-tight">{round.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
