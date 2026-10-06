@@ -225,8 +225,8 @@ export default function LandingHeroPage({ onOpenAbout }) {
     },
     {
       to: '/papers',
-      title: 'Landmark Papers',
-      subtitle: '24 milestone arXiv research papers',
+      title: 'Research Publications',
+      subtitle: '35 milestone AI publications',
       icon: FileText,
       color: 'from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400'
     },

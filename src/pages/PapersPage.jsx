@@ -135,7 +135,7 @@ export default function PapersPage() {
     setIsSyncing(true);
     setTimeout(() => {
       setIsSyncing(false);
-      setSyncToast('ArXiv stream verified! Up to date with latest 2024–2026 releases.');
+      setSyncToast('Research stream verified! Up to date with latest 2024–2026 releases.');
       setTimeout(() => setSyncToast(null), 3500);
     }, 900);
   };
@@ -203,7 +203,7 @@ export default function PapersPage() {
               Game-Changing AI Research Publications
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1.5 max-w-3xl leading-relaxed">
-              35 milestone publications aligned by publication date — from historical breakthroughs like Transformers and ResNet to active 2024–2026 frontier preprints like DeepSeek-R1 and FlashAttention-3.
+              35 milestone publications aligned by publication date — from historical breakthroughs like Transformers and ResNet to active 2024–2026 frontier publications like DeepSeek-R1 and FlashAttention-3.
             </p>
           </div>
 
@@ -213,10 +213,10 @@ export default function PapersPage() {
               onClick={handleSyncArxiv}
               disabled={isSyncing}
               className="px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold transition flex items-center gap-2 shadow-sm disabled:opacity-50"
-              title="Check for latest arXiv frontier preprints"
+              title="Check for latest frontier research publications"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-cyan-400' : ''}`} />
-              <span>{isSyncing ? 'Checking...' : 'Check arXiv Updates'}</span>
+              <span>{isSyncing ? 'Checking...' : 'Check for Updates'}</span>
             </button>
           </div>
         </div>
@@ -293,7 +293,7 @@ export default function PapersPage() {
               <span>
                 {activeCollection === 'all' && 'All 35 Papers with Timestamps'}
                 {activeCollection === 'foundational' && 'All-Time Historic Milestones'}
-                {activeCollection === 'latest' && 'Active arXiv Frontier Preprints'}
+                {activeCollection === 'latest' && 'Active Frontier Publications'}
               </span>
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function PapersPage() {
                 </span>
                 <span className="hidden md:inline text-slate-600">|</span>
                 <span className="text-slate-400">
-                  <strong className="text-cyan-300 font-medium">Latest Research (12)</strong> are frontier 2024–2026 papers fresh from arXiv (DeepSeek-R1, FlashAttention-3, Llama 3).
+                  <strong className="text-cyan-300 font-medium">Latest Research (12)</strong> are frontier 2024–2026 breakthrough publications (DeepSeek-R1, FlashAttention-3, Llama 3).
                 </span>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function PapersPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by title, author, breakthrough, arXiv ID, or math..."
+                placeholder="Search by title, author, breakthrough, publication ID, or math..."
                 className="w-full bg-slate-900 border border-slate-800 text-xs sm:text-sm text-white rounded-xl pl-9 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder-slate-500"
               />
               <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -638,28 +638,28 @@ export default function PapersPage() {
                         )}
                       </button>
 
-                      {/* ArXiv Abstract Link */}
+                      {/* Original Publication Link */}
                       {paper.url && (
                         <a
                           href={paper.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition"
-                          title="View on arXiv"
+                          title="Read Full Publication"
                         >
-                          <span>arXiv</span>
+                          <span>Read Paper</span>
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       )}
 
-                      {/* ArXiv PDF Direct Download */}
+                      {/* Direct PDF Download */}
                       {paper.pdf_url && (
                         <a
                           href={paper.pdf_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition"
-                          title="Direct Download PDF"
+                          title="Download PDF"
                         >
                           <FileDown className="w-3.5 h-3.5" />
                           <span className="hidden sm:inline">PDF</span>
