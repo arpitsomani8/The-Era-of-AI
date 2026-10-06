@@ -90,20 +90,12 @@ export default function Navbar({
 
   const navItems = [
     {
-      to: '/papers',
-      label: 'Landmark Papers',
-      icon: FileText,
-      color: 'amber',
-      badge: String(papersData.length),
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    },
-    {
-      to: '/projects',
-      label: 'Case Studies',
-      icon: Briefcase,
-      color: 'emerald',
-      badge: String(projectsData.length),
-      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+      to: '/concepts',
+      label: 'Core Concepts',
+      icon: Layers,
+      color: 'rose',
+      badge: String(conceptsData.length),
+      badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     },
     {
       to: '/interview',
@@ -114,12 +106,20 @@ export default function Navbar({
       badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
     },
     {
-      to: '/concepts',
-      label: 'Core Concepts',
-      icon: Layers,
-      color: 'rose',
-      badge: String(conceptsData.length),
-      badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+      to: '/projects',
+      label: 'Case Studies',
+      icon: Briefcase,
+      color: 'emerald',
+      badge: String(projectsData.length),
+      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    },
+    {
+      to: '/papers',
+      label: 'Landmark Papers',
+      icon: FileText,
+      color: 'amber',
+      badge: String(papersData.length),
+      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     },
     {
       to: '/playgrounds',
