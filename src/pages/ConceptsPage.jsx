@@ -681,11 +681,11 @@ export default function ConceptsPage() {
               </div>
 
               {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="flex flex-col space-y-3.5">
                   {selectedConcept.core_terms.map((termItem, idx) => (
                     <div 
                       key={idx}
-                      className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 hover:border-cyan-500/40 transition shadow-sm space-y-3 flex flex-col justify-between"
+                      className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 hover:border-cyan-500/40 transition shadow-sm space-y-3"
                     >
                       <div>
                         <div className="flex items-center gap-2 mb-2">
