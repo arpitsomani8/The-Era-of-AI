@@ -4,129 +4,14 @@ import {
   Volume2, 
   VolumeX, 
   X, 
-  Bot, 
   Palette, 
   Compass, 
-  Anchor
+  Anchor,
+  MessageSquareQuote,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-
-export const COMPANION_QUIZ_QUESTIONS = [
-  {
-    question: "What scaling factor does Scaled Dot-Product Attention divide QK^T by?",
-    options: ["d_k", "sqrt(d_k)", "2 * d_k", "d_model^2"],
-    correct: 1,
-    tip: "1/sqrt(d_k) keeps the dot-product variance around 1, preventing softmax gradients from saturating."
-  },
-  {
-    question: "Which matrix is initialized to all zeros in standard LoRA?",
-    options: ["Matrix A", "Matrix B", "Both A & B", "Neither"],
-    correct: 1,
-    tip: "B starts at 0 and A is Gaussian, guaranteeing Delta W = 0 at training step 0!"
-  },
-  {
-    question: "What is the recommended token overlap percentage in standard RAG chunking?",
-    options: ["0%", "10% – 20%", "50%", "80%"],
-    correct: 1,
-    tip: "10%–20% overlap (~50-100 tokens) prevents semantic boundary fracture between adjacent chunks."
-  },
-  {
-    question: "Which optimizer decouples L2 weight decay directly from gradient updates?",
-    options: ["SGD + Momentum", "RMSProp", "AdamW", "AdaGrad"],
-    correct: 2,
-    tip: "AdamW fixes standard Adam's broken L2 regularization by penalizing weights directly."
-  },
-  {
-    question: "In FlashAttention, which ultra-fast on-chip GPU memory is used for online softmax tiling?",
-    options: ["HBM (High Bandwidth Memory)", "SRAM", "PCIe Bus", "SSD Page File"],
-    correct: 1,
-    tip: "FlashAttention computes softmax in GPU SRAM, turning O(N^2) memory IO into O(N)!"
-  },
-  {
-    question: "What landmark 1957 algorithm could not compute the non-linear XOR function?",
-    options: ["Neocognitron", "Single-Layer Perceptron", "ResNet-18", "LSTM"],
-    correct: 1,
-    tip: "Rosenblatt's Perceptron was proved incapable of XOR by Minsky & Papert in 1969."
-  },
-  {
-    question: "Which evaluation metric is mathematically equal to exp(Cross-Entropy Loss)?",
-    options: ["BLEU Score", "Perplexity (PPL)", "F1 Score", "AUC-ROC"],
-    correct: 1,
-    tip: "Perplexity reflects the model's effective branching uncertainty over vocabulary tokens."
-  },
-  {
-    question: "What does GRPO in DeepSeek-R1 eliminate compared to standard PPO?",
-    options: ["The Critic / Value Model", "The Actor Model", "Reward Functions", "Tokens"],
-    correct: 0,
-    tip: "GRPO computes relative advantages by grouping sample rollouts, discarding the memory-heavy critic!"
-  },
-  {
-    question: "In Rotary Position Embedding (RoPE), how are relative token positions encoded?",
-    options: ["Scalar addition to embeddings", "2D orthogonal rotation matrices", "Concatenating binary digits", "Learned absolute embeddings"],
-    correct: 1,
-    tip: "RoPE multiplies adjacent 2D vector pairs by rotation matrices, making inner products depend solely on (m - n)!"
-  },
-  {
-    question: "What does Grouped-Query Attention (GQA) reduce compared to Multi-Head Attention?",
-    options: ["Vocabulary size", "KV Cache GPU memory footprint", "Model depth", "Feedforward dimension"],
-    correct: 1,
-    tip: "GQA shares KV heads across query groups (e.g. 8:1 ratio in Llama 3), cutting memory bandwidth bottlenecks during generation."
-  },
-  {
-    question: "In Mixture of Experts (MoE), what decides which expert MLPs process each token?",
-    options: ["A Top-K Router Gating Network", "Random dropout selection", "Round-robin scheduler", "Hardcoded token modulo"],
-    correct: 0,
-    tip: "A learned softmax gating router evaluates token representations and selects the top-1 or top-2 most specialized experts."
-  },
-  {
-    question: "What does setting temperature T < 1.0 do to the output Softmax distribution?",
-    options: ["Flattens it towards uniform random", "Sharpens it towards argmax peak", "Inverts token probabilities", "Zeros out top predictions"],
-    correct: 1,
-    tip: "Dividing logits by T < 1.0 amplifies differences, making the model more deterministic and confident."
-  },
-  {
-    question: "In Diffusion Models, what neural network objective is trained during the reverse denoising process?",
-    options: ["Predicting the exact pixel output directly", "Predicting the injected Gaussian noise epsilon", "Classifying image categories", "Compressing images to 1 bit"],
-    correct: 1,
-    tip: "DDPM models are trained with MSE loss to predict the epsilon noise added to latent x_t at timestep t!"
-  },
-  {
-    question: "What is the primary benefit of BitNet's 1.58-bit ternary quantization {-1, 0, 1}?",
-    options: ["Eliminates GPU matrix multiplication in favor of integer addition", "Reduces dataset token count", "Increases vocabulary to 1 million", "Removes attention heads"],
-    correct: 0,
-    tip: "Multiplying by {-1, 0, 1} requires only sign flips and additions, drastically cutting datacenter power consumption!"
-  },
-  {
-    question: "Which index structure enables sub-linear O(log N) approximate nearest neighbor vector search in Vector DBs?",
-    options: ["Bubble Sort Tree", "Hierarchical Navigable Small World (HNSW)", "Single-linked list", "Hash map collision array"],
-    correct: 1,
-    tip: "HNSW builds multi-layer proximity graphs where top layers allow fast skips and bottom layers refine precision."
-  },
-  {
-    question: "What does Direct Preference Optimization (DPO) optimize directly without an RL reward model?",
-    options: ["Implicit log-likelihood ratio of chosen vs rejected responses", "The cross-attention mask", "Quantization bit width", "Token batch size"],
-    correct: 0,
-    tip: "DPO proves the optimal policy implicitly acts as its own Bradley-Terry reward model, bypassing unstable PPO loops."
-  },
-  {
-    question: "In the Adam optimizer, what does the second moment vector (v_t) track?",
-    options: ["Exponential moving average of squared gradients", "Gradient sign changes", "Total step count", "Model weight magnitude"],
-    correct: 0,
-    tip: "v_t estimates the uncentered gradient variance, allowing Adam to scale step sizes inversely with gradient magnitude."
-  },
-  {
-    question: "What theoretical advantage does the Mamba-2 SSM architecture have over standard Transformers?",
-    options: ["O(N) linear time and memory inference over unbounded sequences", "Zero matrix multiplications", "Uses no parameters", "Can only process text backwards"],
-    correct: 0,
-    tip: "State Space Models maintain a fixed-size recurrent state, avoiding the quadratic O(N^2) KV cache memory explosion."
-  },
-  {
-    question: "What mathematical function is used to calculate Cross-Entropy Loss for multi-class classification?",
-    options: ["-sum(y_i * log(p_i))", "sum(abs(y_i - p_i))", "sqrt(y_i^2 + p_i^2)", "y_i / p_i"],
-    correct: 0,
-    tip: "Cross-entropy measures the negative log-likelihood assigned by the model to the true target class distribution."
-  }
-];
 
 const COMPANION_DRESSES = [
   {
@@ -186,15 +71,56 @@ const COMPANION_DRESSES = [
   }
 ];
 
-const COMPANION_TIPS = [
-  "Hi! I'm Aero • Exploring with you 🚀",
-  "Press ⌘K or Ctrl+K anywhere to search 170+ concepts!",
-  "Attention Is All You Need was published in 2017!",
-  "LoRA freezes pretrained weights & trains low-rank matrices A & B.",
-  "AdamW fixes Adam's L2 regularization bug.",
-  "FlashAttention computes online softmax in fast GPU SRAM!",
-  "Click any node in the Mind Map to inspect formulas & code.",
-  "Check out 150+ technical interview questions in the Vault!"
+// Rich, substantial thought insights for Aero's thought box
+const COMPANION_THOUGHTS = [
+  {
+    topic: "Attention Scaling",
+    badge: "Architecture",
+    thought: "In Scaled Dot-Product Attention, we divide QKᵀ by √d_k. Why? As vector dimension d_k grows large, dot products explode in magnitude, pushing softmax gradients into flat zero saturation!",
+    tag: "1/√d_k Factor"
+  },
+  {
+    topic: "LoRA Adapters",
+    badge: "Fine-Tuning",
+    thought: "LoRA matrix B starts initialized to zero while A is Gaussian. This guarantees ΔW = B×A = 0 at step zero, keeping your pretrained model completely untainted before gradient updates!",
+    tag: "Zero-Risk Init"
+  },
+  {
+    topic: "FlashAttention Speed",
+    badge: "GPU Memory",
+    thought: "Traditional Attention reads and writes N×N matrices to high-bandwidth memory (HBM). FlashAttention tiles online softmax inside fast on-chip SRAM, cutting IO memory bandwidth bottleneck!",
+    tag: "O(N) IO Tiling"
+  },
+  {
+    topic: "AdamW Regularization",
+    badge: "Optimization",
+    thought: "Standard Adam mixes L2 penalty into the moving gradient moments, causing frequently updated weights to be regularized less. AdamW decouples weight decay directly from gradient updates!",
+    tag: "Decoupled Decay"
+  },
+  {
+    topic: "Mixture of Experts",
+    badge: "Model Scaling",
+    thought: "MoE uses a lightweight gating router to send each token to only 2 out of 8 expert MLPs. You get the knowledge capacity of 100B+ parameters while computing with just 20B active FLOPs!",
+    tag: "Top-2 Routing"
+  },
+  {
+    topic: "Rotary Embeddings (RoPE)",
+    badge: "Representation",
+    thought: "RoPE multiplies 2D adjacent vector pairs by 2D orthogonal rotation matrices. Inner products <R_m q, R_n k> decay gracefully with relative distance (m - n) without needing fixed position tables!",
+    tag: "Complex Rotation"
+  },
+  {
+    topic: "DeepSeek GRPO",
+    badge: "Reinforcement",
+    thought: "Group Relative Policy Optimization (GRPO) discards the memory-heavy Critic model entirely! Instead, it samples multiple rollouts per prompt and calculates relative advantages against the group average.",
+    tag: "Critic-Free RL"
+  },
+  {
+    topic: "Global Search Shortcut",
+    badge: "Pro Tip",
+    thought: "Press ⌘K (or Ctrl+K) anywhere across the portal to instantly jump across 170+ foundational concepts, landmark research papers, and deep architecture breakdowns!",
+    tag: "⌘K Quick Finder"
+  }
 ];
 
 /**
@@ -249,7 +175,7 @@ function playAeroSynth(type = 'chime', soundEnabled = true) {
 export default function GardenCompanion() {
   const location = useLocation();
 
-  // Responsive screen sizing
+  // Responsive screen sizing: large desktop Aero, small mobile Aero
   const [isMobile, setIsMobile] = useState(() => {
     return typeof window !== 'undefined' ? window.innerWidth < 640 : false;
   });
@@ -267,14 +193,23 @@ export default function GardenCompanion() {
     };
   }, [isMobile]);
 
-  const [isRoaming, setIsRoaming] = useState(false); // True when flying all over screen
+  // Anchor state: when anchored, Aero stays permanently at bottom-right and NEVER flies
+  const [isAnchored, setIsAnchored] = useState(() => {
+    try {
+      return localStorage.getItem('aero_anchored') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const [isRoaming, setIsRoaming] = useState(false); // True ONLY when flying full screen
   const [isHovered, setIsHovered] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dressIndex, setDressIndex] = useState(0);
-  const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const [showSpeech, setShowSpeech] = useState(false);
+  const [thoughtIndex, setThoughtIndex] = useState(0);
+  const [thoughtBoxOpen, setThoughtBoxOpen] = useState(false);
 
   const selectedDress = COMPANION_DRESSES[dressIndex];
   const containerRef = useRef(null);
@@ -282,21 +217,23 @@ export default function GardenCompanion() {
   const idleTimerRef = useRef(null);
   const animFrameRef = useRef(null);
 
-  // Position, target, and velocity refs for 120fps direct DOM animation
+  // Position and state tracking refs for 120 FPS buttery-smooth animation
   const posRef = useRef(getDockPosition());
   const targetRef = useRef(getDockPosition());
   const isRoamingRef = useRef(false);
   const isHoveredRef = useRef(false);
+  const isAnchoredRef = useRef(isAnchored);
 
   isRoamingRef.current = isRoaming;
   isHoveredRef.current = isHovered;
+  isAnchoredRef.current = isAnchored;
 
-  // Pick random waypoint across full screen
+  // Pick a fresh random waypoint across the full screen
   const pickNewWaypoint = useCallback(() => {
     const minX = 24;
-    const maxX = Math.max(minX + 60, window.innerWidth - aeroWidth - 24);
-    const minY = 76; // Below navbar
-    const maxY = Math.max(minY + 60, window.innerHeight - aeroHeight - 30);
+    const maxX = Math.max(minX + 80, window.innerWidth - aeroWidth - 24);
+    const minY = 76; // Below top navbar
+    const maxY = Math.max(minY + 80, window.innerHeight - aeroHeight - 30);
 
     const nextX = Math.round(minX + Math.random() * (maxX - minX));
     const nextY = Math.round(minY + Math.random() * (maxY - minY));
@@ -317,7 +254,7 @@ export default function GardenCompanion() {
         posRef.current = dock;
         targetRef.current = dock;
         if (containerRef.current) {
-          containerRef.current.style.transform = `translate3d(${dock.x}px, ${dock.y}px, 0px)`;
+          containerRef.current.style.transform = `translate3d(${dock.x}px, ${dock.y}px, 0px) rotate(0deg)`;
         }
       }
     };
@@ -325,30 +262,59 @@ export default function GardenCompanion() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Idle Timer: Takes off into full screen flight after 4.5 seconds of user inactivity
+  /**
+   * 15-SECOND IDLE FLYING LOGIC:
+   * 1. Flies ONLY when the screen has been idle with ZERO user interaction for 15 SECONDS.
+   * 2. Any user interaction (mousemove, click, scroll, keypress) IMMEDIATELY stops flying
+   *    and returns Aero back to bottom-right dock!
+   * 3. IF ANCHORED (isAnchored === true):
+   *    Aero NEVER flies AT ALL, even if the screen remains idle indefinitely!
+   */
   useEffect(() => {
-    const onUserActivity = () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    const handleUserActivity = () => {
+      // 1. If Aero is currently roaming, immediately stop flight and return to dock!
+      if (isRoamingRef.current) {
+        setIsRoaming(false);
+        isRoamingRef.current = false;
+        targetRef.current = getDockPosition();
+      }
 
+      // 2. Clear any pending idle countdown
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = null;
+      }
+
+      // 3. If Aero is ANCHORED, HE NEVER FLIES AT ALL!
+      if (isAnchoredRef.current) {
+        return;
+      }
+
+      // 4. Otherwise, start a fresh 15-second idle timer
       idleTimerRef.current = setTimeout(() => {
-        setIsRoaming(true);
-        pickNewWaypoint();
-        playAeroSynth('whoosh', soundEnabled);
-      }, 4500);
+        // Double check anchor condition before takeoff
+        if (!isAnchoredRef.current) {
+          setIsRoaming(true);
+          isRoamingRef.current = true;
+          pickNewWaypoint();
+          playAeroSynth('whoosh', soundEnabled);
+        }
+      }, 15000); // STRICTLY 15 SECONDS
     };
 
-    window.addEventListener('mousemove', onUserActivity);
-    window.addEventListener('keydown', onUserActivity);
-    window.addEventListener('scroll', onUserActivity);
-    onUserActivity();
+    const activityEvents = ['mousemove', 'mousedown', 'keydown', 'wheel', 'scroll', 'touchstart'];
+    activityEvents.forEach((ev) => window.addEventListener(ev, handleUserActivity, { passive: true }));
+
+    // Start idle countdown on mount (unless anchored)
+    if (!isAnchoredRef.current) {
+      handleUserActivity();
+    }
 
     return () => {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      window.removeEventListener('mousemove', onUserActivity);
-      window.removeEventListener('keydown', onUserActivity);
-      window.removeEventListener('scroll', onUserActivity);
+      activityEvents.forEach((ev) => window.removeEventListener(ev, handleUserActivity));
     };
-  }, [pickNewWaypoint, soundEnabled]);
+  }, [pickNewWaypoint, getDockPosition, soundEnabled, isAnchored]);
 
   // High-performance 120 FPS Flight Animation Loop
   useEffect(() => {
@@ -359,14 +325,14 @@ export default function GardenCompanion() {
       lastTime = time;
 
       if (containerRef.current) {
-        if (isRoamingRef.current && !isHoveredRef.current) {
-          // Autonomous Flight Physics: Glide towards target waypoint
+        if (isRoamingRef.current && !isHoveredRef.current && !isAnchoredRef.current) {
+          // Free-Flight Motion Physics: Smoothly glide towards full-screen target waypoint
           const dx = targetRef.current.x - posRef.current.x;
           const dy = targetRef.current.y - posRef.current.y;
           const dist = Math.hypot(dx, dy);
 
           if (dist < 45) {
-            // Reached target waypoint -> pick a new location on the full screen!
+            // Reached target waypoint -> pick a new location across the full screen
             pickNewWaypoint();
           } else {
             const speed = isMobile ? 120 : 180; // px per second
@@ -377,21 +343,18 @@ export default function GardenCompanion() {
             posRef.current.x += dirX * moveStep;
             posRef.current.y += dirY * moveStep;
 
-            // Gentle bank tilt in direction of movement
+            // Gentle banking tilt in direction of movement
             const bankAngle = Math.max(-16, Math.min(16, dirX * 14));
-            // Subtle altitude oscillation
+            // Subtle altitude hover bob
             const hoverBob = Math.sin(time * 0.004) * 3;
 
             containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y + hoverBob}px, 0px) rotate(${bankAngle}deg)`;
           }
-        } else if (!isRoamingRef.current) {
-          // Docked at bottom right
+        } else {
+          // Docked at bottom-right corner (or smoothly returning home)
           const dock = getDockPosition();
           posRef.current.x += (dock.x - posRef.current.x) * 0.15;
           posRef.current.y += (dock.y - posRef.current.y) * 0.15;
-          containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0px) rotate(0deg)`;
-        } else {
-          // Hovered / Paused mid-air
           containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0px) rotate(0deg)`;
         }
       }
@@ -405,29 +368,43 @@ export default function GardenCompanion() {
     };
   }, [pickNewWaypoint, getDockPosition, isMobile]);
 
-  // Rotate tips periodically
-  useEffect(() => {
-    const tipTimer = setInterval(() => {
-      setCurrentTipIndex((prev) => (prev + 1) % COMPANION_TIPS.length);
-    }, 7000);
-    return () => clearInterval(tipTimer);
-  }, []);
-
   const triggerWave = () => {
     if (waveTimerRef.current) clearTimeout(waveTimerRef.current);
     setIsWaving(true);
-    setShowSpeech(true);
+    setThoughtBoxOpen(true);
     playAeroSynth('wave', soundEnabled);
     waveTimerRef.current = setTimeout(() => {
       setIsWaving(false);
     }, 2200);
   };
 
-  const handleDockAero = (e) => {
+  // Toggle Anchor: When anchored, Aero stays permanently at bottom-right dock and NEVER flies
+  const handleToggleAnchor = (e) => {
     e.stopPropagation();
-    setIsRoaming(false);
-    setShowSpeech(false);
-    playAeroSynth('whoosh', soundEnabled);
+    const nextAnchored = !isAnchored;
+    setIsAnchored(nextAnchored);
+    isAnchoredRef.current = nextAnchored;
+
+    try {
+      localStorage.setItem('aero_anchored', String(nextAnchored));
+    } catch {}
+
+    if (nextAnchored) {
+      // Instantly dock to bottom-right and cancel all idle flight timers
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      setIsRoaming(false);
+      isRoamingRef.current = false;
+      const dock = getDockPosition();
+      posRef.current = dock;
+      targetRef.current = dock;
+      if (containerRef.current) {
+        containerRef.current.style.transform = `translate3d(${dock.x}px, ${dock.y}px, 0px) rotate(0deg)`;
+      }
+      playAeroSynth('whoosh', soundEnabled);
+    } else {
+      // Unanchored: start fresh 15s idle timer
+      playAeroSynth('wave', soundEnabled);
+    }
   };
 
   const handleCycleDress = (e) => {
@@ -437,54 +414,117 @@ export default function GardenCompanion() {
     triggerWave();
   };
 
-  // Do not render floating companion on landing page /
+  const nextThought = (e) => {
+    if (e) e.stopPropagation();
+    setThoughtIndex((prev) => (prev + 1) % COMPANION_THOUGHTS.length);
+  };
+
+  const prevThought = (e) => {
+    if (e) e.stopPropagation();
+    setThoughtIndex((prev) => (prev - 1 + COMPANION_THOUGHTS.length) % COMPANION_THOUGHTS.length);
+  };
+
+  // Do not render companion on landing page /
   if (location.pathname === '/' || location.pathname === '') return null;
   if (isClosed) return null;
 
-  // In idle flight mode, options and speech are hidden for a clean flying experience
-  const showControls = isHovered || isWaving || !isRoaming;
+  // In idle flight mode, micro controls are hidden for clean roaming; visible when docked, hovered or waving
+  const showControls = isHovered || isWaving || !isRoaming || isAnchored;
+
+  // Current thought item
+  const currentThought = COMPANION_THOUGHTS[thoughtIndex];
 
   return (
     <aside 
       ref={containerRef}
       aria-label="Aero Floating AI Companion"
-      onMouseEnter={() => {
-        setIsHovered(true);
-        setShowSpeech(true);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setShowSpeech(false);
-      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="fixed top-0 left-0 z-50 pointer-events-auto select-none flex flex-col items-center cursor-pointer will-change-transform"
       onClick={triggerWave}
     >
-      {/* Floating Speech Bubble: Only shows on hover or click, hidden during idle flight */}
-      {showSpeech && (
+      {/* REAL COMIC THOUGHT BOX:
+          - Beautiful, wide, spacious cloud container with comfortable 14px typography
+          - Viewport-aware: aligned to the right (right-0 sm:right-2) when docked at bottom-right,
+            so 100% of the thought box stays comfortably on screen without right-edge clipping!
+          - Real comic thought bubble tail: descending circular bubbles pointing down to Aero's head
+          - Stays open for reading until dismissed or toggled
+      */}
+      {thoughtBoxOpen && (
         <div 
-          onClick={(e) => {
-            e.stopPropagation();
-            setCurrentTipIndex((prev) => (prev + 1) % COMPANION_TIPS.length);
-          }}
-          className={`absolute bottom-[104%] left-1/2 -translate-x-1/2 max-w-[210px] sm:max-w-[250px] p-2 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 text-slate-100 shadow-2xl shadow-indigo-500/25 flex items-start gap-2 text-left mb-1 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
-            isMobile ? 'text-[10px]' : 'text-xs'
-          }`}
-          title="Click to cycle next tip"
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-[115%] right-0 sm:right-2 w-[320px] sm:w-[380px] max-w-[calc(100vw-28px)] p-4 sm:p-5 rounded-[28px] bg-slate-900/95 backdrop-blur-2xl border-2 border-indigo-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_30px_rgba(99,102,241,0.25)] text-left transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 z-30"
         >
-          <Bot className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-          <p className="font-medium text-slate-200 leading-snug line-clamp-2">
-            {COMPANION_TIPS[currentTipIndex]}
+          {/* Header Bar */}
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-base">💭</span>
+              <span className="text-xs font-bold text-indigo-300 tracking-wide">
+                Aero's Thought
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                {currentThought.badge}
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <span className="font-mono text-[11px] text-slate-400 pr-1">
+                {thoughtIndex + 1}/{COMPANION_THOUGHTS.length}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setThoughtBoxOpen(false);
+                }}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                title="Close thought box"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Topic Title */}
+          <div className="text-sm sm:text-base font-bold text-white mb-1.5 flex items-center gap-1.5">
+            <span>{currentThought.topic}</span>
+          </div>
+
+          {/* Thought Content: Generous line height & comfortable font size for full readability */}
+          <p className="text-xs sm:text-[13.5px] text-slate-200 font-normal leading-relaxed mb-3">
+            {currentThought.thought}
           </p>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowSpeech(false);
-            }}
-            className="text-slate-500 hover:text-white p-0.5 rounded ml-auto shrink-0"
-            title="Dismiss speech"
-          >
-            <X className="w-3 h-3" />
-          </button>
+
+          {/* Footer Controls & Pagination */}
+          <div className="pt-2 border-t border-slate-800/90 flex items-center justify-between text-xs">
+            <span className="text-[10px] font-mono font-medium text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">
+              #{currentThought.tag}
+            </span>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={prevThought}
+                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                title="Previous thought"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={nextThought}
+                className="px-2 py-1 rounded-md text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/20 transition flex items-center gap-1"
+                title="Next thought"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Real Comic Thought Tail: 3 descending circles pointing directly to Aero's head */}
+          <div className="absolute -bottom-5 right-12 flex flex-col items-center pointer-events-none gap-0.5">
+            <div className="w-3.5 h-3.5 rounded-full bg-slate-900 border-2 border-indigo-400/60 shadow-md" />
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-900 border-2 border-indigo-400/60 shadow-sm" />
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-300 shadow-xs" />
+          </div>
         </div>
       )}
 
@@ -598,7 +638,7 @@ export default function GardenCompanion() {
         </svg>
       </div>
 
-      {/* Floating Micro Controls: HIDDEN WHEN IDLE / FLYING, appears on hover or interaction */}
+      {/* Floating Micro Controls: Visible on hover/docked, hidden during idle roaming */}
       <div 
         onClick={(e) => e.stopPropagation()} 
         className={`mt-1 flex items-center gap-1 p-1 rounded-full bg-slate-900/95 backdrop-blur-md border border-slate-700/80 shadow-xl transition-all duration-300 ${
@@ -616,24 +656,44 @@ export default function GardenCompanion() {
           <Sparkles className="w-3.5 h-3.5" />
         </button>
 
-        {/* Roam / Dock Toggle Button */}
-        {isRoaming ? (
-          <button
-            onClick={handleDockAero}
-            className="p-1 rounded-full text-amber-300 hover:bg-slate-800 transition"
-            title="Dock Aero to Bottom-Right Anchor ⚓"
-          >
-            <Anchor className="w-3.5 h-3.5" />
-          </button>
-        ) : (
+        {/* Thought Box Toggle Button */}
+        <button
+          onClick={() => setThoughtBoxOpen(!thoughtBoxOpen)}
+          className={`p-1 rounded-full transition ${
+            thoughtBoxOpen 
+              ? 'text-cyan-300 bg-cyan-500/20' 
+              : 'text-indigo-300 hover:bg-slate-800'
+          }`}
+          title="Open Aero's Thought Box 💭"
+        >
+          <MessageSquareQuote className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Anchor Toggle Button: When anchored, Aero stays permanently docked at bottom-right and NEVER flies */}
+        <button
+          onClick={handleToggleAnchor}
+          className={`p-1 px-1.5 rounded-full transition flex items-center gap-1 ${
+            isAnchored 
+              ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 shadow-sm' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
+          }`}
+          title={isAnchored ? "Anchored in place (Will NOT fly even if screen is idle • Click to unlock)" : "Anchor Aero to corner dock (prevents flying when idle)"}
+        >
+          <Anchor className="w-3.5 h-3.5" />
+          {isAnchored && <span className="text-[9px] font-bold pr-0.5">Anchored</span>}
+        </button>
+
+        {/* Roam Now Button (Disabled/hidden when anchored) */}
+        {!isAnchored && (
           <button
             onClick={() => {
               setIsRoaming(true);
+              isRoamingRef.current = true;
               pickNewWaypoint();
               playAeroSynth('whoosh', soundEnabled);
             }}
             className="p-1 rounded-full text-indigo-300 hover:bg-slate-800 transition"
-            title="Free-Flight Patrol Mode 🚀"
+            title="Fly full screen now 🚀 (Will also fly if idle for 15s)"
           >
             <Compass className="w-3.5 h-3.5" />
           </button>
