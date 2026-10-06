@@ -145,21 +145,31 @@ export default function MindMapPage() {
     return activeTrack ? new Set(activeTrack.path) : null;
   }, [activeTrack]);
 
-  // SVG Pan & Zoom Transform State
-  const [transform, setTransform] = useState({ x: 0, y: 0, k: 0.85 });
+  // SVG Pan & Zoom Transform State: Initialized with window center so nodes are never off-screen
+  const [transform, setTransform] = useState(() => {
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const h = typeof window !== 'undefined' ? window.innerHeight : 800;
+    return {
+      x: Math.round(w / 2),
+      y: Math.round(h / 2),
+      k: 0.8
+    };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const svgRef = useRef(null);
 
   const focusNode = useCallback((nodeId) => {
     const node = allNodesData.find((n) => n.id === nodeId);
-    if (!node || !svgRef.current) return;
+    if (!node) return;
     setSelectedNodeId(nodeId);
     setSearchParams({ node: nodeId });
-    const rect = svgRef.current.getBoundingClientRect();
+    const rect = svgRef.current ? svgRef.current.getBoundingClientRect() : null;
+    const w = rect && rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+    const h = rect && rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
     setTransform({
-      x: rect.width / 2 - (node.x || 0) * 0.85,
-      y: rect.height / 2 - (node.y || 0) * 0.85,
+      x: Math.round(w / 2 - (node.x || 0) * 0.85),
+      y: Math.round(h / 2 - (node.y || 0) * 0.85),
       k: 0.85
     });
   }, [setSearchParams]);
@@ -311,17 +321,52 @@ export default function MindMapPage() {
   };
   const themeColors = getThemeCanvasColors();
 
-  // Center the view on initial mount
+  // Center the view on initial mount and re-center on layout stabilization
   useEffect(() => {
-    if (svgRef.current) {
+    const centerGraph = () => {
+      if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
-      setTransform({
-        x: rect.width / 2,
-        y: rect.height / 2,
-        k: 0.8
+      const w = rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+      const h = rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
+
+      const nodeFromParam = searchParams.get('node');
+      const targetNode = nodeFromParam ? allNodesData.find((n) => n.id === nodeFromParam) : null;
+
+      if (targetNode) {
+        setTransform({
+          x: Math.round(w / 2 - (targetNode.x || 0) * 0.85),
+          y: Math.round(h / 2 - (targetNode.y || 0) * 0.85),
+          k: 0.85
+        });
+      } else {
+        setTransform({
+          x: Math.round(w / 2),
+          y: Math.round(h / 2),
+          k: 0.8
+        });
+      }
+    };
+
+    centerGraph();
+    const raf = requestAnimationFrame(centerGraph);
+    const t1 = setTimeout(centerGraph, 60);
+    const t2 = setTimeout(centerGraph, 200);
+
+    let observer;
+    if (typeof ResizeObserver !== 'undefined' && svgRef.current) {
+      observer = new ResizeObserver(() => {
+        centerGraph();
       });
+      observer.observe(svgRef.current);
     }
-  }, []);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (observer) observer.disconnect();
+    };
+  }, [searchParams]);
 
   // Filtered nodes
   const filteredNodes = useMemo(() => {

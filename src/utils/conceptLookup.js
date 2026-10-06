@@ -1,4 +1,4 @@
-import conceptsData from '../data/concepts.json' with { type: 'json' };
+import conceptsData from '../data/concepts.json';
 
 // Group concepts by topic_id for topic-scoped fallbacks
 const topicToConcepts = new Map();
