@@ -97,8 +97,8 @@ function SEOManager() {
       pageTitle = 'Line-Wise Syllabus & Curriculum — The Era of AI | 8 Tracks & 55 Modules';
       metaDesc = 'Comprehensive line-wise curriculum covering Mathematical Foundations, Preprocessing, Classical ML, Evaluation, Deep Learning, GenAI, MLOps, and SWE & Cloud.';
     } else if (path.includes('/papers')) {
-      pageTitle = 'Landmark AI & ML Research Papers — The Era of AI | Daily Updated';
-      metaDesc = 'Curated collection of 24 milestone AI papers from Attention Is All You Need to DeepSeek-R1 with daily arXiv tracking and summaries.';
+      pageTitle = 'Game-Changing AI Research Publications — The Era of AI | 36 Breakthrough Papers';
+      metaDesc = '36 game-changing AI research papers and preprints: from foundational classics like Attention Is All You Need and ResNet to 2024–2026 breakthroughs like DeepSeek-R1 and FlashAttention-3.';
     } else if (path.includes('/projects') || path.includes('/case-studies')) {
       pageTitle = 'Production ML & LLM Case Studies — The Era of AI';
       metaDesc = '5 end-to-end industrial architectures, fraud detection engines, enterprise RAG systems, and medical vision pipelines.';

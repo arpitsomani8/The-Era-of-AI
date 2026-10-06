@@ -21,7 +21,8 @@ import {
   Github,
   Flame,
   Layers,
-  Filter
+  BookOpen,
+  Info
 } from 'lucide-react';
 import papersData from '../data/papers.json';
 import arxivLiveFeed from '../data/arxivLiveFeed.json';
@@ -34,37 +35,53 @@ export default function PapersPage() {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [compendiumTab, setCompendiumTab] = useState('landmark'); // 'landmark' | 'arxiv_live'
+  
+  // 3-way collection selection: 'all' | 'foundational' | 'latest'
+  const [activeCollection, setActiveCollection] = useState('all');
   const [activeCategory, setActiveCategory] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'bookmarked', 'read', 'unread'
   const [copiedBibId, setCopiedBibId] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncToast, setSyncToast] = useState(null);
 
-  const landmarkCategories = [
-    { id: 'all', label: `All Seminal (${papersData.length})` },
-    { id: 'transformer', label: 'Transformers' },
-    { id: 'llm', label: 'LLMs & Scaling' },
-    { id: 'vision_dl', label: 'Vision & DL' },
-    { id: 'generative', label: 'Diffusion & GANs' },
-    { id: 'alignment', label: 'Alignment & RLHF' },
+  // Combined dataset with clear collection tags
+  const allPapers = useMemo(() => {
+    const foundational = papersData.map(p => ({ ...p, collectionType: 'foundational' }));
+    const latest = arxivLiveFeed.map(p => ({ ...p, collectionType: 'latest' }));
+    return [...foundational, ...latest];
+  }, []);
+
+  // Filter by selected collection
+  const currentDataset = useMemo(() => {
+    if (activeCollection === 'foundational') {
+      return allPapers.filter(p => p.collectionType === 'foundational');
+    }
+    if (activeCollection === 'latest') {
+      return allPapers.filter(p => p.collectionType === 'latest');
+    }
+    return allPapers;
+  }, [allPapers, activeCollection]);
+
+  // Topic categories
+  const categories = [
+    { id: 'all', label: `All Topics (${currentDataset.length})` },
+    { id: 'transformer', label: 'Transformers & Architectures' },
+    { id: 'llm', label: 'LLMs & Reasoning' },
+    { id: 'alignment', label: 'Alignment & RL' },
+    { id: 'vision_dl', label: 'Vision & Deep Learning' },
+    { id: 'generative', label: 'Diffusion & Generative' },
+    { id: 'efficient_llm', label: 'Efficiency & LoRA' },
     { id: 'rag', label: 'RAG & Retrieval' },
-    { id: 'efficient_llm', label: 'PEFT & LoRA' },
+    { id: 'nlp_embed', label: 'Embeddings & NLP' },
+    { id: 'prompt_agent', label: 'Agents & Prompting' },
+    { id: 'optimization', label: 'Optimization & Training' },
   ];
 
-  const arxivCategories = [
-    { id: 'all', label: `All Frontier (${arxivLiveFeed.length})` },
-    { id: 'alignment', label: 'Reasoning & Alignment' },
-    { id: 'llm', label: 'LLMs & Scaling' },
-    { id: 'efficient_llm', label: 'PEFT & Efficiency' },
-    { id: 'transformer', label: 'Architectures & SSM' },
-    { id: 'generative', label: 'Generative Diffusion' },
-    { id: 'rag', label: 'RAG & Retrieval' },
-    { id: 'vision_dl', label: 'Speech & Vision' }
-  ];
-
-  const activeCategories = compendiumTab === 'landmark' ? landmarkCategories : arxivCategories;
-  const currentDataset = compendiumTab === 'landmark' ? papersData : arxivLiveFeed;
+  // Only show categories that have at least one paper in the current collection
+  const availableCategories = useMemo(() => {
+    const presentCategories = new Set(currentDataset.map(p => p.category));
+    return categories.filter(cat => cat.id === 'all' || presentCategories.has(cat.id));
+  }, [currentDataset]);
 
   const readCount = useMemo(() => {
     return currentDataset.filter((p) => isCompleted(`paper-${p.id}`)).length;
@@ -90,7 +107,7 @@ export default function PapersPage() {
     setIsSyncing(true);
     setTimeout(() => {
       setIsSyncing(false);
-      setSyncToast('ArXiv stream synchronized! Up to date with latest 2025/2026 releases.');
+      setSyncToast('ArXiv stream verified! Up to date with latest 2024–2026 releases.');
       setTimeout(() => setSyncToast(null), 3500);
     }, 900);
   };
@@ -132,35 +149,29 @@ export default function PapersPage() {
         <div className="border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
-              <FileText className="w-3.5 h-3.5" />
-              <span>AI Research Literature Hub</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Game-Changing AI Research</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-              {compendiumTab === 'landmark' 
-                ? 'Seminal AI & Machine Learning Research Compendium' 
-                : 'Frontier AI & Live ArXiv Ingestion Feed'}
+              Game-Changing AI Research Publications
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
-              {compendiumTab === 'landmark'
-                ? `${papersData.length} foundational landmark papers that defined modern artificial intelligence, complete with mathematical formulations, breakthrough innovations, audio explainer, and one-click BibTeX.`
-                : 'Real-time tracked 2024–2026 frontier breakthroughs including DeepSeek-R1, FlashAttention-3, Llama 3 Herd, DPO, BitNet, Mamba-2, and test-time reasoning compute.'}
+            <p className="text-xs sm:text-sm text-slate-400 mt-1.5 max-w-3xl leading-relaxed">
+              36 milestone publications that shaped modern AI — from historical breakthroughs like Transformers and ResNet to active 2024–2026 frontier preprints like DeepSeek-R1 and FlashAttention-3.
             </p>
           </div>
 
           {/* Sync / Live Stream Action */}
-          {compendiumTab === 'arxiv_live' && (
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleSyncArxiv}
-                disabled={isSyncing}
-                className="px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold transition flex items-center gap-2 shadow-sm disabled:opacity-50"
-                title="Synchronize live ArXiv feed with latest Hugging Face & ArXiv preprints"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-cyan-400' : ''}`} />
-                <span>{isSyncing ? 'Syncing...' : 'Sync ArXiv Stream'}</span>
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleSyncArxiv}
+              disabled={isSyncing}
+              className="px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold transition flex items-center gap-2 shadow-sm disabled:opacity-50"
+              title="Check for latest arXiv frontier preprints"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-cyan-400' : ''}`} />
+              <span>{isSyncing ? 'Checking...' : 'Check arXiv Updates'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Sync Toast Notification */}
@@ -174,89 +185,118 @@ export default function PapersPage() {
           </div>
         )}
 
-        {/* Primary Tab Switcher: Landmark Papers vs Live ArXiv Feed */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-sm">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setCompendiumTab('landmark');
-                setActiveCategory('all');
-              }}
-              className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 ${
-                compendiumTab === 'landmark'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <FileText className="w-4 h-4" />
-              <span>Landmark Compendium ({papersData.length})</span>
-            </button>
+        {/* Primary Collection Switcher: All | Foundational | Latest */}
+        <div className="space-y-2.5">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 shadow-sm">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {/* All Publications Tab */}
+              <button
+                onClick={() => {
+                  setActiveCollection('all');
+                  setActiveCategory('all');
+                }}
+                className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 ${
+                  activeCollection === 'all'
+                    ? 'bg-white text-slate-950 shadow-md font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                <span>All Publications ({allPapers.length})</span>
+              </button>
 
-            <button
-              onClick={() => {
-                setCompendiumTab('arxiv_live');
-                setActiveCategory('all');
-              }}
-              className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 ${
-                compendiumTab === 'arxiv_live'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <div className="relative flex items-center">
-                <Radio className="w-4 h-4" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              </div>
-              <span>Live ArXiv Ingestion Feed ({arxivLiveFeed.length})</span>
-            </button>
+              {/* Foundational Classics Tab */}
+              <button
+                onClick={() => {
+                  setActiveCollection('foundational');
+                  setActiveCategory('all');
+                }}
+                className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 ${
+                  activeCollection === 'foundational'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                <span>Foundational Breakthroughs ({papersData.length})</span>
+              </button>
+
+              {/* Latest Research Tab */}
+              <button
+                onClick={() => {
+                  setActiveCollection('latest');
+                  setActiveCategory('all');
+                }}
+                className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 ${
+                  activeCollection === 'latest'
+                    ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                <div className="relative flex items-center">
+                  <Radio className="w-4 h-4" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                </div>
+                <span>Latest Research 2024–2026 ({arxivLiveFeed.length})</span>
+              </button>
+            </div>
+
+            <div className="text-xs text-slate-400 font-mono px-3 py-1 flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>
+                {activeCollection === 'all' && 'Complete 36 Paper Library'}
+                {activeCollection === 'foundational' && 'All-Time Historic Milestones'}
+                {activeCollection === 'latest' && 'Active arXiv Frontier Preprints'}
+              </span>
+            </div>
           </div>
 
-          <div className="text-xs text-slate-400 font-mono px-3 flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{compendiumTab === 'landmark' ? 'Curated Landmark Corpus' : 'Automated Ingestion Stream'}</span>
+          {/* Plain English Difference Explainer Banner */}
+          <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl px-4 py-2.5 text-xs text-slate-300 flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <div className="flex items-start md:items-center gap-2">
+              <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5 md:mt-0" />
+              <div className="space-x-1">
+                <span className="font-semibold text-white">What's the difference?</span>
+                <span className="text-slate-400">
+                  <strong className="text-amber-300 font-medium">Foundational Breakthroughs (24)</strong> are the historic classics that built modern AI (Attention, ResNet, BERT, LoRA).
+                </span>
+                <span className="hidden md:inline text-slate-600">|</span>
+                <span className="text-slate-400">
+                  <strong className="text-cyan-300 font-medium">Latest Research (12)</strong> are frontier 2024–2026 papers fresh from arXiv (DeepSeek-R1, FlashAttention-3, Llama 3).
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Papers Reading Progress Banner */}
         <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3.5">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
-              compendiumTab === 'landmark' 
-                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' 
-                : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
-            }`}>
-              <CheckCircle2 className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border bg-indigo-500/10 text-indigo-400 border-indigo-500/30">
+              <BookOpen className="w-5 h-5" />
             </div>
             <div>
               <div className="text-sm font-bold text-white flex items-center gap-2.5">
-                <span>{compendiumTab === 'landmark' ? 'Landmark Reading Progress' : 'Frontier Feed Mastery'}</span>
-                <span className={`font-mono text-xs px-2.5 py-0.5 rounded-full border ${
-                  compendiumTab === 'landmark'
-                    ? 'text-amber-300 bg-amber-500/15 border-amber-500/30'
-                    : 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30'
-                }`}>
-                  {readCount} / {currentDataset.length} Digested ({readPercentage}%)
+                <span>Reading Progress</span>
+                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full border text-amber-300 bg-amber-500/15 border-amber-500/30">
+                  {readCount} / {currentDataset.length} Read ({readPercentage}%)
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Listen with AI voice narration, examine mathematical formulas, copy BibTeX citations, and track completed literature.
+                Listen with AI voice narration, study core math equations, copy BibTeX citations, and track your progress.
               </p>
             </div>
           </div>
           <div className="w-full sm:w-56 flex flex-col gap-1.5 shrink-0">
             <div className="flex justify-between text-[11px] text-slate-400 font-mono">
-              <span>Progress</span>
-              <span className={compendiumTab === 'landmark' ? 'text-amber-300 font-bold' : 'text-cyan-300 font-bold'}>
+              <span>Completed</span>
+              <span className="text-amber-300 font-bold">
                 {readPercentage}%
               </span>
             </div>
             <div className="w-full bg-slate-800/90 rounded-full h-2.5 overflow-hidden border border-slate-700/60 p-0.5">
               <div 
-                className={`h-full transition-all duration-500 rounded-full ${
-                  compendiumTab === 'landmark'
-                    ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-400'
-                    : 'bg-gradient-to-r from-cyan-500 via-indigo-500 to-emerald-400'
-                }`}
+                className="h-full transition-all duration-500 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-400"
                 style={{ width: `${readPercentage}%` }}
               />
             </div>
@@ -311,15 +351,13 @@ export default function PapersPage() {
 
           {/* Category Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            {activeCategories.map((cat) => (
+            {availableCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition border ${
                   activeCategory === cat.id
-                    ? compendiumTab === 'landmark'
-                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
-                      : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm'
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm'
                     : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-slate-300'
                 }`}
               >
@@ -331,7 +369,7 @@ export default function PapersPage() {
 
         {/* Results Counter */}
         <div className="flex items-center justify-between text-xs text-slate-400">
-          <span>Showing {filteredPapers.length} of {currentDataset.length} papers</span>
+          <span>Showing {filteredPapers.length} of {currentDataset.length} publications</span>
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
@@ -348,6 +386,7 @@ export default function PapersPage() {
             const pKey = `paper-${paper.id}`;
             const isDone = isCompleted(pKey);
             const isSaved = isBookmarked(pKey);
+            const isLatest = paper.collectionType === 'latest';
 
             return (
               <article
@@ -363,11 +402,21 @@ export default function PapersPage() {
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                        compendiumTab === 'landmark'
-                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
-                          : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
-                      }`}>
+                      {/* Collection Type Badge */}
+                      {isLatest ? (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                          <Radio className="w-3 h-3 text-cyan-400" />
+                          Latest (2024–2026)
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                          <Award className="w-3 h-3 text-amber-400" />
+                          Foundational Classic
+                        </span>
+                      )}
+
+                      {/* Topic Category */}
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
                         {paper.category}
                       </span>
 
@@ -511,9 +560,9 @@ export default function PapersPage() {
                 {/* One Liner Summary */}
                 {paper.one_liner && (
                   <p className={`text-xs sm:text-sm font-medium italic p-3 rounded-xl border ${
-                    compendiumTab === 'landmark'
-                      ? 'text-amber-200/90 bg-amber-950/20 border-amber-500/20'
-                      : 'text-cyan-200/90 bg-cyan-950/20 border-cyan-500/20'
+                    isLatest
+                      ? 'text-cyan-200/90 bg-cyan-950/20 border-cyan-500/20'
+                      : 'text-amber-200/90 bg-amber-950/20 border-amber-500/20'
                   }`}>
                     &ldquo;{paper.one_liner}&rdquo;
                   </p>
