@@ -129,15 +129,25 @@ export default function ConceptsPage() {
     }
   }, [conceptIdParam, topicParam, categoryParam, searchParam]);
 
+  const categoryCounts = useMemo(() => {
+    const counts = { all: conceptsData.length };
+    conceptsData.forEach((c) => {
+      if (c.category) {
+        counts[c.category] = (counts[c.category] || 0) + 1;
+      }
+    });
+    return counts;
+  }, []);
+
   const categories = [
-    { id: 'all', label: 'All Modules (170)' },
-    { id: 'math', label: '1. Math Foundations' },
-    { id: 'data', label: '2. Data Preprocessing' },
-    { id: 'ml', label: '3. Classical ML' },
-    { id: 'eval', label: '4. Model Evaluation' },
-    { id: 'dl', label: '5. Deep Learning' },
-    { id: 'genai', label: '6. Transformers & GenAI' },
-    { id: 'mlops', label: '7. MLOps' }
+    { id: 'all', label: 'All Modules', shortLabel: 'All' },
+    { id: 'math', label: '1. Math Foundations', shortLabel: '1. Math' },
+    { id: 'data', label: '2. Data Preprocessing', shortLabel: '2. Data' },
+    { id: 'ml', label: '3. Classical ML', shortLabel: '3. ML' },
+    { id: 'eval', label: '4. Model Evaluation', shortLabel: '4. Evaluation' },
+    { id: 'dl', label: '5. Deep Learning', shortLabel: '5. Deep Learning' },
+    { id: 'genai', label: '6. Transformers & GenAI', shortLabel: '6. GenAI' },
+    { id: 'mlops', label: '7. MLOps', shortLabel: '7. MLOps' }
   ];
 
   const filteredConcepts = useMemo(() => {
@@ -331,21 +341,49 @@ export default function ConceptsPage() {
             )}
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex items-center overflow-x-auto no-scrollbar space-x-1 pt-1 pb-0.5">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-2 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition ${
-                  activeCategory === cat.id
-                    ? 'bg-rose-600 text-white shadow'
-                    : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          {/* Category Filter Pills (Wrapping so all 8 modules are fully visible) */}
+          <div className="space-y-1.5 pt-0.5">
+            <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold px-0.5">
+              <span>Module Tracks:</span>
+              {activeCategory !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => setActiveCategory('all')}
+                  className="text-[10px] text-rose-400 hover:text-rose-300 font-medium transition cursor-pointer"
+                >
+                  Clear filter (Show all 170)
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              {categories.map((cat) => {
+                const count = categoryCounts[cat.id] || 0;
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setActiveCategory(cat.id)}
+                    title={`${cat.label} (${count} concepts)`}
+                    className={`px-2 py-1 rounded-lg text-[11px] font-medium transition flex items-center gap-1.5 cursor-pointer ${
+                      isActive
+                        ? 'bg-rose-600 text-white shadow-sm font-semibold border border-rose-500'
+                        : 'bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+                    }`}
+                  >
+                    <span>{cat.shortLabel || cat.label}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        isActive ? 'bg-rose-700 text-white' : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
