@@ -763,18 +763,52 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* PORTION 3: Formal Academic Definition & Scope */}
-            {selectedConcept.def && (
-              <div id="portion-definition" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-2 scroll-mt-14">
+            {/* PORTION 3: Formal Academic Definition & Conceptual Breakdown (Bullet Points) */}
+            <div id="portion-definition" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-3.5 scroll-mt-14 shadow-sm">
+              <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-rose-400" />
-                  Portion 3 &bull; Formal Academic Definition &amp; Role
+                  Portion 3 &bull; Core Definition &amp; Conceptual Breakdown
                 </h3>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                  Bullet Points
+                </span>
+              </div>
+
+              {selectedConcept.definition_bullets && selectedConcept.definition_bullets.length > 0 ? (
+                <ul className="space-y-2.5">
+                  {selectedConcept.definition_bullets.map((bullet, bIdx) => {
+                    const colonIdx = bullet.indexOf(':');
+                    const hasPrefix = colonIdx > 0 && colonIdx < 45;
+                    const prefix = hasPrefix ? bullet.substring(0, colonIdx) : null;
+                    const text = hasPrefix ? bullet.substring(colonIdx + 1) : bullet;
+
+                    return (
+                      <li 
+                        key={bIdx} 
+                        className="flex items-start gap-3 text-xs sm:text-sm text-slate-200 leading-relaxed bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 hover:border-rose-500/40 transition shadow-sm"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0 mt-1.5 shadow-[0_0_8px_rgba(244,63,94,0.7)]" />
+                        <div className="min-w-0">
+                          {prefix ? (
+                            <span>
+                              <strong className="text-white font-semibold">{prefix}:</strong>
+                              <span className="text-slate-300"> <MathText text={text.trim()} /></span>
+                            </span>
+                          ) : (
+                            <span className="text-slate-300"><MathText text={bullet} /></span>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
                 <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.def} />
                 </p>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* PORTION 4: Mathematical Formulation & Symbol Decoder */}
             {selectedConcept.formula && (

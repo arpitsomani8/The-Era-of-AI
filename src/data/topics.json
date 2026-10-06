@@ -746,5 +746,136 @@
     "connections": [
       "root"
     ]
+  },
+  {
+    "id": "eval_fairness_bias",
+    "category": "eval",
+    "label": "Fairness, Types of Bias & Mitigation",
+    "level": 2,
+    "x": 480,
+    "y": -360,
+    "def": "The study and measurement of systematic distortions, historical prejudices, and unfair algorithmic discrepancies across demographic cohorts, alongside mitigation techniques.",
+    "formula": "Demographic Parity: P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1) | Equality of Opportunity: P(Ŷ=1 | Y=1, A=0) = P(Ŷ=1 | Y=1, A=1)",
+    "logic": "Machine learning models learn patterns directly from past data. When training data reflects societal prejudices, sampling imbalances, or cognitive blind spots, the model codifies and magnifies those biases into automated decisions.",
+    "example": "Credit lending algorithms: Ensuring an automated loan approval model approves qualified applicants at identical rates regardless of protected demographic attributes (gender, ethnicity, geographic zip code).",
+    "subtopics": [
+      "Human & Cognitive Biases (Reporting, Historical, Automation & Confirmation Bias)",
+      "Selection Bias (Coverage, Non-Response & Sampling Bias)",
+      "Group Attribution Bias (In-Group Bias & Out-Group Homogeneity)",
+      "Fairness Metrics (Demographic Parity, Equality of Opportunity & Counterfactual Fairness)",
+      "Algorithmic Bias Mitigation (MinDiff & Counterfactual Logit Pairing)"
+    ],
+    "connections": [
+      "eval_root"
+    ]
+  },
+  {
+    "id": "mlops_hygiene",
+    "category": "mlops",
+    "label": "Production Data Hygiene & Engineering Pitfalls",
+    "level": 2,
+    "x": 880,
+    "y": 180,
+    "def": "Engineering principles and architectural hygiene to eliminate training-serving skew, prevent silent data leakage, evaluate granular cohort slices, and operate reliable ML pipelines.",
+    "formula": "Skew Metric: Δ(P_train(X, Y), P_serve(X, Y)) > 0 | Slice Loss: L_slice = (1 / |S_k|) ∑_{i ∈ S_k} l(y_i, f(x_i))",
+    "logic": "A model with 99% validation accuracy in a Jupyter notebook will immediately fail in production if features peek at the future, if serving inputs drift from training distributions, or if aggregate accuracy hides failure on critical cohorts.",
+    "example": "E-commerce fraud detection: Logging features with real-time timestamps instead of post-transaction backfills to prevent label leakage and ensure training mirrors production serving reality.",
+    "subtopics": [
+      "Training-Serving Skew & Label Leakage",
+      "Data Slices, Sliced Metrics & The Unicorn Model Antipattern",
+      "Static vs Dynamic Training & Static vs Dynamic Inference",
+      "Production ML Pipelines, Randomization & AutoML",
+      "Big Data Infrastructure & Distributed Feature Stores"
+    ],
+    "connections": [
+      "mlops_root"
+    ]
+  },
+  {
+    "id": "genai_nlp_foundations",
+    "category": "genai",
+    "label": "NLP Foundations: N-Grams, Tokens & Word2Vec",
+    "level": 2,
+    "x": 480,
+    "y": 420,
+    "def": "The evolution of natural language processing from statistical count-based N-grams and sparse bags-of-words to dense semantic embeddings and subword tokenization.",
+    "formula": "Bigram Probability: P(w_t | w_{t-1}) = Count(w_{t-1}, w_t) / Count(w_{t-1}) | Word2Vec Objective: L = ∑ log σ(v'_{w_O}^T v_{w_I})",
+    "logic": "Raw characters and sentences must be transformed into continuous numeric vectors that preserve semantic similarity, geometric relationships, and syntactic context.",
+    "example": "Word arithmetic: Word2Vec vector algebra reveals that Vector('King') - Vector('Man') + Vector('Woman') points directly to Vector('Queen').",
+    "subtopics": [
+      "Tokens, Tokenization (BPE, WordPiece) & Vocabulary Bounds",
+      "N-Grams, Bigrams & Statistical Language Modeling",
+      "Sparse vs Dense Representations & Word2Vec (Skip-Gram & CBOW)",
+      "Contextual Embeddings (BERT, ELMo) vs Static Word Vectors",
+      "Positional Encodings (Sinusoidal, RoPE & ALiBi)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_transformer_deep_dive",
+    "category": "genai",
+    "label": "Transformers, Attention & LLM Lifecycle",
+    "level": 2,
+    "x": 680,
+    "y": 420,
+    "def": "The deep architectural mechanics of Multi-Head Self-Attention, Bidirectional vs Unidirectional models, the complete 3-stage LLM training lifecycle, and core failure modes.",
+    "formula": "MultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O | head_i = Attention(Q W_i^Q, K W_i^K, V W_i^V)",
+    "logic": "Attention allows every token to broadcast queries and match keys with all other tokens simultaneously. By stacking multiple heads, the model learns distinct semantic, syntactic, and factual relationships in parallel.",
+    "example": "Disambiguating word senses: In 'The animal didn't cross the street because it was too tired', self-attention connects 'it' strongly to 'animal' rather than 'street'.",
+    "subtopics": [
+      "Multi-Head, Multi-Layer Self-Attention Dynamics",
+      "Bidirectional Encoders (BERT) vs Unidirectional Decoders (GPT)",
+      "The LLM Training Lifecycle (Pretraining, SFT, RLHF) & Local Training Feasibility",
+      "Problems & Failure Modes with LLMs (Hallucinations, Sycophancy & Prompt Injection)",
+      "Prompt Engineering (Zero-Shot, One-Shot, Few-Shot & Chain-of-Thought)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_agentic_stack",
+    "category": "genai",
+    "label": "Agentic AI, Fine-Tuning & Application Infrastructure",
+    "level": 2,
+    "x": 880,
+    "y": 420,
+    "def": "Modern production GenAI engineering: Low-rank parameter adaptation, 4-bit quantization, cyclical agent graphs, structured RAG indexing, and high-throughput async serving.",
+    "formula": "LoRA Update: W = W_0 + B · A, where B ∈ ℝ^{d × r}, A ∈ ℝ^{r × k}, r ≪ min(d, k)",
+    "logic": "Rather than retraining 70B parameter weights, freeze the base model and inject small rank decomposition matrices (LoRA), quantize weights to 4 bits (QLoRA), and equip models with iterative reasoning loops (ReAct agents).",
+    "example": "Autonomous research agent: An LLM parses a user question, uses LangGraph to plan steps, calls a search API tool, queries a LlamaIndex vector store, reviews intermediate findings, and generates a cited report.",
+    "subtopics": [
+      "LoRA, QLoRA & Parameter-Efficient Fine-Tuning",
+      "Model Quantization Dynamics (FP16, INT8, INT4, AWQ & GGUF)",
+      "FastAPI Production Serving & Streaming LLM Endpoints",
+      "LangChain, LangGraph (Cyclical State Machines) & LlamaIndex RAG",
+      "Agentic AI: ReAct Loops, Tool Calling & Autonomous Agent Swarms"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "dl_foundations_limits",
+    "category": "dl",
+    "label": "Feed Forward, Sequence Limits & Gradient Dynamics",
+    "level": 2,
+    "x": 680,
+    "y": 60,
+    "def": "Foundational deep neural architectures, recurrent unrolling over time, mathematical causes of vanishing/exploding gradients, and dimensional compression with PCA.",
+    "formula": "Vanishing Gradient: ∂L/∂h_1 = ∂L/∂h_T ∏_{t=2}^T (W_{hh}^T diag(1 - tanh²(a_t))) | PCA: C = (1/n) X^T X, C v = λ v",
+    "logic": "Deep networks compose successive layers to learn hierarchical feature representations. When gradients propagate backward across many matrix multiplications, repeated multiplication by singular values < 1 decays gradients to zero.",
+    "example": "Language understanding across long sentences: Plain RNNs forget subject nouns from earlier paragraphs because gradients vanish after 10-15 time steps, motivating the development of LSTMs and Attention.",
+    "subtopics": [
+      "Feed Forward Neural Networks (Multilayer Perceptrons & Dense Layers)",
+      "Recurrent Neural Networks (RNNs) & Hidden State Recurrence",
+      "Vanishing Gradient & Exploding Gradient Dynamics",
+      "Principal Component Analysis (PCA & Dimensionality Reduction)"
+    ],
+    "connections": [
+      "dl_root"
+    ]
   }
 ]

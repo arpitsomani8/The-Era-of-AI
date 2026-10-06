@@ -100,6 +100,53 @@ const hubSubtopicToConceptId = {
   "prompt engineering & agents": "in-context-learning-few-shot",
   "prompt engineering & autonomous agents": "in-context-learning-few-shot",
 
+  // Fairness & Bias
+  "fairness, types of bias & mitigation": "concept_human_cognitive_biases",
+  "human & cognitive biases (reporting, historical, automation & confirmation bias)": "concept_human_cognitive_biases",
+  "selection bias (coverage, non-response & sampling bias)": "concept_selection_biases",
+  "group attribution bias (in-group bias & out-group homogeneity)": "concept_group_attribution_bias",
+  "fairness metrics (demographic parity, equality of opportunity & counterfactual fairness)": "concept_fairness_metrics_parity",
+  "algorithmic bias mitigation (mindiff & counterfactual logit pairing)": "concept_bias_mitigation_mindiff",
+
+  // Production Data Hygiene
+  "production data hygiene & engineering pitfalls": "concept_training_serving_skew_leakage",
+  "training-serving skew & label leakage": "concept_training_serving_skew_leakage",
+  "data slices, sliced metrics & the unicorn model antipattern": "concept_data_slices_unicorn_model",
+  "static vs dynamic training & static vs dynamic inference": "concept_static_vs_dynamic_training_inference",
+  "production ml pipelines, randomization & automl": "concept_ml_pipelines_automl",
+  "big data infrastructure & distributed feature stores": "concept_big_data_infrastructure",
+
+  // NLP Foundations
+  "nlp foundations: n-grams, tokens & word2vec": "concept_tokens_tokenization",
+  "tokens, tokenization (bpe, wordpiece) & vocabulary bounds": "concept_tokens_tokenization",
+  "n-grams, bigrams & statistical language modeling": "concept_ngrams_language_models",
+  "sparse vs dense representations & word2vec (skip-gram & cbow)": "concept_word2vec_embeddings",
+  "contextual embeddings (bert, elmo) vs static word vectors": "concept_contextual_embeddings",
+  "positional encodings (sinusoidal, rope & alibi)": "concept_positional_encoding_rope",
+
+  // Transformers & Attention Deep Dive
+  "transformers, attention & llm lifecycle": "concept_multihead_self_attention",
+  "multi-head, multi-layer self-attention dynamics": "concept_multihead_self_attention",
+  "bidirectional encoders (bert) vs unidirectional decoders (gpt)": "concept_bidirectional_vs_unidirectional",
+  "the llm training lifecycle (pretraining, sft, rlhf) & local training feasibility": "concept_llm_training_lifecycle",
+  "problems & failure modes with llms (hallucinations, sycophancy & prompt injection)": "concept_llm_problems_failures",
+  "prompt engineering (zero-shot, one-shot, few-shot & chain-of-thought)": "concept_prompt_engineering_shots",
+
+  // Agentic AI & Fine-Tuning
+  "agentic ai, fine-tuning & application infrastructure": "concept_lora_qlora",
+  "lora, qlora & parameter-efficient fine-tuning": "concept_lora_qlora",
+  "model quantization dynamics (fp16, int8, int4, awq & gguf)": "concept_model_quantization",
+  "fastapi production serving & streaming llm endpoints": "concept_fastapi_llm_serving",
+  "langchain, langgraph (cyclical state machines) & llamaindex rag": "concept_langchain_langgraph_llamaindex",
+  "agentic ai: react loops, tool calling & autonomous agent swarms": "concept_agentic_ai_react",
+
+  // Deep Learning Foundations & Limits
+  "feed forward, sequence limits & gradient dynamics": "concept_feed_forward_mlp",
+  "feed forward neural networks (multilayer perceptrons & dense layers)": "concept_feed_forward_mlp",
+  "recurrent neural networks (rnns) & hidden state recurrence": "concept_rnns_sequence_recurrence",
+  "vanishing gradient & exploding gradient dynamics": "concept_vanishing_exploding_gradients",
+  "principal component analysis (pca & dimensionality reduction)": "concept_pca_dimensionality_reduction",
+
   // MLOps Root
   "production ml systems & mlops": "model-registry-experiment-tracking",
   "model registry & experiment tracking (mlflow, weights & biases)": "model-registry-experiment-tracking",
