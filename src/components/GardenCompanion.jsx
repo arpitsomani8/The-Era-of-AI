@@ -183,13 +183,13 @@ export default function GardenCompanion() {
   const aeroWidth = isMobile ? 62 : 115;
   const aeroHeight = isMobile ? 70 : 130;
 
-  // Docked bottom-right coordinates
+  // Docked bottom-right coordinates with plenty of safe gutter from the screen edge
   const getDockPosition = useCallback(() => {
     const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const h = typeof window !== 'undefined' ? window.innerHeight : 800;
     return {
-      x: Math.max(16, w - (isMobile ? 78 : 140)),
-      y: Math.max(68, h - (isMobile ? 86 : 155))
+      x: Math.max(16, w - (isMobile ? 96 : 175)),
+      y: Math.max(68, h - (isMobile ? 105 : 185))
     };
   }, [isMobile]);
 
@@ -231,9 +231,9 @@ export default function GardenCompanion() {
   // Pick a fresh random waypoint across the full screen
   const pickNewWaypoint = useCallback(() => {
     const minX = 24;
-    const maxX = Math.max(minX + 80, window.innerWidth - aeroWidth - 24);
+    const maxX = Math.max(minX + 80, window.innerWidth - aeroWidth - 60);
     const minY = 76; // Below top navbar
-    const maxY = Math.max(minY + 80, window.innerHeight - aeroHeight - 30);
+    const maxY = Math.max(minY + 80, window.innerHeight - aeroHeight - 50);
 
     const nextX = Math.round(minX + Math.random() * (maxX - minX));
     const nextY = Math.round(minY + Math.random() * (maxY - minY));
@@ -248,8 +248,8 @@ export default function GardenCompanion() {
       setIsMobile(mobile);
       if (!isRoamingRef.current) {
         const dock = {
-          x: Math.max(16, window.innerWidth - (mobile ? 78 : 140)),
-          y: Math.max(68, window.innerHeight - (mobile ? 86 : 155))
+          x: Math.max(16, window.innerWidth - (mobile ? 96 : 175)),
+          y: Math.max(68, window.innerHeight - (mobile ? 105 : 185))
         };
         posRef.current = dock;
         targetRef.current = dock;
@@ -440,20 +440,20 @@ export default function GardenCompanion() {
       aria-label="Aero Floating AI Companion"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ width: `${aeroWidth}px` }}
       className="fixed top-0 left-0 z-50 pointer-events-auto select-none flex flex-col items-center cursor-pointer will-change-transform"
       onClick={triggerWave}
     >
       {/* REAL COMIC THOUGHT BOX:
           - Beautiful, wide, spacious cloud container with comfortable 14px typography
-          - Viewport-aware: aligned to the right (right-0 sm:right-2) when docked at bottom-right,
-            so 100% of the thought box stays comfortably on screen without right-edge clipping!
+          - Aligned right-0 with a fixed 60px safe margin from window edge, ensuring zero cut-off
           - Real comic thought bubble tail: descending circular bubbles pointing down to Aero's head
           - Stays open for reading until dismissed or toggled
       */}
       {thoughtBoxOpen && (
         <div 
           onClick={(e) => e.stopPropagation()}
-          className="absolute bottom-[115%] right-0 sm:right-2 w-[320px] sm:w-[380px] max-w-[calc(100vw-28px)] p-4 sm:p-5 rounded-[28px] bg-slate-900/95 backdrop-blur-2xl border-2 border-indigo-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_30px_rgba(99,102,241,0.25)] text-left transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 z-30"
+          className="absolute bottom-[115%] right-0 w-[300px] sm:w-[350px] max-w-[calc(100vw-36px)] p-4 sm:p-5 rounded-[28px] bg-slate-900/98 backdrop-blur-2xl border-2 border-indigo-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(99,102,241,0.25)] text-left transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 z-30"
         >
           {/* Header Bar */}
           <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2.5">
@@ -520,7 +520,7 @@ export default function GardenCompanion() {
           </div>
 
           {/* Real Comic Thought Tail: 3 descending circles pointing directly to Aero's head */}
-          <div className="absolute -bottom-5 right-12 flex flex-col items-center pointer-events-none gap-0.5">
+          <div className="absolute -bottom-5 right-[48px] flex flex-col items-center pointer-events-none gap-0.5">
             <div className="w-3.5 h-3.5 rounded-full bg-slate-900 border-2 border-indigo-400/60 shadow-md" />
             <div className="w-2.5 h-2.5 rounded-full bg-slate-900 border-2 border-indigo-400/60 shadow-sm" />
             <div className="w-1.5 h-1.5 rounded-full bg-indigo-300 shadow-xs" />
