@@ -177,11 +177,11 @@
     "logic": "Every tabular row, text token, and image patch is internally stored as an n-dimensional vector. Matrix operations project and rotate these vectors into lower or higher dimensional coordinate systems.",
     "example": "Recommendation systems: A user's genre preferences is a vector [0.9 Action, 0.1 Romance, 0.8 Sci-Fi]. The dot product with a movie's vector [0.85 Action, 0.05 Romance, 0.9 Sci-Fi] yields a high match score of 1.49.",
     "subtopics": [
-      "Vectors, Dot Products & Geometric Cosine Similarity",
+      "Vectors, Dot Products & Cosine Similarity",
       "Matrix Multiplication, Transposition & Inverses",
-      "Eigenvalues & Eigenvectors (Directions of invariant stretch)",
-      "Singular Value Decomposition (SVD for compression)",
-      "Tensors (Multidimensional arrays for batches and images)"
+      "Eigenvalues & Eigenvectors",
+      "Singular Value Decomposition (SVD)",
+      "Tensors & Multidimensional Arrays"
     ],
     "connections": [
       "math_root"
@@ -199,10 +199,10 @@
     "logic": "To minimize loss without guessing, compute the partial derivative of loss with respect to each weight (∂L/∂w). Moving a small step in the opposite direction (-∇L) guarantees that error decreases.",
     "example": "Walking down a foggy mountain (Google MLCC analogy): You cannot see the bottom of the valley through the fog, so you feel the slope of the ground beneath your feet and take a step in the steepest downward direction.",
     "subtopics": [
-      "Partial Derivatives & Univariate Slopes",
-      "The Chain Rule of Calculus (Nested functions f(g(x)))",
-      "Gradient Vector (Direction of steepest increase)",
-      "Hessian Matrix (2nd order curvature & saddle points)",
+      "Partial Derivatives & Slopes",
+      "The Chain Rule of Calculus",
+      "Gradient Vector & Steepest Ascent",
+      "Hessian Matrix & 2nd Order Curvature",
       "Convex vs Non-Convex Loss Landscapes"
     ],
     "connections": [
@@ -221,10 +221,10 @@
     "logic": "Real-world data is corrupted by noise and sampling bias. Probability allows models to output calibrated likelihoods (e.g. 85% probability) rather than rigid binary guesses.",
     "example": "Medical testing: If 1% of the population has a condition (Prior = 0.01) and a test is 90% accurate, Bayes' rule calculates that a patient testing positive actually has only an ~8.3% true probability of having the condition.",
     "subtopics": [
-      "Random Variables, Expectation (Mean μ) & Variance (σ²)",
-      "Distributions: Gaussian (Bell Curve), Bernoulli, Poisson",
-      "Bayes' Theorem: Prior, Likelihood, Evidence & Posterior",
-      "Maximum Likelihood Estimation (MLE) vs MAP Estimation",
+      "Random Variables, Expectation & Variance",
+      "Distributions: Gaussian, Bernoulli & Poisson",
+      "Bayes' Theorem: Prior, Likelihood & Posterior",
+      "Maximum Likelihood (MLE) vs MAP Estimation",
       "Law of Large Numbers & Central Limit Theorem"
     ],
     "connections": [
@@ -243,10 +243,10 @@
     "logic": "High-probability events contain low 'surprisal' (information); rare events contain high surprisal. Minimizing cross-entropy penalizes models heavily when they are confidently wrong.",
     "example": "Predicting the weather in the Sahara desert (99% Sunny) has very low entropy (predictable); predicting a fair coin toss has maximum entropy of 1 bit (completely unpredictable).",
     "subtopics": [
-      "Shannon Entropy (Measure of inherent uncertainty)",
-      "Cross-Entropy Loss (Standard classification objective)",
-      "Kullback-Leibler (KL) Divergence (Distribution distance)",
-      "Mutual Information (Shared dependency between features)"
+      "Shannon Entropy",
+      "Cross-Entropy Loss",
+      "Kullback-Leibler (KL) Divergence",
+      "Mutual Information"
     ],
     "connections": [
       "math_root"
@@ -264,9 +264,9 @@
     "logic": "Google MLCC Principle: Machine learning models reflect their training data. Feeding dirty or duplicate data skews weights and damages generalization ('Garbage in, garbage out').",
     "example": "A sensor recording temperature records: [72°, 74°, 71°, -999°, 73°]. Scrubbing recognizes -999° as an unhandled hardware error code and removes or replaces it.",
     "subtopics": [
-      "Deduplication (Dropping duplicate user sessions/records)",
-      "Fixing Structural Errors (Encoding, whitespace, case)",
-      "Outlier Detection (IQR Rule, Isolation Forest, Z-score)",
+      "Deduplication & Record Linkage",
+      "Fixing Structural Errors",
+      "Outlier Detection (IQR, Isolation Forest & Z-Score)",
       "Data Type Validation & Formatting Consistency"
     ],
     "connections": [
@@ -285,10 +285,10 @@
     "logic": "Dropping every row with a missing value can discard 50%+ of your training data. Mean is suitable for normal distributions; Median resists skewness; KNN preserves relational correlations.",
     "example": "In a real estate dataset missing 'house_age' for 10% of listings: Impute with the median age (e.g. 18 years) to avoid being distorted by 120-year-old historic houses.",
     "subtopics": [
-      "Mean & Median Imputation (For numerical columns)",
-      "Mode Imputation (For categorical values)",
-      "KNN & Iterative MICE Imputation (Multivariate)",
-      "Missingness Indicator Flags (Binary column tracking nulls)"
+      "Mean & Median Imputation",
+      "Mode Imputation & Missing Categories",
+      "KNN & Iterative MICE Imputation",
+      "Missingness Indicator Flags"
     ],
     "connections": [
       "data_root"
@@ -306,11 +306,11 @@
     "logic": "Google MLCC Rule: Gradient descent bounces wildly if one feature ranges from 0 to 1 and another ranges from 0 to 1,000,000. Scaling creates symmetrical loss contours for fast convergence.",
     "example": "California housing dataset: A median income of $45,000 and total rooms of 3,200 are converted into Z-scores (+0.2, +1.1), allowing the model to optimize both weights at the same speed.",
     "subtopics": [
-      "Linear Scaling / Min-Max Normalization (Maps to [0, 1])",
-      "Standardization / Z-score Normalization (Zero mean, unit variance)",
-      "Outlier Clipping / Capping (Truncating extreme values)",
-      "Log Scaling (Compressing extreme long-tail power law distributions)",
-      "Robust Scaler (Using Median & IQR for heavy outlier resistance)"
+      "Min-Max Normalization (Linear Scaling)",
+      "Z-score Standardization",
+      "Outlier Clipping & Winsorization",
+      "Log Scaling & Power Transforms",
+      "Robust Scaler (Median & IQR)"
     ],
     "connections": [
       "data_root"
@@ -328,11 +328,11 @@
     "logic": "Google MLCC Key Insight: Linear models cannot learn non-linear boundaries. A feature cross (e.g. crossing Latitude buckets with Longitude buckets) lets a linear model learn non-linear spatial regions.",
     "example": "Crossing 'Day_of_Week' and 'Hour_of_Day': Predicts taxi demand spikes specifically on [Friday × 8 PM] without needing a complex non-linear deep network.",
     "subtopics": [
-      "One-Hot Encoding (OHE for low-cardinality categories)",
-      "Binning / Bucketing (Converting continuous values into discrete ranges)",
-      "Feature Crosses (Conjunction of features A × B)",
-      "Multi-Hot Encoding (For items with multiple tags, e.g. genres)",
-      "Out-of-Vocabulary (OOV) Bucketing & Hash Trick"
+      "One-Hot Encoding (OHE)",
+      "Binning & Bucketing",
+      "Feature Crosses (Conjunctions)",
+      "Multi-Hot Encoding",
+      "Hash Trick & OOV Bucketing"
     ],
     "connections": [
       "data_root"
@@ -350,11 +350,11 @@
     "logic": "Never train on your test data! A model can achieve 99.9% accuracy on credit card fraud simply by predicting 'No Fraud' every time. Balancing via SMOTE or loss class-weighting forces real learning.",
     "example": "Splitting 100,000 bank transactions into 70% Train, 15% Validation (for tuning hyperparameters), and 15% Test (unseen final exam). Using class weights of 100:1 for fraud cases.",
     "subtopics": [
-      "Train, Validation, and Test Set Hygiene (Preventing leakage)",
-      "Stratified K-Fold Cross-Validation (Preserving class proportions)",
-      "SMOTE (Synthetic Minority Over-sampling Technique)",
-      "Downsampling the Majority vs Upsampling the Minority",
-      "Loss Weighting (Cost-sensitive training)"
+      "Train, Val & Test Hygiene (Preventing Leakage)",
+      "Stratified K-Fold Cross-Validation",
+      "SMOTE (Synthetic Minority Over-sampling)",
+      "Downsampling vs Upsampling",
+      "Cost-Sensitive Training & Loss Weighting"
     ],
     "connections": [
       "data_root"
@@ -372,11 +372,11 @@
     "logic": "Google MLCC Framing: 'Features' (x) are inputs; 'Labels' (y) are ground truths; 'Weights' (w) are coefficients learned by the model; 'Bias' (b) is the baseline offset.",
     "example": "Cricket Chirps & Temperature (Google MLCC example): Temperature = 40 + 0.22 * (Chirps_per_Minute). At 100 chirps/min, the predicted temperature is 62°F.",
     "subtopics": [
-      "Features (Input attributes x) & Labels (Target outcome y)",
-      "Weights (Slopes w) & Bias (Intercept b)",
+      "Features (Inputs) & Labels (Targets)",
+      "Weights (Slopes) & Bias (Intercept)",
       "Labeled vs Unlabeled Examples",
-      "Analytical Solution (Closed-form Normal Equation)",
-      "Inference / Prediction (Computing y' from new inputs)"
+      "Analytical Solution (The Normal Equation)",
+      "Model Inference & Serving"
     ],
     "connections": [
       "ml_root"
@@ -394,12 +394,12 @@
     "logic": "L2 / MSE penalizes large errors quadratically, making it sensitive to outliers. L1 / MAE penalizes errors linearly, making it robust against extreme spikes.",
     "example": "If a house is worth $300k and the model predicts $350k, the error is $50k. Absolute error (L1) = $50,000. Squared error (L2) = 2,500,000,000.",
     "subtopics": [
-      "Squared Loss / L2 Loss (Penalizes big mistakes harshly)",
-      "Mean Squared Error (MSE across all training examples)",
-      "Mean Absolute Error (MAE / L1 loss, outlier resistant)",
-      "Root Mean Squared Error (RMSE, interpretable in original units)",
-      "Huber Loss (Smooth piecewise hybrid of L1 and L2)",
-      "Log Loss / Binary Cross-Entropy (For probabilistic classification)"
+      "Squared Loss & L2 Loss",
+      "Mean Squared Error (MSE)",
+      "Mean Absolute Error (MAE & L1 Loss)",
+      "Root Mean Squared Error (RMSE)",
+      "Huber Loss (Smooth Robust Loss)",
+      "Log Loss & Binary Cross-Entropy"
     ],
     "connections": [
       "ml_root"
@@ -417,11 +417,11 @@
     "logic": "The 'Goldilocks' Learning Rate (Google MLCC): Too small = learning takes forever; Too large = overshoots the minimum and diverges; Just right = converges smoothly to minimal loss.",
     "example": "Mini-batch SGD with Batch Size = 64, Learning Rate = 0.01: The model computes the average gradient across 64 rows, updates all weights, and repeats for 30 epochs.",
     "subtopics": [
-      "Learning Rate (Step size taken per iteration)",
-      "Batch Size (Full Batch vs Mini-Batch vs Single-Sample SGD)",
-      "Epochs (Full passes over the entire training set)",
-      "Convergence (When loss plateaus and stops decreasing)",
-      "Learning Rate Schedules (Decay, Warmup, Cosine Annealing)"
+      "Learning Rate & Step Size",
+      "Batch Size (Full Batch vs Mini-Batch vs SGD)",
+      "Epochs & Training Passes",
+      "Loss Convergence & Stopping Criteria",
+      "Learning Rate Schedules & Cosine Decay"
     ],
     "connections": [
       "ml_root"
@@ -439,11 +439,11 @@
     "logic": "Linear regression outputs numbers from -∞ to +∞. Sigmoid squashes any number into the (0, 1) probability range. Log Loss heavily penalizes confident wrong predictions.",
     "example": "Spam filtering: Linear equation yields z = 2.19. Sigmoid converts this to σ(2.19) = 0.90 (90% probability of spam). With default threshold 0.50, the email is classified as Spam.",
     "subtopics": [
-      "Sigmoid Function (S-curve mapping to [0, 1])",
-      "Classification Threshold (Decision cutoff, default 0.5)",
-      "Log Loss (Cross-Entropy penalty for incorrect confidence)",
-      "Log-Odds & Logit Transformation: ln(p / (1-p))",
-      "Multiclass Softmax (Normalizing scores into probability distribution)"
+      "Sigmoid Activation Function",
+      "Classification Decision Threshold",
+      "Log Loss Penalty in Classification",
+      "Log-Odds & Logits",
+      "Multiclass Softmax"
     ],
     "connections": [
       "ml_root"
@@ -461,11 +461,11 @@
     "logic": "Google MLCC Framing: Models should be as simple as possible, but no simpler. L2 regularization shrinks weights smoothly toward zero; L1 drives unhelpful weights strictly to 0.0 (feature selection).",
     "example": "A model with 10,000 vocabulary words predicting sentiment: L1 regularization zeroes out 9,200 non-predictive words like 'the', 'and', 'table', keeping only high-signal adjectives.",
     "subtopics": [
-      "L2 Regularization / Ridge (Penalizes squared weights)",
-      "L1 Regularization / Lasso (Induces feature sparsity)",
-      "Lambda (λ) Hyperparameter (Tuning penalty strength)",
-      "ElasticNet (Weighted balance of L1 and L2 penalties)",
-      "Early Stopping (Halting training before validation error rises)"
+      "L2 Regularization (Ridge Regression)",
+      "L1 Regularization (Lasso Regression)",
+      "Lambda (λ) Hyperparameter Tuning",
+      "ElasticNet Regularization",
+      "Early Stopping Regularization"
     ],
     "connections": [
       "ml_root"
@@ -483,11 +483,11 @@
     "logic": "A single tree easily memorizes training data. Random Forest trains 100+ trees on random feature subsets and averages their votes. Boosting trains each new tree to fix the mistakes of previous trees.",
     "example": "Predicting loan approval: Tree 1 predicts baseline acceptance; Tree 2 corrects for low credit scores; Tree 3 corrects for high debt-to-income ratios.",
     "subtopics": [
-      "Decision Trees (Splitting on Gini Impurity or Entropy)",
-      "Tree Pruning & Max Depth (Preventing memorization)",
-      "Random Forest (Bagging + Feature Subspace Sampling)",
+      "Decision Trees & Splitting Criteria",
+      "Tree Pruning & Depth Limits",
+      "Random Forest & Bagging",
       "Gradient Boosted Decision Trees (GBDT)",
-      "XGBoost, LightGBM & CatBoost (High-performance gradient boosting)"
+      "XGBoost, LightGBM & CatBoost"
     ],
     "connections": [
       "ml_root"
@@ -505,11 +505,11 @@
     "logic": "When labels don't exist, clustering groups points by geometric distance. PCA projects high-dimensional data onto orthogonal axes of maximum variance to compress features.",
     "example": "Customer segmentation: An e-commerce platform clusters 500,000 customers into 4 buying profiles (bargain hunters, impulse buyers, tech enthusiasts, luxury shoppers) without manual tags.",
     "subtopics": [
-      "K-Means Clustering (Centroid updates & Elbow method)",
-      "Hierarchical Clustering (Agglomerative tree dendrograms)",
-      "DBSCAN (Density-based spatial clustering for arbitrary shapes)",
-      "Principal Component Analysis (PCA for dimensionality reduction)",
-      "t-SNE & UMAP (High-dimensional manifold projection)"
+      "K-Means Clustering & Centroid Updates",
+      "Hierarchical Clustering & Dendrograms",
+      "DBSCAN Density-Based Clustering",
+      "Principal Component Analysis (PCA)",
+      "t-SNE & UMAP Manifold Projections"
     ],
     "connections": [
       "ml_root"
@@ -528,11 +528,11 @@
     "example": "Cancer screening: Out of 10 cancer patients, the model flags 9 (Recall = 90%), but also falsely alarms 20 healthy patients (Precision = 9/29 = 31%). In healthcare, high recall is prioritized over precision.",
     "subtopics": [
       "True Positives (TP) & True Negatives (TN)",
-      "False Positives (FP / Type I Error) & False Negatives (FN / Type II)",
-      "Precision (Quality of positive claims)",
-      "Recall / Sensitivity (Completeness of positive findings)",
-      "F1-Score (Harmonic mean balancing precision and recall)",
-      "Prediction Bias (Comparing average predictions to average reality)"
+      "False Positives (Type I) & False Negatives (Type II)",
+      "Precision (Positive Predictive Value)",
+      "Recall / Sensitivity (True Positive Rate)",
+      "F1-Score (Harmonic Mean)",
+      "Prediction Bias & Calibration"
     ],
     "connections": [
       "eval_root"
@@ -550,10 +550,10 @@
     "logic": "The default 0.5 decision threshold is arbitrary. Changing the threshold shifts precision and recall. ROC-AUC evaluates overall ranking ability independent of the chosen threshold.",
     "example": "Spam filter operating at threshold 0.90 to never misclassify important client emails (high precision), versus an airport weapons scanner operating at threshold 0.10 to catch every threat (high recall).",
     "subtopics": [
-      "ROC Curve (Receiver Operating Characteristic: TPR vs FPR)",
-      "AUC (Area Under the ROC Curve - threshold-independent score)",
-      "PR Curve (Precision vs Recall - best for rare event detection)",
-      "Operating Point / Threshold Tuning (Selecting threshold for business goals)"
+      "ROC Curve (TPR vs FPR)",
+      "AUC-ROC (Area Under the ROC Curve)",
+      "Precision-Recall (PR) Curve",
+      "Operating Point & Threshold Tuning"
     ],
     "connections": [
       "eval_root"
@@ -571,11 +571,11 @@
     "logic": "Google MLCC Warning: If training loss keeps going down while validation loss starts climbing back up, your model is memorizing training noise (Overfitting). Regularize or stop training!",
     "example": "Predicting dog breeds: If your model memorizes that 'all dogs photographed on grass are golden retrievers', it fails when shown a golden retriever on a sidewalk (High Variance / Overfitting).",
     "subtopics": [
-      "Underfitting / High Bias (Model lacks capacity)",
-      "Overfitting / High Variance (Model memorizes noise)",
-      "Generalization Curves (Monitoring Train Loss vs Validation Loss)",
-      "Occam's Razor (Preferring the simplest sufficient model)",
-      "K-Fold Cross-Validation for Robust Performance Estimation"
+      "Underfitting & High Bias",
+      "Overfitting & High Variance",
+      "Generalization Curves (Loss Tracking)",
+      "Occam's Razor & Model Parsimony",
+      "K-Fold Cross-Validation"
     ],
     "connections": [
       "eval_root"
@@ -593,9 +593,9 @@
     "logic": "Google MLCC Key Insight: Stacking linear layers without non-linear activations only produces another linear model. Non-linear activations allow networks to learn non-linear decision boundaries.",
     "example": "Self-driving car computer vision: Layer 1 detects horizontal and vertical edges; Layer 2 combines edges into shapes (wheels, stop signs); Layer 3 identifies complete pedestrians and vehicles.",
     "subtopics": [
-      "Artificial Neurons / Perceptrons (Linear sum + activation)",
+      "Artificial Neurons & Perceptrons",
       "Input, Hidden, and Output Layers",
-      "Non-linear Separability (Solving XOR and concentric circles)",
+      "Non-linear Separability (XOR Problem)",
       "Forward Propagation Matrix Arithmetic",
       "Universal Approximation Theorem"
     ],
@@ -615,11 +615,11 @@
     "logic": "Google MLCC Standard: ReLU (Rectified Linear Unit) is the default choice because it avoids vanishing gradients for positive inputs and computes at lightning speed (simple threshold at 0).",
     "example": "If pre-activation sum z = -4.2, ReLU outputs 0. If z = +3.1, ReLU outputs 3.1. Softmax converts raw output logits [3.0, 1.0, 0.2] into probabilities [84%, 11%, 5%].",
     "subtopics": [
-      "ReLU (Rectified Linear Unit - default for hidden layers)",
-      "Dying ReLU Problem & Leaky ReLU / PReLU",
-      "GELU (Gaussian Error Linear Unit - standard in modern LLMs)",
-      "Softmax (For multi-class probability outputs)",
-      "Sigmoid & Tanh (Historical activations prone to saturation)"
+      "ReLU (Rectified Linear Unit)",
+      "Dying ReLU & Leaky ReLU / PReLU",
+      "GELU (Gaussian Error Linear Unit)",
+      "Softmax Activation Function",
+      "Sigmoid & Tanh Saturated Activations"
     ],
     "connections": [
       "dl_root"
@@ -637,11 +637,11 @@
     "logic": "Calculating gradients for 100 billion parameters one-by-one is computationally impossible. Backprop calculates all gradients in a single backward pass by reusing intermediate layer derivatives.",
     "example": "When a network incorrectly classifies a cat photo as a dog, backprop calculates which weights in Layer 3 caused the mistake and sends error signals back to Layer 2 and Layer 1.",
     "subtopics": [
-      "Computational Graph (DAG of tensor operations)",
+      "Computational Graph (DAG)",
       "Reverse-Mode Automatic Differentiation",
-      "Vanishing Gradient Problem (Gradients shrinking exponentially)",
-      "Exploding Gradient Problem & Gradient Clipping",
-      "Jacobian & Hessian Matrix Multiplications"
+      "Vanishing Gradient Problem",
+      "Exploding Gradients & Gradient Clipping",
+      "Jacobian & Hessian Matrices"
     ],
     "connections": [
       "dl_root"
@@ -659,11 +659,11 @@
     "logic": "Standard SGD moves too slowly across flat plateaus and oscillates wildly in steep ravines. Adam uses momentum to power through plateaus and adapts step size based on parameter volatility.",
     "example": "In language models, common words like 'the' get small, cautious updates, while rare technical words like 'quantum' get larger, assertive weight adjustments.",
     "subtopics": [
-      "SGD with Momentum (Building velocity to escape local minima)",
-      "RMSprop (Scaling steps by root mean square of gradients)",
-      "Adam (Combining momentum and adaptive variance scaling)",
-      "AdamW (Decoupling weight decay from gradient updates)",
-      "Learning Rate Warmup & Cosine Decay Schedules"
+      "SGD with Momentum",
+      "RMSprop (Root Mean Square Propagation)",
+      "Adam (Adaptive Moment Estimation)",
+      "AdamW (Decoupled Weight Decay)",
+      "Learning Rate Warmup & Cosine Decay"
     ],
     "connections": [
       "dl_root"
@@ -681,11 +681,11 @@
     "logic": "As lower layers change their weights, the inputs to upper layers drift constantly (Internal Covariate Shift). LayerNorm centers activations per token; Dropout forces neurons to learn independently.",
     "example": "Dropout with rate p = 0.2: In every training step, 20% of neurons are randomly shut off, preventing any single neuron from becoming a brittle crutch.",
     "subtopics": [
-      "Dropout (Randomly dropping activations to prevent co-adaptation)",
-      "Batch Normalization (Normalizing across mini-batch samples)",
-      "Layer Normalization (Normalizing across feature dimensions per token)",
-      "RMSNorm (Lightweight LayerNorm used in Llama models)",
-      "Weight Decay (L2 penalty directly integrated into parameter updates)"
+      "Dropout Regularization",
+      "Batch Normalization (BatchNorm)",
+      "Layer Normalization (LayerNorm)",
+      "RMSNorm (Root Mean Square Normalization)",
+      "Weight Decay in Deep Learning"
     ],
     "connections": [
       "dl_root"
@@ -703,11 +703,11 @@
     "logic": "A 1080p image has 6 million values — dense layers would require billions of weights. CNNs share tiny 3x3 filters across the whole image; ResNet skip connections prevent gradients from dying in 100+ layers.",
     "example": "Facial recognition: A 3x3 filter scans an image to detect eye corners regardless of whether the face is in the top-left or bottom-right corner of the photo.",
     "subtopics": [
-      "Convolutions (Kernels, Filters, Stride, Padding)",
-      "Pooling (Max Pooling to downsample spatial dimensions)",
-      "ResNet Skip / Residual Connections (F(x) + x)",
-      "Object Detection (YOLO bounding boxes and anchors)",
-      "Vision Transformers (ViT: Splitting images into visual token patches)"
+      "Convolutions (Kernels, Stride & Padding)",
+      "Pooling & Max Pooling",
+      "ResNet Skip & Residual Connections",
+      "Object Detection & YOLO Architecture",
+      "Vision Transformers (ViT)"
     ],
     "connections": [
       "dl_root"
@@ -725,11 +725,11 @@
     "logic": "Standard networks cannot remember past words in a sentence. LSTMs maintain an additive memory highway (Cell State) protected by Forget and Input gates to remember context over 100+ timesteps.",
     "example": "Sentiment analysis: Understanding the sentence 'The movie was not great, but I loved it anyway' requires remembering the conjunction 'but' to override earlier negative words.",
     "subtopics": [
-      "Recurrent Neural Networks (RNN & Hidden States)",
-      "Vanishing Gradients across Long Time Horizons (BPTT)",
-      "LSTM (Forget, Input, and Output Gates + Cell State)",
-      "GRU (Gated Recurrent Unit: Reset and Update Gates)",
-      "Bidirectional Sequence Encoding"
+      "Recurrent Neural Networks (RNN)",
+      "Vanishing Gradients in BPTT",
+      "LSTM (Long Short-Term Memory)",
+      "GRU (Gated Recurrent Unit)",
+      "Bidirectional Sequence Encoding (BiLSTM / BERT)"
     ],
     "connections": [
       "dl_root"
@@ -747,11 +747,11 @@
     "logic": "Diffusion models turn image generation into iterative denoising: add tiny amounts of Gaussian noise over 1,000 steps until the image is pure static, then train a neural net to predict and subtract noise step-by-step.",
     "example": "Stable Diffusion starting from pure television static noise and gradually refining it over 30 denoising steps into a photo of a red sports car on a mountain road.",
     "subtopics": [
-      "Variational Autoencoders (VAEs & Reparameterization Trick)",
-      "Generative Adversarial Networks (GANs: Generator vs Discriminator)",
+      "Variational Autoencoders (VAEs)",
+      "Generative Adversarial Networks (GANs)",
       "Denoising Diffusion Probabilistic Models (DDPM)",
-      "Classifier-Free Guidance (Balancing prompt adherence vs diversity)",
-      "Latent Diffusion Models (Running diffusion inside compressed latent space)"
+      "Classifier-Free Guidance (CFG)",
+      "Latent Diffusion Models (LDM / Stable Diffusion)"
     ],
     "connections": [
       "dl_root"
@@ -769,9 +769,9 @@
     "logic": "Google MLCC Embeddings Insight: High-cardinality categorical data (e.g. 500,000 movie titles) cannot be one-hot encoded without wasting gigabytes. Embeddings compress them into dense 256-d vectors where related items cluster together.",
     "example": "Semantic vector math: Vector('King') - Vector('Man') + Vector('Woman') ≈ Vector('Queen'). 'Paris' to 'France' has the exact same vector direction as 'Tokyo' to 'Japan'.",
     "subtopics": [
-      "Tokenizers (Byte-Pair Encoding BPE, WordPiece, SentencePiece)",
-      "Dense Vector Embeddings (Semantic clustering)",
-      "Positional Encodings (Sinusoidal & Rotary Position Embedding RoPE)",
+      "Subword Tokenization (BPE, WordPiece, SentencePiece)",
+      "Dense Vector Embeddings & Semantic Geometry",
+      "Positional Encodings & Rotary Embeddings (RoPE)",
       "Collaborative Filtering via Matrix Factorization Embeddings",
       "Context Windows & Sequence Length Extrapolation"
     ],
@@ -791,11 +791,11 @@
     "logic": "Every token creates a Query (what am I looking for?), a Key (what do I contain?), and a Value (what information do I pass along?). Dividing by √d_k prevents softmax from saturating in high dimensions.",
     "example": "In the sentence 'The bank of the river overflowed', attention routes strong connection weights between 'bank' and 'river', allowing the model to know it refers to a riverbank, not a financial bank.",
     "subtopics": [
-      "Query (Q), Key (K), and Value (V) Vector Projections",
-      "Scaled Dot-Product Attention & Temperature Scaling (√d_k)",
-      "Multi-Head Attention (MHA for diverse linguistic perspectives)",
-      "Grouped-Query Attention (GQA to compress KV-cache memory)",
-      "Causal Masking (Preventing future token visibility in autoregression)"
+      "Query (Q), Key (K), and Value (V) Projections",
+      "Scaled Dot-Product Attention",
+      "Multi-Head Attention (MHA)",
+      "Grouped-Query Attention (GQA)",
+      "Causal Masking (Autoregressive Attention)"
     ],
     "connections": [
       "genai_root"
@@ -813,11 +813,11 @@
     "logic": "Full fine-tuning of a 70B parameter model requires clusters of 80GB GPUs. LoRA freezes all 70 billion original weights and trains only two tiny adapter matrices (rank r = 8 or 16), reducing trainable parameters by 99%.",
     "example": "Fine-tuning a 7-billion parameter language model for medical consultation on a single gaming GPU by training only 14 million LoRA adapter weights in 4-bit precision (QLoRA).",
     "subtopics": [
-      "Self-Supervised Pre-training (Next Token Prediction / Causal LM)",
-      "Supervised Fine-Tuning (SFT on question-answer instructions)",
+      "Self-Supervised Pre-training (Causal LM)",
+      "Supervised Fine-Tuning (SFT / Instruction Tuning)",
       "Parameter-Efficient Fine-Tuning (PEFT)",
-      "LoRA (Low-Rank Adaptation with rank r decomposition)",
-      "QLoRA (4-bit NormalFloat quantization + Paged Optimizers)",
+      "LoRA (Low-Rank Adaptation)",
+      "QLoRA (Quantized Low-Rank Adaptation)",
       "Catastrophic Forgetting Mitigation"
     ],
     "connections": [
@@ -836,11 +836,11 @@
     "logic": "Pre-trained models just mimic the internet (including toxicity and falsehoods). RLHF uses a reward model to score answers; DPO mathematically optimizes preferences directly from winning/losing pairs without needing a separate reward model.",
     "example": "When asked 'How do I bypass a building security door?', a raw model gives burglary instructions; an aligned DPO model refuses: 'I cannot assist with bypassing security systems, but I can explain access control card reader mechanisms.'",
     "subtopics": [
-      "RLHF (Reinforcement Learning from Human Feedback via PPO)",
-      "DPO (Direct Preference Optimization on paired responses)",
-      "Constitutional AI & Automated Self-Correction",
-      "Knowledge Distillation (Teacher model soft labels train student)",
-      "Model Quantization (FP16 -> INT8 / INT4 via AWQ, GPTQ, GGUF)"
+      "RLHF (Reinforcement Learning from Human Feedback)",
+      "DPO (Direct Preference Optimization)",
+      "Constitutional AI & RLAIF",
+      "Knowledge Distillation (Teacher-Student)",
+      "Model Quantization (AWQ, GPTQ, GGUF)"
     ],
     "connections": [
       "genai_root"
@@ -858,10 +858,10 @@
     "logic": "LLM weights are frozen at training time and cannot know private company documents or recent news. RAG supplies verified, up-to-date source paragraphs directly inside the prompt context.",
     "example": "An enterprise legal assistant: An attorney asks 'What is our liability under the 2026 vendor agreement?'. RAG retrieves page 42 of the contract PDF and the LLM answers with exact citations.",
     "subtopics": [
-      "Document Parsing & Chunking (Fixed-size, Recursive, Semantic)",
-      "Vector Databases (Chroma, Pinecone, Milvus, Qdrant, FAISS)",
-      "Hybrid Search (Dense Vector Cosine + Sparse BM25 Keyword Search)",
-      "Cross-Encoder Re-ranking (Rescoring candidate chunks)",
+      "Document Parsing & Chunking Strategies",
+      "Vector Databases & Approximate Nearest Neighbor (ANN)",
+      "Hybrid Search (Dense + Sparse BM25 Fusion)",
+      "Cross-Encoder Re-ranking",
       "Hallucination Mitigation & Source Grounding"
     ],
     "connections": [
@@ -881,11 +881,11 @@
     "example": "A customer support agent: 1. Reads user inquiry; 2. Calls `get_order_status(id=4921)`; 3. Observes shipment delayed; 4. Calls `issue_refund(amount=15)`; 5. Replies politely with refund confirmation.",
     "subtopics": [
       "Zero-shot & Few-shot In-Context Learning",
-      "Chain of Thought (CoT - 'Let's think step by step')",
-      "ReAct Framework (Reasoning + Acting in iterative loops)",
-      "Function Calling & Tool Use (APIs, Code Interpreters, SQL)",
-      "Agent Memory (Short-term working context + Long-term vector memory)",
-      "Multi-Agent Orchestration (Specialized agents collaborating)"
+      "Chain of Thought (CoT Reasoning)",
+      "ReAct Framework (Reasoning + Acting)",
+      "Function Calling & Tool Use",
+      "Agent Memory Architectures",
+      "Multi-Agent Orchestration"
     ],
     "connections": [
       "genai_root"
@@ -903,14 +903,145 @@
     "logic": "Google MLCC Production Principle: Writing ML code is only 5% of the battle; 95% is data pipelines, serving infrastructure, monitoring drift, and automated retraining.",
     "example": "A fraud detection model trained in 2025 starts failing in 2026 because scammers invented a new payment technique (Concept Drift); automated monitoring alerts engineers to retrain on fresh data.",
     "subtopics": [
-      "Model Registry & Experiment Tracking (MLflow, Weights & Biases)",
-      "High-Throughput Serving (vLLM PagedAttention, TensorRT-LLM, ONNX)",
-      "Data Drift vs Concept Drift Monitoring (PSI, KS-Test)",
-      "Feature Stores & Continuous Training CI/CD Pipelines",
+      "Model Registry & Experiment Tracking",
+      "High-Throughput Serving & PagedAttention (vLLM)",
+      "Data Drift vs Concept Drift Monitoring",
+      "Feature Stores & Continuous Training CI/CD",
       "Fairness, Accountability & Responsible AI Auditing"
     ],
     "connections": [
       "root"
+    ]
+  },
+  {
+    "id": "eval_fairness_bias",
+    "category": "eval",
+    "label": "Fairness, Types of Bias & Mitigation",
+    "level": 2,
+    "x": 480,
+    "y": -360,
+    "def": "The study and measurement of systematic distortions, historical prejudices, and unfair algorithmic discrepancies across demographic cohorts, alongside mitigation techniques.",
+    "formula": "Demographic Parity: P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1) | Equality of Opportunity: P(Ŷ=1 | Y=1, A=0) = P(Ŷ=1 | Y=1, A=1)",
+    "logic": "Machine learning models learn patterns directly from past data. When training data reflects societal prejudices, sampling imbalances, or cognitive blind spots, the model codifies and magnifies those biases into automated decisions.",
+    "example": "Credit lending algorithms: Ensuring an automated loan approval model approves qualified applicants at identical rates regardless of protected demographic attributes (gender, ethnicity, geographic zip code).",
+    "subtopics": [
+      "Human & Cognitive Biases (Reporting, Historical, Automation & Confirmation Bias)",
+      "Selection Bias (Coverage, Non-Response & Sampling Bias)",
+      "Fairness Metrics (Demographic Parity, Equality of Opportunity & Counterfactual Fairness)",
+      "Algorithmic Bias Mitigation (MinDiff & Counterfactual Logit Pairing)",
+      "Group Attribution Bias (In-Group Bias & Out-Group Homogeneity)"
+    ],
+    "connections": [
+      "eval_root"
+    ]
+  },
+  {
+    "id": "mlops_hygiene",
+    "category": "mlops",
+    "label": "Production Data Hygiene & Engineering Pitfalls",
+    "level": 2,
+    "x": 880,
+    "y": 180,
+    "def": "Engineering principles and architectural hygiene to eliminate training-serving skew, prevent silent data leakage, evaluate granular cohort slices, and operate reliable ML pipelines.",
+    "formula": "Skew Metric: Δ(P_train(X, Y), P_serve(X, Y)) > 0 | Slice Loss: L_slice = (1 / |S_k|) ∑_{i ∈ S_k} l(y_i, f(x_i))",
+    "logic": "A model with 99% validation accuracy in a Jupyter notebook will immediately fail in production if features peek at the future, if serving inputs drift from training distributions, or if aggregate accuracy hides failure on critical cohorts.",
+    "example": "E-commerce fraud detection: Logging features with real-time timestamps instead of post-transaction backfills to prevent label leakage and ensure training mirrors production serving reality.",
+    "subtopics": [
+      "Training-Serving Skew & Label Leakage",
+      "Data Slices, Sliced Metrics & The Unicorn Model Antipattern",
+      "Static vs Dynamic Training & Static vs Dynamic Inference",
+      "Production ML Pipelines, Randomization & AutoML",
+      "Big Data Infrastructure & Distributed Feature Stores"
+    ],
+    "connections": [
+      "mlops_root"
+    ]
+  },
+  {
+    "id": "genai_nlp_foundations",
+    "category": "genai",
+    "label": "NLP Foundations: N-Grams, Tokens & Word2Vec",
+    "level": 2,
+    "x": 480,
+    "y": 420,
+    "def": "The evolution of natural language processing from statistical count-based N-grams and sparse bags-of-words to dense semantic embeddings and subword tokenization.",
+    "formula": "Bigram Probability: P(w_t | w_{t-1}) = Count(w_{t-1}, w_t) / Count(w_{t-1}) | Word2Vec Objective: L = ∑ log σ(v'_{w_O}^T v_{w_I})",
+    "logic": "Raw characters and sentences must be transformed into continuous numeric vectors that preserve semantic similarity, geometric relationships, and syntactic context.",
+    "example": "Word arithmetic: Word2Vec vector algebra reveals that Vector('King') - Vector('Man') + Vector('Woman') points directly to Vector('Queen').",
+    "subtopics": [
+      "Tokens, Tokenization (BPE, WordPiece) & Vocabulary Bounds",
+      "N-Grams, Bigrams & Statistical Language Modeling",
+      "Sparse vs Dense Representations & Word2Vec (Skip-Gram & CBOW)",
+      "Contextual Embeddings (BERT, ELMo) vs Static Word Vectors",
+      "Positional Encodings (Sinusoidal, RoPE & ALiBi)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_transformer_deep_dive",
+    "category": "genai",
+    "label": "Transformers, Attention & LLM Lifecycle",
+    "level": 2,
+    "x": 680,
+    "y": 420,
+    "def": "The deep architectural mechanics of Multi-Head Self-Attention, Bidirectional vs Unidirectional models, the complete 3-stage LLM training lifecycle, and core failure modes.",
+    "formula": "MultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O | head_i = Attention(Q W_i^Q, K W_i^K, V W_i^V)",
+    "logic": "Attention allows every token to broadcast queries and match keys with all other tokens simultaneously. By stacking multiple heads, the model learns distinct semantic, syntactic, and factual relationships in parallel.",
+    "example": "Disambiguating word senses: In 'The animal didn't cross the street because it was too tired', self-attention connects 'it' strongly to 'animal' rather than 'street'.",
+    "subtopics": [
+      "Multi-Head, Multi-Layer Self-Attention Dynamics",
+      "Bidirectional Encoders (BERT) vs Unidirectional Decoders (GPT)",
+      "The LLM Training Lifecycle (Pretraining, SFT, RLHF) & Local Training Feasibility",
+      "Problems & Failure Modes with LLMs (Hallucinations, Sycophancy & Prompt Injection)",
+      "Prompt Engineering (Zero-Shot, One-Shot, Few-Shot & Chain-of-Thought)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_agentic_stack",
+    "category": "genai",
+    "label": "Agentic AI, Fine-Tuning & Application Infrastructure",
+    "level": 2,
+    "x": 880,
+    "y": 420,
+    "def": "Modern production GenAI engineering: Low-rank parameter adaptation, 4-bit quantization, cyclical agent graphs, structured RAG indexing, and high-throughput async serving.",
+    "formula": "LoRA Update: W = W_0 + B · A, where B ∈ ℝ^{d × r}, A ∈ ℝ^{r × k}, r ≪ min(d, k)",
+    "logic": "Rather than retraining 70B parameter weights, freeze the base model and inject small rank decomposition matrices (LoRA), quantize weights to 4 bits (QLoRA), and equip models with iterative reasoning loops (ReAct agents).",
+    "example": "Autonomous research agent: An LLM parses a user question, uses LangGraph to plan steps, calls a search API tool, queries a LlamaIndex vector store, reviews intermediate findings, and generates a cited report.",
+    "subtopics": [
+      "LoRA, QLoRA & Parameter-Efficient Fine-Tuning (PEFT)",
+      "Model Quantization Dynamics (FP16, INT8, INT4, AWQ & GGUF)",
+      "FastAPI Production Serving & Streaming LLM Endpoints",
+      "LangChain, LangGraph (Cyclical State Machines) & LlamaIndex RAG",
+      "Agentic AI: ReAct Loops, Tool Calling & Autonomous Agent Swarms"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "dl_foundations_limits",
+    "category": "dl",
+    "label": "Feed Forward, Sequence Limits & Gradient Dynamics",
+    "level": 2,
+    "x": 680,
+    "y": 60,
+    "def": "Foundational deep neural architectures, recurrent unrolling over time, mathematical causes of vanishing/exploding gradients, and dimensional compression with PCA.",
+    "formula": "Vanishing Gradient: ∂L/∂h_1 = ∂L/∂h_T ∏_{t=2}^T (W_{hh}^T diag(1 - tanh²(a_t))) | PCA: C = (1/n) X^T X, C v = λ v",
+    "logic": "Deep networks compose successive layers to learn hierarchical feature representations. When gradients propagate backward across many matrix multiplications, repeated multiplication by singular values < 1 decays gradients to zero.",
+    "example": "Language understanding across long sentences: Plain RNNs forget subject nouns from earlier paragraphs because gradients vanish after 10-15 time steps, motivating the development of LSTMs and Attention.",
+    "subtopics": [
+      "Feed Forward Neural Networks (Multilayer Perceptrons & Dense Layers)",
+      "Recurrent Neural Networks (RNNs) & Hidden State Recurrence",
+      "Vanishing Gradient & Exploding Gradient Dynamics",
+      "Principal Component Analysis (PCA & Dimensionality Reduction)"
+    ],
+    "connections": [
+      "dl_root"
     ]
   }
 ]

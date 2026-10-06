@@ -113,8 +113,8 @@ const hubSubtopicToConceptId = {
   "training-serving skew & label leakage": "concept_training_serving_skew_leakage",
   "data slices, sliced metrics & the unicorn model antipattern": "concept_data_slices_unicorn_model",
   "static vs dynamic training & static vs dynamic inference": "concept_static_vs_dynamic_training_inference",
-  "production ml pipelines, randomization & automl": "concept_ml_pipelines_automl",
-  "big data infrastructure & distributed feature stores": "concept_big_data_infrastructure",
+  "production ml pipelines, randomization & automl": "concept_production_ml_pipelines_automl",
+  "big data infrastructure & distributed feature stores": "concept_big_data_feature_stores",
 
   // NLP Foundations
   "nlp foundations: n-grams, tokens & word2vec": "concept_tokens_tokenization",

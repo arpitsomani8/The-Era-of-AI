@@ -43,7 +43,7 @@ export default function ConceptsPage() {
   const [activeCategory, setActiveCategory] = useState(() => categoryParam || 'all');
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedFormula, setCopiedFormula] = useState(false);
-  const [activePortion, setActivePortion] = useState('portion-logic');
+  const [activePortion, setActivePortion] = useState('portion-definitions');
   const mainScrollRef = useRef(null);
 
   const completedConceptsCount = useMemo(() => {
@@ -224,7 +224,7 @@ export default function ConceptsPage() {
     if (mainScrollRef.current) {
       mainScrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
     }
-    setActivePortion('portion-logic');
+    setActivePortion('portion-definitions');
     if (window.scrollY !== 0 || window.scrollX !== 0) {
       window.scrollTo(0, 0);
     }
@@ -241,9 +241,7 @@ export default function ConceptsPage() {
       }
 
       const portionIds = [
-        'portion-logic',
-        'portion-terms',
-        'portion-definition',
+        'portion-definitions',
         'portion-math',
         'portion-arch',
         'portion-example',
@@ -576,51 +574,22 @@ export default function ConceptsPage() {
             {/* In-Page Quick Section Navigator */}
             <div className="flex flex-wrap items-center gap-1.5 p-2 bg-slate-900/95 rounded-2xl border border-slate-800 text-[11px] sm:text-xs sticky top-0 z-20 backdrop-blur-md shadow-md">
               <span className="text-[10px] font-bold text-slate-400 uppercase px-1.5 font-mono shrink-0 flex items-center gap-1">
-                <Layers className="w-3 h-3 text-rose-400" />
+                <Layers className="w-3 h-3 text-cyan-400" />
                 Portions:
               </span>
+
               <button
                 type="button"
-                onClick={() => scrollToPortion('portion-logic')}
+                onClick={() => scrollToPortion('portion-definitions')}
                 className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
-                  activePortion === 'portion-logic'
-                    ? 'bg-amber-500/25 text-amber-200 border border-amber-500/50 shadow-sm font-semibold'
-                    : 'bg-slate-800/80 hover:bg-slate-700/80 text-amber-300 hover:text-white border border-transparent'
+                  activePortion === 'portion-definitions'
+                    ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-500/50 shadow-sm font-semibold'
+                    : 'bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 hover:text-white border border-transparent'
                 }`}
               >
-                <Lightbulb className="w-3 h-3 text-amber-400" />
-                <span>1. Logic</span>
+                <BookOpen className="w-3 h-3 text-cyan-400" />
+                <span>1. Definitions &amp; Sub-Topics</span>
               </button>
-
-              {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => scrollToPortion('portion-terms')}
-                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
-                    activePortion === 'portion-terms'
-                      ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-500/50 shadow-sm font-semibold'
-                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 hover:text-white border border-transparent'
-                  }`}
-                >
-                  <Layers className="w-3 h-3 text-cyan-400" />
-                  <span>2. Sub-Topics ({selectedConcept.core_terms.length})</span>
-                </button>
-              )}
-
-              {selectedConcept.def && (
-                <button
-                  type="button"
-                  onClick={() => scrollToPortion('portion-definition')}
-                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
-                    activePortion === 'portion-definition'
-                      ? 'bg-rose-500/25 text-rose-200 border border-rose-500/50 shadow-sm font-semibold'
-                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-rose-300 hover:text-white border border-transparent'
-                  }`}
-                >
-                  <BookOpen className="w-3 h-3 text-rose-400" />
-                  <span>3. Definition</span>
-                </button>
-              )}
 
               {selectedConcept.formula && (
                 <button
@@ -633,7 +602,7 @@ export default function ConceptsPage() {
                   }`}
                 >
                   <Calculator className="w-3 h-3 text-indigo-400" />
-                  <span>4. Math &amp; Symbols</span>
+                  <span>2. Math Formulation</span>
                 </button>
               )}
 
@@ -647,7 +616,7 @@ export default function ConceptsPage() {
                 }`}
               >
                 <Cpu className="w-3 h-3 text-purple-400" />
-                <span>5. AI Architecture</span>
+                <span>3. AI Architecture</span>
               </button>
 
               {selectedConcept.example && (
@@ -661,7 +630,7 @@ export default function ConceptsPage() {
                   }`}
                 >
                   <Sparkles className="w-3 h-3 text-emerald-400" />
-                  <span>6. Real-World</span>
+                  <span>4. Real-World</span>
                 </button>
               )}
 
@@ -676,7 +645,7 @@ export default function ConceptsPage() {
                   }`}
                 >
                   <AlertTriangle className="w-3 h-3 text-rose-400" />
-                  <span>7. Traps</span>
+                  <span>5. Traps</span>
                 </button>
               )}
 
@@ -691,35 +660,26 @@ export default function ConceptsPage() {
                   }`}
                 >
                   <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                  <span>8. Takeaways</span>
+                  <span>6. Takeaways</span>
                 </button>
               )}
             </div>
 
-            {/* PORTION 1: Core Intuition & Underlying Logic */}
-            <div id="portion-logic" className="bg-gradient-to-r from-amber-950/30 via-slate-900 to-indigo-950/30 rounded-2xl p-5 sm:p-6 border border-amber-500/30 shadow-md space-y-2.5 scroll-mt-14">
-              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
-                <Lightbulb className="w-4 h-4 text-amber-400" />
-                <span>Portion 1 &bull; Core Intuition &amp; Underlying Logic</span>
-              </div>
-              <p className="text-amber-100/95 text-sm sm:text-base font-medium leading-relaxed">
-                {selectedConcept.core_logic || selectedConcept.logic || selectedConcept.simple_summary}
-              </p>
-            </div>
-
-            {/* PORTION 2: Separate Term-by-Term Breakdown (Sub-Topics) */}
-            {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
-              <div id="portion-terms" className="space-y-3 scroll-mt-14">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-cyan-400" />
-                    <span>Portion 2 &bull; Key Terms &amp; Sub-Topics Breakdown</span>
-                  </h3>
+            {/* PORTION 1: Core Definitions & Key Concepts (Unifying terms & definitions without duplicate sentences) */}
+            <div id="portion-definitions" className="space-y-3.5 scroll-mt-14">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-cyan-400" />
+                  <span>Portion 1 &bull; Core Definitions &amp; Key Concepts</span>
+                </h3>
+                {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
                   <span className="text-[11px] text-slate-400 font-mono">
-                    {selectedConcept.core_terms.length} separate {selectedConcept.core_terms.length === 1 ? 'term' : 'terms'}
+                    {selectedConcept.core_terms.length} {selectedConcept.core_terms.length === 1 ? 'concept / term' : 'concepts / terms'}
                   </span>
-                </div>
+                )}
+              </div>
 
+              {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {selectedConcept.core_terms.map((termItem, idx) => (
                     <div 
@@ -760,63 +720,52 @@ export default function ConceptsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* PORTION 3: Formal Academic Definition & Conceptual Breakdown (Bullet Points) */}
-            <div id="portion-definition" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-3.5 scroll-mt-14 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-rose-400" />
-                  Portion 3 &bull; Core Definition &amp; Conceptual Breakdown
-                </h3>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                  Bullet Points
-                </span>
-              </div>
-
-              {selectedConcept.definition_bullets && selectedConcept.definition_bullets.length > 0 ? (
-                <ul className="space-y-2.5">
-                  {selectedConcept.definition_bullets.map((bullet, bIdx) => {
-                    const colonIdx = bullet.indexOf(':');
-                    const hasPrefix = colonIdx > 0 && colonIdx < 45;
-                    const prefix = hasPrefix ? bullet.substring(0, colonIdx) : null;
-                    const text = hasPrefix ? bullet.substring(colonIdx + 1) : bullet;
-
-                    return (
-                      <li 
-                        key={bIdx} 
-                        className="flex items-start gap-3 text-xs sm:text-sm text-slate-200 leading-relaxed bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 hover:border-rose-500/40 transition shadow-sm"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0 mt-1.5 shadow-[0_0_8px_rgba(244,63,94,0.7)]" />
-                        <div className="min-w-0">
-                          {prefix ? (
-                            <span>
-                              <strong className="text-white font-semibold">{prefix}:</strong>
-                              <span className="text-slate-300"> <MathText text={text.trim()} /></span>
-                            </span>
-                          ) : (
-                            <span className="text-slate-300"><MathText text={bullet} /></span>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
               ) : (
-                <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
-                  <MathText text={selectedConcept.def} />
-                </p>
+                <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-3.5 shadow-sm">
+                  {selectedConcept.definition_bullets && selectedConcept.definition_bullets.length > 0 ? (
+                    <ul className="space-y-2.5">
+                      {selectedConcept.definition_bullets.map((bullet, bIdx) => {
+                        const colonIdx = bullet.indexOf(':');
+                        const hasPrefix = colonIdx > 0 && colonIdx < 45;
+                        const prefix = hasPrefix ? bullet.substring(0, colonIdx) : null;
+                        const text = hasPrefix ? bullet.substring(colonIdx + 1) : bullet;
+
+                        return (
+                          <li 
+                            key={bIdx} 
+                            className="flex items-start gap-3 text-xs sm:text-sm text-slate-200 leading-relaxed bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 hover:border-cyan-500/40 transition shadow-sm"
+                          >
+                            <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0 mt-1.5 shadow-[0_0_8px_rgba(6,182,212,0.7)]" />
+                            <div className="min-w-0">
+                              {prefix ? (
+                                <span>
+                                  <strong className="text-white font-semibold">{prefix}:</strong>
+                                  <span className="text-slate-300"> <MathText text={text.trim()} /></span>
+                                </span>
+                              ) : (
+                                <span className="text-slate-300"><MathText text={bullet} /></span>
+                              )}
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
+                      <MathText text={selectedConcept.def} />
+                    </p>
+                  )}
+                </div>
               )}
             </div>
 
-            {/* PORTION 4: Mathematical Formulation & Symbol Decoder */}
+            {/* PORTION 2: Mathematical Formulation */}
             {selectedConcept.formula && (
               <div id="portion-math" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-4 scroll-mt-14">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-                    Portion 4 &bull; Mathematical Formulation &amp; Symbol Decoder
+                    Portion 2 &bull; Mathematical Formulation
                   </h3>
 
                   <button
@@ -884,23 +833,23 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* PORTION 5: Architectural Logic (Inside AI Networks) */}
+            {/* PORTION 3: Architectural Logic (Inside AI Networks) */}
             <div id="portion-arch" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-purple-500/25 space-y-2.5 scroll-mt-14">
               <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
                 <Cpu className="w-3.5 h-3.5 text-purple-400" />
-                Portion 5 &bull; Architectural Logic (How AI Models Use This Internally)
+                Portion 3 &bull; Architectural Logic (How AI Models Use This Internally)
               </h3>
               <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
                 {selectedConcept.architectural_logic || selectedConcept.logic || "This concept is integrated into the core neural layer operations, guiding gradient descent and forward transformations."}
               </p>
             </div>
 
-            {/* PORTION 6: Real-World Production Example */}
+            {/* PORTION 4: Real-World Production Example */}
             {selectedConcept.example && (
               <div id="portion-example" className="bg-emerald-950/20 rounded-2xl p-5 sm:p-6 border border-emerald-500/25 space-y-2 scroll-mt-14">
                 <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  Portion 6 &bull; Real-World Production Scenario
+                  Portion 4 &bull; Real-World Production Scenario
                 </h3>
                 <p className="text-emerald-100/90 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.example} />
@@ -908,12 +857,12 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* PORTION 7: Common Novice Traps & Misconceptions */}
+            {/* PORTION 5: Common Novice Traps & Misconceptions */}
             {selectedConcept.pitfalls && (
               <div id="portion-traps" className="bg-rose-950/20 rounded-2xl p-4 sm:p-5 border border-rose-500/30 text-rose-200/90 space-y-1.5 scroll-mt-14">
                 <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
                   <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>Portion 7 &bull; Common Novice Traps &amp; Misconceptions</span>
+                  <span>Portion 5 &bull; Common Novice Traps &amp; Misconceptions</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {selectedConcept.pitfalls}
@@ -921,12 +870,12 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* PORTION 8: Key Takeaways & Revision Guide */}
+            {/* PORTION 6: Key Takeaways & Revision Guide */}
             {selectedConcept.key_takeaways && selectedConcept.key_takeaways.length > 0 && (
               <div id="portion-takeaways" className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-emerald-500/30 space-y-2.5 scroll-mt-14">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Portion 8 &bull; Key Takeaways (Summary to Remember)</span>
+                  <span>Portion 6 &bull; Key Takeaways (Summary to Remember)</span>
                 </div>
                 <ul className="text-xs sm:text-sm text-slate-300 space-y-1.5 list-disc list-inside">
                   {selectedConcept.key_takeaways.map((point, kIdx) => (
