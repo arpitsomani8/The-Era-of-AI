@@ -9,9 +9,11 @@ import {
   Anchor,
   MessageSquareQuote,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Shuffle
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import aeroThoughts from '../data/aeroThoughts.json';
 
 const COMPANION_DRESSES = [
   {
@@ -71,57 +73,8 @@ const COMPANION_DRESSES = [
   }
 ];
 
-// Rich, substantial thought insights for Aero's thought box
-const COMPANION_THOUGHTS = [
-  {
-    topic: "Attention Scaling",
-    badge: "Architecture",
-    thought: "In Scaled Dot-Product Attention, we divide QKᵀ by √d_k. Why? As vector dimension d_k grows large, dot products explode in magnitude, pushing softmax gradients into flat zero saturation!",
-    tag: "1/√d_k Factor"
-  },
-  {
-    topic: "LoRA Adapters",
-    badge: "Fine-Tuning",
-    thought: "LoRA matrix B starts initialized to zero while A is Gaussian. This guarantees ΔW = B×A = 0 at step zero, keeping your pretrained model completely untainted before gradient updates!",
-    tag: "Zero-Risk Init"
-  },
-  {
-    topic: "FlashAttention Speed",
-    badge: "GPU Memory",
-    thought: "Traditional Attention reads and writes N×N matrices to high-bandwidth memory (HBM). FlashAttention tiles online softmax inside fast on-chip SRAM, cutting IO memory bandwidth bottleneck!",
-    tag: "O(N) IO Tiling"
-  },
-  {
-    topic: "AdamW Regularization",
-    badge: "Optimization",
-    thought: "Standard Adam mixes L2 penalty into the moving gradient moments, causing frequently updated weights to be regularized less. AdamW decouples weight decay directly from gradient updates!",
-    tag: "Decoupled Decay"
-  },
-  {
-    topic: "Mixture of Experts",
-    badge: "Model Scaling",
-    thought: "MoE uses a lightweight gating router to send each token to only 2 out of 8 expert MLPs. You get the knowledge capacity of 100B+ parameters while computing with just 20B active FLOPs!",
-    tag: "Top-2 Routing"
-  },
-  {
-    topic: "Rotary Embeddings (RoPE)",
-    badge: "Representation",
-    thought: "RoPE multiplies 2D adjacent vector pairs by 2D orthogonal rotation matrices. Inner products <R_m q, R_n k> decay gracefully with relative distance (m - n) without needing fixed position tables!",
-    tag: "Complex Rotation"
-  },
-  {
-    topic: "DeepSeek GRPO",
-    badge: "Reinforcement",
-    thought: "Group Relative Policy Optimization (GRPO) discards the memory-heavy Critic model entirely! Instead, it samples multiple rollouts per prompt and calculates relative advantages against the group average.",
-    tag: "Critic-Free RL"
-  },
-  {
-    topic: "Global Search Shortcut",
-    badge: "Pro Tip",
-    thought: "Press ⌘K (or Ctrl+K) anywhere across the portal to instantly jump across 170+ foundational concepts, landmark research papers, and deep architecture breakdowns!",
-    tag: "⌘K Quick Finder"
-  }
-];
+// 100 Simple, logical, intuitive thoughts loaded from aeroThoughts.json
+const COMPANION_THOUGHTS = aeroThoughts;
 
 /**
  * Web Audio Synthesizer for Aero's clean chimes
@@ -208,7 +161,7 @@ export default function GardenCompanion() {
   const [isClosed, setIsClosed] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dressIndex, setDressIndex] = useState(0);
-  const [thoughtIndex, setThoughtIndex] = useState(0);
+  const [thoughtIndex, setThoughtIndex] = useState(() => Math.floor(Math.random() * COMPANION_THOUGHTS.length));
   const [thoughtBoxOpen, setThoughtBoxOpen] = useState(false);
 
   const selectedDress = COMPANION_DRESSES[dressIndex];
@@ -368,9 +321,22 @@ export default function GardenCompanion() {
     };
   }, [pickNewWaypoint, getDockPosition, isMobile]);
 
+  const pickRandomThought = useCallback((e) => {
+    if (e) e.stopPropagation();
+    setThoughtIndex((prev) => {
+      if (COMPANION_THOUGHTS.length <= 1) return 0;
+      let next;
+      do {
+        next = Math.floor(Math.random() * COMPANION_THOUGHTS.length);
+      } while (next === prev);
+      return next;
+    });
+  }, []);
+
   const triggerWave = () => {
     if (waveTimerRef.current) clearTimeout(waveTimerRef.current);
     setIsWaving(true);
+    pickRandomThought();
     setThoughtBoxOpen(true);
     playAeroSynth('wave', soundEnabled);
     waveTimerRef.current = setTimeout(() => {
@@ -500,13 +466,21 @@ export default function GardenCompanion() {
               #{currentThought.tag}
             </span>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={prevThought}
                 className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition"
                 title="Previous thought"
               >
                 <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={pickRandomThought}
+                className="px-2 py-1 rounded-md text-xs font-semibold text-amber-300 hover:text-amber-200 hover:bg-amber-500/20 transition flex items-center gap-1"
+                title="Pick random thought"
+              >
+                <Shuffle className="w-3 h-3" />
+                <span>Random</span>
               </button>
               <button
                 onClick={nextThought}
