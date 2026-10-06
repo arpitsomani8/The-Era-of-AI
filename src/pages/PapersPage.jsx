@@ -22,7 +22,10 @@ import {
   Flame,
   Layers,
   BookOpen,
-  Info
+  Info,
+  Clock,
+  History,
+  ArrowUpDown
 } from 'lucide-react';
 import papersData from '../data/papers.json';
 import arxivLiveFeed from '../data/arxivLiveFeed.json';
@@ -40,15 +43,27 @@ export default function PapersPage() {
   const [activeCollection, setActiveCollection] = useState('all');
   const [activeCategory, setActiveCategory] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'bookmarked', 'read', 'unread'
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' | 'oldest' | 'upvotes'
   const [copiedBibId, setCopiedBibId] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncToast, setSyncToast] = useState(null);
 
-  // Combined dataset with clear collection tags
+  // Combined dataset with deduplication and clear collection tags
   const allPapers = useMemo(() => {
-    const foundational = papersData.map(p => ({ ...p, collectionType: 'foundational' }));
-    const latest = arxivLiveFeed.map(p => ({ ...p, collectionType: 'latest' }));
-    return [...foundational, ...latest];
+    const seen = new Set();
+    const result = [];
+    // Prioritize arxiv feed for latest details
+    for (const p of arxivLiveFeed) {
+      seen.add(p.id);
+      result.push({ ...p, collectionType: 'latest' });
+    }
+    for (const p of papersData) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        result.push({ ...p, collectionType: 'foundational' });
+      }
+    }
+    return result;
   }, []);
 
   // Filter by selected collection
@@ -89,6 +104,19 @@ export default function PapersPage() {
 
   const readPercentage = Math.round((readCount / currentDataset.length) * 100) || 0;
 
+  // Date formatter helper: converts '2025-01-22' to 'Jan 22, 2025'
+  const formatPaperDate = (dateStr, year) => {
+    if (!dateStr && !year) return 'Milestone';
+    if (!dateStr) return `${year}`;
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return `${year || dateStr}`;
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch {
+      return `${year || dateStr}`;
+    }
+  };
+
   const handleCopyBibtex = (paper) => {
     const bibtexKey = paper.title.split(' ')[0].toLowerCase() + (paper.year || 2025);
     const bibtex = `@article{${bibtexKey},
@@ -112,6 +140,7 @@ export default function PapersPage() {
     }, 900);
   };
 
+  // Filter papers by search, status, and category
   const filteredPapers = useMemo(() => {
     return currentDataset.filter((paper) => {
       const pKey = `paper-${paper.id}`;
@@ -141,6 +170,24 @@ export default function PapersPage() {
     });
   }, [currentDataset, activeCategory, searchQuery, statusFilter, isCompleted, isBookmarked]);
 
+  // Sort papers chronologically or by upvotes
+  const sortedAndFilteredPapers = useMemo(() => {
+    return filteredPapers.slice().sort((a, b) => {
+      if (sortOrder === 'upvotes') {
+        const uvA = a.upvotes || 0;
+        const uvB = b.upvotes || 0;
+        return uvB - uvA;
+      }
+      const timeA = new Date(a.published_date || `${a.year || 2020}-01-01`).getTime();
+      const timeB = new Date(b.published_date || `${b.year || 2020}-01-01`).getTime();
+      if (sortOrder === 'oldest') {
+        return timeA - timeB; // Chronological ascending: 2012 -> 2026
+      }
+      // 'newest': Chronological descending: 2026 -> 2012
+      return timeB - timeA;
+    });
+  }, [filteredPapers, sortOrder]);
+
   return (
     <div className="flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 p-4 sm:p-6 md:p-10">
       <div className="max-w-5xl mx-auto space-y-6 pb-20">
@@ -156,7 +203,7 @@ export default function PapersPage() {
               Game-Changing AI Research Publications
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1.5 max-w-3xl leading-relaxed">
-              36 milestone publications that shaped modern AI — from historical breakthroughs like Transformers and ResNet to active 2024–2026 frontier preprints like DeepSeek-R1 and FlashAttention-3.
+              35 milestone publications aligned by publication date — from historical breakthroughs like Transformers and ResNet to active 2024–2026 frontier preprints like DeepSeek-R1 and FlashAttention-3.
             </p>
           </div>
 
@@ -244,7 +291,7 @@ export default function PapersPage() {
             <div className="text-xs text-slate-400 font-mono px-3 py-1 flex items-center gap-2">
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>
-                {activeCollection === 'all' && 'Complete 36 Paper Library'}
+                {activeCollection === 'all' && 'All 35 Papers with Timestamps'}
                 {activeCollection === 'foundational' && 'All-Time Historic Milestones'}
                 {activeCollection === 'latest' && 'Active arXiv Frontier Preprints'}
               </span>
@@ -303,9 +350,9 @@ export default function PapersPage() {
           </div>
         </div>
 
-        {/* Search & Category Filter Controls */}
+        {/* Search, Timestamp Sort, and Category Controls */}
         <div className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1 max-w-md">
               <input
@@ -326,26 +373,76 @@ export default function PapersPage() {
               )}
             </div>
 
-            {/* Status Filter Pill Tabs */}
-            <div className="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-xl border border-slate-800 overflow-x-auto">
-              {[
-                { id: 'all', label: 'All' },
-                { id: 'unread', label: 'To Read' },
-                { id: 'read', label: 'Read' },
-                { id: 'bookmarked', label: 'Saved' }
-              ].map((s) => (
+            {/* Sort & Status Bar */}
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              {/* Timestamp Sort Pill Controls */}
+              <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                <span className="text-[11px] text-slate-500 font-medium px-1.5 hidden sm:inline flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-slate-400" />
+                  Sort:
+                </span>
+                
                 <button
-                  key={s.id}
-                  onClick={() => setStatusFilter(s.id)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
-                    statusFilter === s.id
-                      ? 'bg-slate-700 text-white font-semibold'
+                  onClick={() => setSortOrder('newest')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                    sortOrder === 'newest'
+                      ? 'bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30 shadow-sm'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
+                  title="Sort chronologically: Newest to Oldest"
                 >
-                  {s.label}
+                  <Clock className="w-3 h-3 text-amber-400" />
+                  <span>Newest</span>
                 </button>
-              ))}
+
+                <button
+                  onClick={() => setSortOrder('oldest')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                    sortOrder === 'oldest'
+                      ? 'bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Sort chronologically: Oldest to Newest (Evolution of AI)"
+                >
+                  <History className="w-3 h-3 text-amber-400" />
+                  <span>Timeline</span>
+                </button>
+
+                <button
+                  onClick={() => setSortOrder('upvotes')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                    sortOrder === 'upvotes'
+                      ? 'bg-rose-500/20 text-rose-300 font-semibold border border-rose-500/30 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Sort by community popularity / upvotes"
+                >
+                  <Flame className="w-3 h-3 text-rose-400" />
+                  <span className="hidden sm:inline">Upvotes</span>
+                </button>
+              </div>
+
+              {/* Status Filter Pill Tabs */}
+              <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 overflow-x-auto">
+                {[
+                  { id: 'all', label: 'All' },
+                  { id: 'unread', label: 'To Read' },
+                  { id: 'read', label: 'Read' },
+                  { id: 'bookmarked', label: 'Saved' }
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setStatusFilter(s.id)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${
+                      statusFilter === s.id
+                        ? 'bg-slate-700 text-white font-semibold'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -367,256 +464,285 @@ export default function PapersPage() {
           </div>
         </div>
 
-        {/* Results Counter */}
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span>Showing {filteredPapers.length} of {currentDataset.length} publications</span>
+        {/* Results Counter & Active Timestamp Alignment Indicator */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2 border-t border-slate-900 pt-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span>Showing <strong className="text-white">{sortedAndFilteredPapers.length}</strong> of {currentDataset.length} publications</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-amber-400/90 font-mono text-[11px] flex items-center gap-1">
+              <Clock className="w-3 h-3 text-amber-400" />
+              {sortOrder === 'newest' && 'Timestamp: Newest to Oldest (2026 → 2012)'}
+              {sortOrder === 'oldest' && 'Chronological: Oldest to Newest (2012 → 2026 Evolution)'}
+              {sortOrder === 'upvotes' && 'Ranked by Community Upvotes'}
+            </span>
+          </div>
+
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
-              className="text-amber-400 hover:underline"
+              className="text-amber-400 hover:underline self-start sm:self-auto"
             >
-              Clear filter
+              Clear search filter
             </button>
           )}
         </div>
 
-        {/* Papers List */}
+        {/* Papers List with Chronological Year Markers */}
         <div className="space-y-6">
-          {filteredPapers.map((paper) => {
+          {sortedAndFilteredPapers.map((paper, idx) => {
             const pKey = `paper-${paper.id}`;
             const isDone = isCompleted(pKey);
             const isSaved = isBookmarked(pKey);
             const isLatest = paper.collectionType === 'latest';
 
+            // Determine if a year header should be shown when sorted by time
+            const paperYear = paper.year || (paper.published_date ? new Date(paper.published_date).getFullYear() : 2020);
+            const prevPaper = idx > 0 ? sortedAndFilteredPapers[idx - 1] : null;
+            const prevYear = prevPaper ? (prevPaper.year || (prevPaper.published_date ? new Date(prevPaper.published_date).getFullYear() : 2020)) : null;
+            const isYearBoundary = (sortOrder === 'newest' || sortOrder === 'oldest') && paperYear !== prevYear;
+
             return (
-              <article
-                key={paper.id}
-                id={`paper-${paper.id}`}
-                className={`border rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm transition ${
-                  isDone 
-                    ? 'bg-slate-900/95 border-emerald-500/40 ring-1 ring-emerald-500/20' 
-                    : 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                {/* Paper Header Strip */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                  <div className="space-y-1.5 flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {/* Collection Type Badge */}
-                      {isLatest ? (
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
-                          <Radio className="w-3 h-3 text-cyan-400" />
-                          Latest (2024–2026)
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
-                          <Award className="w-3 h-3 text-amber-400" />
-                          Foundational Classic
-                        </span>
-                      )}
+              <React.Fragment key={paper.id}>
+                {isYearBoundary && (
+                  <div className="flex items-center gap-3 pt-4 pb-1">
+                    <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700 flex items-center gap-1.5 shadow-sm">
+                      <Calendar className="w-3 h-3 text-amber-400" />
+                      {paperYear} Milestones
+                    </span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-slate-800 via-slate-800/60 to-transparent" />
+                  </div>
+                )}
 
-                      {/* Topic Category */}
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
-                        {paper.category}
-                      </span>
+                <article
+                  id={`paper-${paper.id}`}
+                  className={`border rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm transition ${
+                    isDone 
+                      ? 'bg-slate-900/95 border-emerald-500/40 ring-1 ring-emerald-500/20' 
+                      : 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  {/* Paper Header Strip */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Collection Type Badge */}
+                        {isLatest ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                            <Radio className="w-3 h-3 text-cyan-400" />
+                            Latest (2024–2026)
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                            <Award className="w-3 h-3 text-amber-400" />
+                            Foundational Classic
+                          </span>
+                        )}
 
-                      {paper.year && (
-                        <span className="flex items-center gap-1 text-xs text-slate-400">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {paper.published_date || paper.year}
+                        {/* Precise Timestamp Badge */}
+                        <span 
+                          className="flex items-center gap-1.5 text-xs text-amber-300/90 font-mono font-medium bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30"
+                          title={`Exact Publication Date: ${paper.published_date || paper.year}`}
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{formatPaperDate(paper.published_date, paper.year)}</span>
                         </span>
-                      )}
 
-                      {paper.institution && (
-                        <span className="flex items-center gap-1 text-xs text-slate-400">
-                          <Building className="w-3.5 h-3.5" />
-                          {paper.institution}
+                        {/* Topic Category */}
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
+                          {paper.category}
                         </span>
-                      )}
 
-                      {paper.upvotes && (
-                        <span className="flex items-center gap-1 text-[11px] font-semibold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/30">
-                          <Flame className="w-3 h-3 text-rose-400 fill-rose-400" />
-                          {paper.upvotes.toLocaleString()} upvotes
-                        </span>
-                      )}
+                        {paper.institution && (
+                          <span className="flex items-center gap-1 text-xs text-slate-400">
+                            <Building className="w-3.5 h-3.5" />
+                            {paper.institution}
+                          </span>
+                        )}
 
-                      {isDone && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                          Read
-                        </span>
-                      )}
+                        {paper.upvotes && (
+                          <span className="flex items-center gap-1 text-[11px] font-semibold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/30">
+                            <Flame className="w-3 h-3 text-rose-400 fill-rose-400" />
+                            {paper.upvotes.toLocaleString()} upvotes
+                          </span>
+                        )}
+
+                        {isDone && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                            Read
+                          </span>
+                        )}
+                      </div>
+
+                      <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
+                        {paper.title}
+                      </h2>
+                      <p className="text-xs text-slate-400 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        {paper.authors}
+                      </p>
                     </div>
 
-                    <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
-                      {paper.title}
-                    </h2>
-                    <p className="text-xs text-slate-400 flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                      {paper.authors}
+                    {/* Actions Strip */}
+                    <div className="flex items-center gap-2 shrink-0 self-start flex-wrap">
+                      {/* Audio Explainer Button */}
+                      <AudioExplainerButton
+                        title={paper.title}
+                        text={`Paper title: ${paper.title}. Published: ${formatPaperDate(paper.published_date, paper.year)}. Authors: ${paper.authors}. Core innovation: ${paper.breakthrough || paper.one_liner}. ${paper.formula ? 'Key mathematical formulation: ' + paper.formula : ''}`}
+                        label="Listen"
+                        variant="compact"
+                      />
+
+                      {/* Mark as Read */}
+                      <button
+                        onClick={() => toggleCompleted(pKey)}
+                        className={`p-1.5 rounded-lg border transition ${
+                          isDone 
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                            : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+                        }`}
+                        title={isDone ? 'Mark as Unread' : 'Mark paper as Read'}
+                      >
+                        <CheckCircle2 className={`w-4 h-4 ${isDone ? 'fill-emerald-400/20 text-emerald-400' : ''}`} />
+                      </button>
+
+                      {/* Bookmark Paper */}
+                      <button
+                        onClick={() => toggleBookmark({
+                          id: pKey,
+                          type: 'paper',
+                          title: paper.title,
+                          subtitle: `${formatPaperDate(paper.published_date, paper.year)} • ${paper.institution || paper.authors}`,
+                          link: `/papers?search=${encodeURIComponent(paper.title.slice(0, 30))}`
+                        })}
+                        className={`p-1.5 rounded-lg border transition ${
+                          isSaved 
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                            : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
+                        }`}
+                        title={isSaved ? 'Remove Bookmark' : 'Bookmark paper'}
+                      >
+                        <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+                      </button>
+
+                      {/* Copy BibTeX */}
+                      <button
+                        onClick={() => handleCopyBibtex(paper)}
+                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition"
+                        title="Copy BibTeX Citation"
+                      >
+                        {copiedBibId === paper.id ? (
+                          <Check className="w-4 h-4 text-emerald-400" />
+                        ) : (
+                          <Quote className="w-4 h-4" />
+                        )}
+                      </button>
+
+                      {/* ArXiv Abstract Link */}
+                      {paper.url && (
+                        <a
+                          href={paper.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition"
+                          title="View on arXiv"
+                        >
+                          <span>arXiv</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+
+                      {/* ArXiv PDF Direct Download */}
+                      {paper.pdf_url && (
+                        <a
+                          href={paper.pdf_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition"
+                          title="Direct Download PDF"
+                        >
+                          <FileDown className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">PDF</span>
+                        </a>
+                      )}
+
+                      {/* GitHub Code Repository */}
+                      {paper.code_url && (
+                        <a
+                          href={paper.code_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition"
+                          title="View Official Code / GitHub Repository"
+                        >
+                          <Github className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">Code</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* One Liner Summary */}
+                  {paper.one_liner && (
+                    <p className={`text-xs sm:text-sm font-medium italic p-3 rounded-xl border ${
+                      isLatest
+                        ? 'text-cyan-200/90 bg-cyan-950/20 border-cyan-500/20'
+                        : 'text-amber-200/90 bg-amber-950/20 border-amber-500/20'
+                    }`}>
+                      &ldquo;{paper.one_liner}&rdquo;
                     </p>
-                  </div>
+                  )}
 
-                  {/* Actions Strip */}
-                  <div className="flex items-center gap-2 shrink-0 self-start flex-wrap">
-                    {/* Audio Explainer Button */}
-                    <AudioExplainerButton
-                      title={paper.title}
-                      text={`Paper title: ${paper.title}. Authors: ${paper.authors}. Core innovation: ${paper.breakthrough || paper.one_liner}. ${paper.formula ? 'Key mathematical formulation: ' + paper.formula : ''}`}
-                      label="Listen"
-                      variant="compact"
-                    />
-
-                    {/* Mark as Read */}
-                    <button
-                      onClick={() => toggleCompleted(pKey)}
-                      className={`p-1.5 rounded-lg border transition ${
-                        isDone 
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
-                          : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
-                      }`}
-                      title={isDone ? 'Mark as Unread' : 'Mark paper as Read'}
-                    >
-                      <CheckCircle2 className={`w-4 h-4 ${isDone ? 'fill-emerald-400/20 text-emerald-400' : ''}`} />
-                    </button>
-
-                    {/* Bookmark Paper */}
-                    <button
-                      onClick={() => toggleBookmark({
-                        id: pKey,
-                        type: 'paper',
-                        title: paper.title,
-                        subtitle: `${paper.year || 2025} • ${paper.institution || paper.authors}`,
-                        link: `/papers?search=${encodeURIComponent(paper.title.slice(0, 30))}`
-                      })}
-                      className={`p-1.5 rounded-lg border transition ${
-                        isSaved 
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
-                          : 'bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-700'
-                      }`}
-                      title={isSaved ? 'Remove Bookmark' : 'Bookmark paper'}
-                    >
-                      <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
-                    </button>
-
-                    {/* Copy BibTeX */}
-                    <button
-                      onClick={() => handleCopyBibtex(paper)}
-                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition"
-                      title="Copy BibTeX Citation"
-                    >
-                      {copiedBibId === paper.id ? (
-                        <Check className="w-4 h-4 text-emerald-400" />
-                      ) : (
-                        <Quote className="w-4 h-4" />
-                      )}
-                    </button>
-
-                    {/* ArXiv Abstract Link */}
-                    {paper.url && (
-                      <a
-                        href={paper.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold transition"
-                        title="View on arXiv"
-                      >
-                        <span>arXiv</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                  {/* Problem vs Breakthrough Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                    {paper.problem && (
+                      <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                        <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                          <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                          The Problem & Bottleneck
+                        </h3>
+                        <p className="text-slate-300 leading-relaxed">{paper.problem}</p>
+                      </div>
                     )}
 
-                    {/* ArXiv PDF Direct Download */}
-                    {paper.pdf_url && (
-                      <a
-                        href={paper.pdf_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition"
-                        title="Direct Download PDF"
-                      >
-                        <FileDown className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">PDF</span>
-                      </a>
-                    )}
-
-                    {/* GitHub Code Repository */}
-                    {paper.code_url && (
-                      <a
-                        href={paper.code_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition"
-                        title="View Official Code / GitHub Repository"
-                      >
-                        <Github className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Code</span>
-                      </a>
+                    {paper.breakthrough && (
+                      <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                        <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                          Core Breakthrough Innovation
+                        </h3>
+                        <p className="text-slate-300 leading-relaxed">{paper.breakthrough}</p>
+                      </div>
                     )}
                   </div>
-                </div>
 
-                {/* One Liner Summary */}
-                {paper.one_liner && (
-                  <p className={`text-xs sm:text-sm font-medium italic p-3 rounded-xl border ${
-                    isLatest
-                      ? 'text-cyan-200/90 bg-cyan-950/20 border-cyan-500/20'
-                      : 'text-amber-200/90 bg-amber-950/20 border-amber-500/20'
-                  }`}>
-                    &ldquo;{paper.one_liner}&rdquo;
-                  </p>
-                )}
-
-                {/* Problem vs Breakthrough Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
-                  {paper.problem && (
-                    <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-                      <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <AlertCircle className="w-3.5 h-3.5 text-red-400" />
-                        The Problem & Bottleneck
+                  {/* Mathematical Formula */}
+                  {paper.formula && (
+                    <div className="bg-slate-950/80 p-4 rounded-xl border border-amber-500/20">
+                      <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Calculator className="w-3.5 h-3.5 text-amber-400" />
+                        Key Mathematical Equation
                       </h3>
-                      <p className="text-slate-300 leading-relaxed">{paper.problem}</p>
+                      <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 overflow-x-auto">
+                        <KaTeXRenderer math={paper.formula} block={true} />
+                      </div>
                     </div>
                   )}
 
-                  {paper.breakthrough && (
-                    <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-                      <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                        Core Breakthrough Innovation
-                      </h3>
-                      <p className="text-slate-300 leading-relaxed">{paper.breakthrough}</p>
+                  {/* Impact / Legacy */}
+                  {paper.impact && (
+                    <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-800/60 flex items-start gap-2.5 text-xs">
+                      <Award className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-semibold text-slate-300 uppercase tracking-wider text-[11px] block">
+                          Industry Impact & Legacy:
+                        </span>
+                        <p className="text-slate-400 mt-0.5 leading-relaxed">{paper.impact}</p>
+                      </div>
                     </div>
                   )}
-                </div>
-
-                {/* Mathematical Formula */}
-                {paper.formula && (
-                  <div className="bg-slate-950/80 p-4 rounded-xl border border-amber-500/20">
-                    <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <Calculator className="w-3.5 h-3.5 text-amber-400" />
-                      Key Mathematical Equation
-                    </h3>
-                    <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 overflow-x-auto">
-                      <KaTeXRenderer math={paper.formula} block={true} />
-                    </div>
-                  </div>
-                )}
-
-                {/* Impact / Legacy */}
-                {paper.impact && (
-                  <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-800/60 flex items-start gap-2.5 text-xs">
-                    <Award className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                    <div>
-                      <span className="font-semibold text-slate-300 uppercase tracking-wider text-[11px] block">
-                        Industry Impact & Legacy:
-                      </span>
-                      <p className="text-slate-400 mt-0.5 leading-relaxed">{paper.impact}</p>
-                    </div>
-                  </div>
-                )}
-              </article>
+                </article>
+              </React.Fragment>
             );
           })}
         </div>
