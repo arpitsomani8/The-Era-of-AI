@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Sparkles, 
@@ -11,12 +11,126 @@ import {
   Layers,
   PlayCircle,
   Zap,
-  CheckCircle2,
-  Compass
+  Volume2,
+  VolumeX
 } from 'lucide-react';
+
+/**
+ * Web Audio Synthesizer for cheerful, cute "Pika-Pika!" chirp effect
+ */
+function playPikaSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    // Helper to generate a cute chirp syllable
+    const createChirp = (startFreq, endFreq, startTime, duration, peakGain = 0.28, type = 'triangle') => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(startFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + duration);
+
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    // Syllable 1: "Pi-" (high frequency quick upward chime)
+    createChirp(620, 950, now, 0.12, 0.3, 'triangle');
+
+    // Syllable 2: "-ka!" (playful bouncy drop)
+    createChirp(980, 680, now + 0.13, 0.16, 0.32, 'sine');
+
+    // Syllable 3: "Pi-" (second iteration slightly higher & brighter)
+    createChirp(680, 1100, now + 0.32, 0.13, 0.3, 'triangle');
+
+    // Syllable 4: "-kaaa!" (gleeful cheerful resolution with warm harmonics)
+    createChirp(1150, 780, now + 0.46, 0.28, 0.35, 'sine');
+
+    // Electric sparkle shimmer on tail
+    const spark = ctx.createOscillator();
+    const sparkGain = ctx.createGain();
+    spark.type = 'sawtooth';
+    spark.frequency.setValueAtTime(1800, now + 0.08);
+    spark.frequency.linearRampToValueAtTime(2600, now + 0.55);
+    sparkGain.gain.setValueAtTime(0.001, now + 0.08);
+    sparkGain.gain.linearRampToValueAtTime(0.06, now + 0.25);
+    sparkGain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+    spark.connect(sparkGain);
+    sparkGain.connect(ctx.destination);
+    spark.start(now + 0.08);
+    spark.stop(now + 0.65);
+  } catch (err) {
+    console.warn('AudioContext not allowed or supported', err);
+  }
+
+  // Optional cute SpeechSynthesis backup if available
+  try {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance('Pika pika!');
+      utter.pitch = 1.9;
+      utter.rate = 1.4;
+      utter.volume = 0.5;
+      window.speechSynthesis.speak(utter);
+    }
+  } catch {
+    // Ignore speech errors
+  }
+}
 
 export default function LandingHeroPage() {
   const navigate = useNavigate();
+  const [isEntering, setIsEntering] = useState(false);
+  const [isSquishing, setIsSquishing] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [tiltStyle, setTiltStyle] = useState({});
+  const cardRef = useRef(null);
+
+  const handleMascotMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const rotateX = (-y / (rect.height / 2)) * 12;
+    const rotateY = (x / (rect.width / 2)) * 12;
+    setTiltStyle({
+      transform: `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
+    });
+  };
+
+  const handleMascotMouseLeave = () => {
+    setTiltStyle({
+      transform: 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)'
+    });
+  };
+
+  const handleMascotClick = () => {
+    setIsSquishing(true);
+    if (soundEnabled) playPikaSound();
+    setTimeout(() => setIsSquishing(false), 500);
+  };
+
+  const handleEnterWorld = (e) => {
+    e.preventDefault();
+    if (isEntering) return;
+    setIsEntering(true);
+    setIsSquishing(true);
+    if (soundEnabled) playPikaSound();
+
+    // Smooth transition into the Mind Map after sound and animation
+    setTimeout(() => {
+      navigate('/mindmap');
+    }, 700);
+  };
 
   const portalCards = [
     {
@@ -70,148 +184,209 @@ export default function LandingHeroPage() {
   ];
 
   return (
-    <div className="relative flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 flex flex-col items-center justify-start select-none">
-      {/* Background Ambient Glow & Blurred Thumbnail Atmosphere */}
-      <div 
-        className="fixed inset-0 pointer-events-none opacity-25 filter blur-3xl scale-110 bg-cover bg-center transition-opacity duration-1000"
-        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}thumbnail.jpg)` }}
-      />
-      <div className="fixed inset-0 pointer-events-none bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950" />
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.25),rgba(255,255,255,0))]" />
+    <div className={`relative flex-1 w-full h-full overflow-y-auto bg-slate-950 text-slate-100 flex flex-col items-center justify-start select-none transition-all duration-700 ${
+      isEntering ? 'opacity-0 scale-105 filter blur-sm pointer-events-none' : 'opacity-100 scale-100'
+    }`}>
+      {/* Background Ambient Electric Atmosphere */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-10%,rgba(250,204,21,0.12),rgba(99,102,241,0.15),rgba(2,6,23,0.98))]" />
+      <div className="fixed inset-0 pointer-events-none bg-gradient-to-b from-slate-950/70 via-slate-950/90 to-slate-950" />
 
-      {/* Main Hero Container */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 flex flex-col items-center text-center space-y-8">
+      {/* Entering Flash Overlay */}
+      {isEntering && (
+        <div className="fixed inset-0 z-50 pointer-events-none bg-gradient-to-tr from-amber-400/30 via-indigo-500/40 to-cyan-300/30 backdrop-blur-md animate-pulse" />
+      )}
+
+      {/* Main Container */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 md:py-12 flex flex-col items-center text-center space-y-6">
         
-        {/* Top Announcement Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-500/10 animate-fadeIn">
-          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-          <span>The Era of AI — Master Knowledge Universe</span>
-          <span className="hidden sm:inline text-indigo-400/60">•</span>
-          <span className="hidden sm:inline text-[11px] text-indigo-300 font-mono">React 2026 Edition</span>
+        {/* Top Badges & Sound Toggle */}
+        <div className="flex items-center justify-between w-full max-w-md gap-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold shadow-lg shadow-amber-500/10">
+            <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-bounce" />
+            <span>Welcome to The Era of AI</span>
+          </div>
+
+          <button
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className="p-1.5 px-2.5 rounded-full bg-slate-900 border border-slate-700/80 hover:bg-slate-800 text-slate-400 hover:text-amber-300 text-xs font-medium flex items-center gap-1.5 transition"
+            title={soundEnabled ? 'Mute Pika Sound' : 'Enable Pika Sound'}
+          >
+            {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
+            <span className="text-[10px]">{soundEnabled ? 'Pika FX ON' : 'Muted'}</span>
+          </button>
         </div>
 
-        {/* Hero Title */}
-        <div className="space-y-3 max-w-3xl">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white leading-tight">
-            The Era of <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-teal-300 bg-clip-text text-transparent">AI</span>
+        {/* Hero Headline */}
+        <div className="space-y-2 max-w-2xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+            The Era of <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-indigo-300 bg-clip-text text-transparent">AI</span>
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto">
-            From foundational vector calculus to modern LLMs, diffusion mechanisms, and industrial production pipelines.
+          <p className="text-xs sm:text-sm md:text-base text-slate-300 font-normal leading-relaxed">
+            Meet your squishy companion pointing the way into the machine learning universe.
           </p>
         </div>
 
-        {/* Thumbnail Showcase Frame */}
-        <div className="relative w-full max-w-3xl rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-700/80 shadow-2xl shadow-indigo-500/20 group transition-all duration-300 hover:border-indigo-500/50 bg-slate-900/80">
-          <div className="relative aspect-[16/9] w-full overflow-hidden">
-            <img 
-              src={`${import.meta.env.BASE_URL}thumbnail.jpg`} 
-              alt="The Era of AI Official Thumbnail"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            {/* Subtle Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+        {/* Squishy Plush Pikachu Mascot Centerpiece */}
+        <div className="relative flex flex-col items-center justify-center my-2">
+          
+          {/* Floating Speech Bubble */}
+          <div className="relative mb-3 animate-bounce-slow">
+            <div className="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-500/20 via-slate-900 to-indigo-500/20 border border-amber-400/50 text-xs sm:text-sm font-bold text-amber-200 shadow-xl shadow-amber-500/10 flex items-center gap-2 backdrop-blur-md">
+              <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span>Pika-pika! ⚡ Click the button below to enter!</span>
+            </div>
+            {/* Bubble Tail */}
+            <div className="w-3 h-3 bg-slate-900 border-r border-b border-amber-400/50 transform rotate-45 mx-auto -mt-1.5" />
+          </div>
 
-            {/* Corner Badge */}
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-950/80 backdrop-blur-md border border-slate-700/60 text-xs font-semibold text-slate-200 shadow-md">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span>Knowledge Portal</span>
+          {/* Interactive Mascot Card with Electric Lightning Effects */}
+          <div 
+            ref={cardRef}
+            onMouseMove={handleMascotMouseMove}
+            onMouseLeave={handleMascotMouseLeave}
+            onClick={handleMascotClick}
+            style={tiltStyle}
+            className={`relative group cursor-pointer transition-transform duration-200 select-none ${
+              isSquishing ? 'scale-95' : 'hover:scale-105'
+            }`}
+            title="Click me for a Pika squeak!"
+          >
+            {/* Background Halo Glow */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500/30 via-yellow-400/20 to-indigo-500/30 filter blur-2xl scale-95 opacity-80 group-hover:opacity-100 transition-opacity" />
+
+            {/* Electric Tail Spark Arcs (Top-Left behind the tail) */}
+            <div className="absolute -top-4 -left-6 z-20 pointer-events-none animate-electric">
+              <svg className="w-20 h-20 text-amber-300 filter drop-shadow-[0_0_8px_rgba(250,204,21,0.9)]" viewBox="0 0 100 100">
+                <path 
+                  d="M10,50 Q30,20 50,45 T85,15" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="3.5" 
+                  strokeLinecap="round"
+                />
+                <path 
+                  d="M25,75 Q45,45 60,70 T95,40" 
+                  fill="none" 
+                  stroke="#38bdf8" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  opacity="0.9"
+                />
+                <polygon points="50,15 40,35 60,35 48,55 70,25 55,25" fill="#fef08a" />
+              </svg>
             </div>
 
-            {/* In-Card Center Enter Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center p-4">
-              <button
-                onClick={() => navigate('/mindmap')}
-                id="hero-center-enter-btn"
-                className="group/btn relative inline-flex items-center gap-3.5 px-7 sm:px-10 py-3.5 sm:py-5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base sm:text-xl shadow-2xl shadow-indigo-600/70 hover:shadow-indigo-500/90 ring-4 ring-indigo-400/40 hover:ring-indigo-400/80 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-              >
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300 animate-bounce shrink-0" />
-                <span className="tracking-wide drop-shadow-md">Enter the World of AI</span>
-                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover/btn:translate-x-1.5 transition-transform shrink-0 text-white" />
-              </button>
+            {/* Extra Floating Sparks */}
+            <div className="absolute -top-2 right-4 z-20 pointer-events-none animate-ping opacity-75">
+              <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+            </div>
+            <div className="absolute top-1/2 -left-4 z-20 pointer-events-none animate-pulse">
+              <Sparkles className="w-5 h-5 text-cyan-300" />
             </div>
 
-            {/* Bottom Caption inside Card */}
-            <div className="absolute bottom-3 sm:bottom-4 inset-x-4 flex items-center justify-between text-[11px] sm:text-xs text-slate-300/80">
-              <span className="hidden sm:inline">Explore 41 interactive nodes & line-wise curriculum</span>
-              <span className="font-mono text-indigo-300">Click button above to enter &rarr;</span>
+            {/* Mascot Image Container with Rounded Soft Silhouette */}
+            <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-3xl overflow-hidden shadow-2xl shadow-amber-500/20 border-2 border-amber-400/40 ring-4 ring-amber-400/20 bg-slate-900/90 animate-squish">
+              <img 
+                src={`${import.meta.env.BASE_URL}pika_mascot.jpg`} 
+                alt="Squishy Plush Electric Mascot"
+                className="w-full h-full object-cover pointer-events-none transition-transform duration-300 group-hover:scale-105"
+              />
+              {/* Soft Vignette Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+
+              {/* Tap Indicator Tag */}
+              <div className="absolute bottom-2 inset-x-0 text-center pointer-events-none">
+                <span className="text-[10px] font-bold tracking-wider text-amber-200/90 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                  ⚡ Squishy Plush Mascot • Tap for sound ⚡
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Hand Pointing Down Indicator Arrow */}
+          <div className="my-2 flex flex-col items-center justify-center animate-bounce text-amber-400">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-amber-300">Pointed Below</span>
+            <div className="w-1.5 h-6 bg-gradient-to-b from-amber-400 to-transparent rounded-full mt-0.5" />
+          </div>
+
+          {/* THE GIANT GLOWING ELECTRIC ENTER BUTTON */}
+          <div className="relative w-full max-w-md px-4 pt-1">
+            <button
+              onClick={handleEnterWorld}
+              id="hero-center-enter-btn"
+              className="w-full group relative inline-flex items-center justify-center gap-3.5 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-yellow-400 text-slate-950 font-black text-lg sm:text-xl md:text-2xl shadow-[0_0_40px_rgba(250,204,21,0.55)] hover:shadow-[0_0_60px_rgba(250,204,21,0.9)] border-2 border-yellow-200 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer animate-electric-pulse"
+            >
+              <Zap className="w-6 h-6 text-slate-950 fill-slate-950 animate-bounce shrink-0" />
+              <span className="tracking-wide uppercase drop-shadow-sm font-extrabold">
+                Enter the World of AI
+              </span>
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform shrink-0 text-slate-950" />
+            </button>
+            <p className="text-[11px] text-amber-300/80 mt-2 text-center font-medium">
+              Plays cute &quot;Pika-Pika!&quot; chirp &amp; transitions into 2D Knowledge Graph
+            </p>
           </div>
         </div>
 
-        {/* Prominent Center Standalone Call to Action (Accessible below thumbnail) */}
-        <div className="pt-2 flex flex-col items-center gap-3">
-          <Link
-            to="/mindmap"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base sm:text-lg shadow-xl shadow-indigo-600/40 hover:scale-105 active:scale-95 transition-all duration-200 border border-indigo-400/40"
-          >
-            <span>Launch Interactive Mind Map</span>
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <p className="text-xs text-slate-400">
-            Or jump directly into any section below
-          </p>
-        </div>
-
-        {/* Portal Quick Links Grid */}
-        <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-4">
-          {portalCards.map((portal, idx) => {
-            const Icon = portal.icon;
-            return (
-              <Link
-                key={idx}
-                to={portal.to}
-                className={`p-4 rounded-2xl bg-slate-900/70 hover:bg-slate-900 border transition-all duration-200 text-left flex flex-col justify-between group shadow-sm hover:shadow-md hover:scale-[1.02] ${portal.color}`}
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-slate-800/80 flex items-center justify-center">
-                      <Icon className="w-4 h-4" />
+        {/* Quick Direct Section Cards */}
+        <div className="w-full max-w-3xl pt-2">
+          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">
+            Or jump directly into any section:
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {portalCards.map((portal, idx) => {
+              const Icon = portal.icon;
+              return (
+                <Link
+                  key={idx}
+                  to={portal.to}
+                  className={`p-3 rounded-xl bg-slate-900/60 hover:bg-slate-900 border transition-all text-left flex items-center justify-between group shadow-sm hover:border-amber-500/40 hover:scale-[1.02] ${portal.color}`}
+                >
+                  <div className="min-w-0 flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-slate-800/80 flex items-center justify-center shrink-0">
+                      <Icon className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold border bg-slate-800/90 text-slate-300 border-slate-700/60">
-                      {portal.badge}
-                    </span>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-bold text-white group-hover:text-amber-300 truncate">
+                        {portal.title}
+                      </h4>
+                      <p className="text-[10px] text-slate-400 truncate">
+                        {portal.badge}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
-                    {portal.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1 leading-snug">
-                    {portal.subtitle}
-                  </p>
-                </div>
-                <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[11px] font-medium text-slate-400 group-hover:text-white">
-                  <span>Explore Section</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            );
-          })}
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-300 shrink-0 ml-1" />
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {/* Key Curriculum Metrics Bar */}
-        <div className="w-full max-w-3xl pt-6 border-t border-slate-800/80 flex items-center justify-around flex-wrap gap-4 text-center">
+        <div className="w-full max-w-3xl pt-4 border-t border-slate-800/80 flex items-center justify-around flex-wrap gap-4 text-center">
           <div>
-            <div className="text-xl sm:text-2xl font-black text-white font-mono">41</div>
-            <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Graph Nodes</div>
+            <div className="text-lg sm:text-xl font-black text-amber-300 font-mono">41</div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Graph Nodes</div>
           </div>
-          <div className="w-px h-8 bg-slate-800 hidden sm:block" />
+          <div className="w-px h-6 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-xl sm:text-2xl font-black text-white font-mono">34</div>
-            <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Syllabus Modules</div>
+            <div className="text-lg sm:text-xl font-black text-amber-300 font-mono">34</div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Syllabus Modules</div>
           </div>
-          <div className="w-px h-8 bg-slate-800 hidden sm:block" />
+          <div className="w-px h-6 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-xl sm:text-2xl font-black text-white font-mono">170+</div>
-            <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Core Concepts</div>
+            <div className="text-lg sm:text-xl font-black text-amber-300 font-mono">170+</div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Core Concepts</div>
           </div>
-          <div className="w-px h-8 bg-slate-800 hidden sm:block" />
+          <div className="w-px h-6 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-xl sm:text-2xl font-black text-white font-mono">150+</div>
-            <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Interview Q&A</div>
+            <div className="text-lg sm:text-xl font-black text-amber-300 font-mono">150+</div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Interview Q&amp;A</div>
           </div>
-          <div className="w-px h-8 bg-slate-800 hidden sm:block" />
+          <div className="w-px h-6 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-xl sm:text-2xl font-black text-white font-mono">22+</div>
-            <div className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Landmark Papers</div>
+            <div className="text-lg sm:text-xl font-black text-amber-300 font-mono">22+</div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Landmark Papers</div>
           </div>
         </div>
 
