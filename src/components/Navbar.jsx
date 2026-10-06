@@ -266,17 +266,6 @@ export default function Navbar({
             )}
           </button>
 
-          {/* Direct About Modal Button (Features Project Overview, Stats & Author Arpit Somani) */}
-          <button
-            onClick={onOpenAbout}
-            id="navbar-about-btn"
-            className="p-1.5 px-2 sm:px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
-            title="About The Era of AI (Project Overview, Stats & Author)"
-          >
-            <Info className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline">About</span>
-          </button>
-
           {/* Interactive Tools & Labs Dropdown (Prevents navbar overflow on all screen sizes) */}
           <div className="relative hidden sm:block" ref={toolsDropdownRef}>
             <button
