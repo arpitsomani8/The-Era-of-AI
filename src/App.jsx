@@ -177,7 +177,7 @@ export default function App() {
       <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
         <ErrorBoundary>
           <Routes>
-            <Route path="/" element={<LandingHeroPage />} />
+            <Route path="/" element={<LandingHeroPage onOpenAbout={() => setIsAboutOpen(true)} />} />
             <Route path="/mindmap" element={<KnowledgeHubPage />} />
             <Route path="/syllabus" element={<KnowledgeHubPage />} />
             <Route path="/papers" element={<PapersPage />} />

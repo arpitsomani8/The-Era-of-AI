@@ -12,7 +12,8 @@ import {
   Volume2,
   VolumeX,
   Bot,
-  Palette
+  Palette,
+  Info
 } from 'lucide-react';
 
 /**
@@ -129,7 +130,7 @@ function playSynthSound(type = 'chime', soundEnabled = true) {
   }
 }
 
-export default function LandingHeroPage() {
+export default function LandingHeroPage({ onOpenAbout }) {
   const navigate = useNavigate();
   const [isEntering, setIsEntering] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -269,14 +270,27 @@ export default function LandingHeroPage() {
             <span>Aero • Your AI Companion</span>
           </div>
 
-          <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-1 px-2.5 rounded-full bg-slate-900/80 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-medium flex items-center gap-1.5 transition"
-            title={soundEnabled ? 'Mute Chimes' : 'Enable Chimes'}
-          >
-            {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-cyan-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
-            <span className="text-[10px]">{soundEnabled ? 'Audio ON' : 'Muted'}</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {onOpenAbout && (
+              <button
+                onClick={onOpenAbout}
+                className="p-1 px-2.5 rounded-full bg-slate-900/80 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
+                title="About The Era of AI (Project Overview, Stats & Author)"
+              >
+                <Info className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="text-[10px]">About</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="p-1 px-2.5 rounded-full bg-slate-900/80 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-medium flex items-center gap-1.5 transition"
+              title={soundEnabled ? 'Mute Chimes' : 'Enable Chimes'}
+            >
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-cyan-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
+              <span className="text-[10px]">{soundEnabled ? 'Audio ON' : 'Muted'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Clean, Refined Headline */}
@@ -542,6 +556,20 @@ export default function LandingHeroPage() {
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Landmark Papers</div>
           </div>
         </div>
+
+        {/* Project About & Published by Footer */}
+        {onOpenAbout && (
+          <div className="pt-2 pb-4 text-center">
+            <button
+              onClick={onOpenAbout}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/60 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/40 text-slate-400 hover:text-slate-200 text-xs transition shadow-sm group"
+              title="View full project architecture, features, and author details"
+            >
+              <Info className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
+              <span>About The Era of AI &bull; Published by <strong className="text-slate-200">Arpit Somani</strong></span>
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
