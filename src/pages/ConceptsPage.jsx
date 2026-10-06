@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   Layers, 
@@ -43,6 +43,8 @@ export default function ConceptsPage() {
   const [activeCategory, setActiveCategory] = useState(() => categoryParam || 'all');
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedFormula, setCopiedFormula] = useState(false);
+  const [activePortion, setActivePortion] = useState('portion-logic');
+  const mainScrollRef = useRef(null);
 
   const completedConceptsCount = useMemo(() => {
     return conceptsData.filter((c) => isCompleted(`concept-${c.id}`)).length;
@@ -207,6 +209,79 @@ export default function ConceptsPage() {
     }
   }, [selectedConcept?.id]);
 
+  // Reset main content scroll when selected concept changes
+  useEffect(() => {
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    setActivePortion('portion-logic');
+    if (window.scrollY !== 0 || window.scrollX !== 0) {
+      window.scrollTo(0, 0);
+    }
+  }, [selectedConcept?.id]);
+
+  // Track active portion as user scrolls main container & strictly lock window scroll
+  useEffect(() => {
+    const container = mainScrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo(0, 0);
+      }
+
+      const portionIds = [
+        'portion-logic',
+        'portion-terms',
+        'portion-definition',
+        'portion-math',
+        'portion-arch',
+        'portion-example',
+        'portion-traps',
+        'portion-takeaways'
+      ];
+
+      const containerTop = container.getBoundingClientRect().top;
+      for (const id of portionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top - containerTop <= 160 && rect.bottom - containerTop > 70) {
+            setActivePortion(id);
+            break;
+          }
+        }
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const scrollToPortion = (portionId) => {
+    const container = mainScrollRef.current;
+    const target = document.getElementById(portionId);
+    if (!container || !target) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const relativeTop = targetRect.top - containerRect.top + container.scrollTop;
+
+    container.scrollTo({
+      top: Math.max(0, relativeTop - 70),
+      behavior: 'smooth'
+    });
+
+    setActivePortion(portionId);
+    if (window.scrollY !== 0 || window.scrollX !== 0) {
+      window.scrollTo(0, 0);
+    }
+  };
+
   const handleSelect = (id) => {
     setSelectedConceptId(id);
     setSearchParams({ id });
@@ -326,7 +401,7 @@ export default function ConceptsPage() {
       </aside>
 
       {/* Main Content Area: Selected Concept Detail View */}
-      <main className="flex-1 h-2/3 md:h-full overflow-y-auto p-4 sm:p-6 md:p-10">
+      <main ref={mainScrollRef} className="flex-1 h-2/3 md:h-full overflow-y-auto p-4 sm:p-6 md:p-10">
         {selectedConcept ? (
           <div className="max-w-4xl mx-auto space-y-6 pb-20">
             {/* Curriculum Mastery Progress Banner */}
@@ -461,50 +536,126 @@ export default function ConceptsPage() {
             </div>
 
             {/* In-Page Quick Section Navigator */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-2 bg-slate-900/90 rounded-xl border border-slate-800 text-[11px] sticky top-0 z-20 backdrop-blur-md shadow-sm">
-              <span className="text-[10px] font-bold text-slate-500 uppercase px-1.5 font-mono shrink-0">Portions:</span>
-              <a href="#portion-logic" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+            <div className="flex flex-wrap items-center gap-1.5 p-2 bg-slate-900/95 rounded-2xl border border-slate-800 text-[11px] sm:text-xs sticky top-0 z-20 backdrop-blur-md shadow-md">
+              <span className="text-[10px] font-bold text-slate-400 uppercase px-1.5 font-mono shrink-0 flex items-center gap-1">
+                <Layers className="w-3 h-3 text-rose-400" />
+                Portions:
+              </span>
+              <button
+                type="button"
+                onClick={() => scrollToPortion('portion-logic')}
+                className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                  activePortion === 'portion-logic'
+                    ? 'bg-amber-500/25 text-amber-200 border border-amber-500/50 shadow-sm font-semibold'
+                    : 'bg-slate-800/80 hover:bg-slate-700/80 text-amber-300 hover:text-white border border-transparent'
+                }`}
+              >
                 <Lightbulb className="w-3 h-3 text-amber-400" />
                 <span>1. Logic</span>
-              </a>
+              </button>
+
               {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
-                <a href="#portion-terms" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-terms')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-terms'
+                      ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 hover:text-white border border-transparent'
+                  }`}
+                >
                   <Layers className="w-3 h-3 text-cyan-400" />
                   <span>2. Sub-Topics ({selectedConcept.core_terms.length})</span>
-                </a>
+                </button>
               )}
+
               {selectedConcept.def && (
-                <a href="#portion-definition" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-definition')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-definition'
+                      ? 'bg-rose-500/25 text-rose-200 border border-rose-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-rose-300 hover:text-white border border-transparent'
+                  }`}
+                >
                   <BookOpen className="w-3 h-3 text-rose-400" />
                   <span>3. Definition</span>
-                </a>
+                </button>
               )}
+
               {selectedConcept.formula && (
-                <a href="#portion-math" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-math')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-math'
+                      ? 'bg-indigo-500/25 text-indigo-200 border border-indigo-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-indigo-300 hover:text-white border border-transparent'
+                  }`}
+                >
                   <Calculator className="w-3 h-3 text-indigo-400" />
-                  <span>4. Math & Symbols</span>
-                </a>
+                  <span>4. Math &amp; Symbols</span>
+                </button>
               )}
-              <a href="#portion-arch" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+
+              <button
+                type="button"
+                onClick={() => scrollToPortion('portion-arch')}
+                className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                  activePortion === 'portion-arch'
+                    ? 'bg-purple-500/25 text-purple-200 border border-purple-500/50 shadow-sm font-semibold'
+                    : 'bg-slate-800/80 hover:bg-slate-700/80 text-purple-300 hover:text-white border border-transparent'
+                }`}
+              >
                 <Cpu className="w-3 h-3 text-purple-400" />
                 <span>5. AI Architecture</span>
-              </a>
+              </button>
+
               {selectedConcept.example && (
-                <a href="#portion-example" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-example')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-example'
+                      ? 'bg-emerald-500/25 text-emerald-200 border border-emerald-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-emerald-300 hover:text-white border border-transparent'
+                  }`}
+                >
                   <Sparkles className="w-3 h-3 text-emerald-400" />
                   <span>6. Real-World</span>
-                </a>
+                </button>
               )}
+
               {selectedConcept.pitfalls && (
-                <a href="#portion-traps" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-400 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-traps')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-traps'
+                      ? 'bg-rose-500/25 text-rose-200 border border-rose-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-rose-400 hover:text-white border border-transparent'
+                  }`}
+                >
                   <AlertTriangle className="w-3 h-3 text-rose-400" />
                   <span>7. Traps</span>
-                </a>
+                </button>
               )}
-              <a href="#portion-takeaways" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                <span>8. Takeaways</span>
-              </a>
+
+              {selectedConcept.key_takeaways && selectedConcept.key_takeaways.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-takeaways')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-takeaways'
+                      ? 'bg-emerald-500/25 text-emerald-200 border border-emerald-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-emerald-400 hover:text-white border border-transparent'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <span>8. Takeaways</span>
+                </button>
+              )}
             </div>
 
             {/* PORTION 1: Core Intuition & Underlying Logic */}
