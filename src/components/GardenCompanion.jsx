@@ -21,6 +21,7 @@ import {
   Palette
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLocation } from 'react-router-dom';
 
 export const COMPANION_QUIZ_QUESTIONS = [
   {
@@ -140,6 +141,7 @@ export const COMPANION_QUIZ_QUESTIONS = [
 ];
 
 export default function GardenCompanion() {
+  const location = useLocation();
   const [isMinimized, setIsMinimized] = useState(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
       return true; // Default to sleek minimized pill on mobile screens
@@ -147,6 +149,11 @@ export default function GardenCompanion() {
     return false;
   });
   const [isClosed, setIsClosed] = useState(false);
+
+  // Do not show floating corner companion on landing page /
+  if (location.pathname === '/' || location.pathname === '') {
+    return null;
+  }
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [isWaving, setIsWaving] = useState(true);
   const [robotMood, setRobotMood] = useState('happy'); // 'happy', 'curious', 'love'
