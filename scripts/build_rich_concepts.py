@@ -473,6 +473,16 @@ def generate_auto_enrichment(concept):
     first_sentence = definition.split(". ")[0] if ". " in definition else definition
     simple_summary = f"{title} explained simply: {first_sentence}. It ensures machine learning models can learn and generalize effectively."
 
+    core_logic = f"Why this matters: In {topic_label}, {title} provides the essential logic to connect input data with mathematical optimization. {logic if logic else 'It ensures the algorithm extracts meaningful patterns without being distorted by noise.'}"
+
+    architectural_logic = f"In modern AI systems, {title} is applied during data ingestion, hidden layer transformations, or loss calculation to guarantee numerical stability and fast convergence."
+
+    key_takeaways = [
+        f"Core Role: Foundational concept in {topic_label} under {category_label}.",
+        f"Key Principle: {first_sentence}.",
+        f"Production Impact: Critical for accurate training, stable evaluation, and scalable inference."
+    ]
+
     symbol_guide = []
     if formula and formula.strip():
         if "∑" in formula or "\\sum" in formula:
@@ -498,10 +508,13 @@ def generate_auto_enrichment(concept):
 
     return {
         "simple_summary": simple_summary,
+        "core_logic": core_logic,
         "core_terms": core_terms,
+        "architectural_logic": architectural_logic,
         "symbol_guide": symbol_guide,
         "numerical_example": numerical_example,
-        "pitfalls": pitfalls
+        "pitfalls": pitfalls,
+        "key_takeaways": key_takeaways
     }
 
 def main():
@@ -511,11 +524,14 @@ def main():
     print(f"Enriching {len(concepts)} concepts...")
     for c in concepts:
         enrichment = generate_auto_enrichment(c)
-        c["simple_summary"] = enrichment["simple_summary"]
-        c["core_terms"] = enrichment["core_terms"]
-        c["symbol_guide"] = enrichment["symbol_guide"]
-        c["numerical_example"] = enrichment["numerical_example"]
-        c["pitfalls"] = enrichment["pitfalls"]
+        c["simple_summary"] = enrichment.get("simple_summary", "")
+        c["core_logic"] = enrichment.get("core_logic", "")
+        c["core_terms"] = enrichment.get("core_terms", [])
+        c["architectural_logic"] = enrichment.get("architectural_logic", "")
+        c["symbol_guide"] = enrichment.get("symbol_guide", [])
+        c["numerical_example"] = enrichment.get("numerical_example", "")
+        c["pitfalls"] = enrichment.get("pitfalls", "")
+        c["key_takeaways"] = enrichment.get("key_takeaways", [])
 
     with open(CONCEPTS_PATH, "w", encoding="utf-8") as f:
         json.dump(concepts, f, indent=2, ensure_ascii=False)

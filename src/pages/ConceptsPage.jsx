@@ -18,7 +18,10 @@ import {
   GraduationCap,
   AlertTriangle,
   HelpCircle,
-  ArrowRight
+  ArrowRight,
+  Cpu,
+  Zap,
+  ListOrdered
 } from 'lucide-react';
 import conceptsData from '../data/concepts.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
@@ -158,6 +161,30 @@ export default function ConceptsPage() {
     });
   }, [activeCategory, searchQuery]);
 
+  // Group filtered concepts by Sub-Topic / Module
+  const groupedConcepts = useMemo(() => {
+    const groups = [];
+    const topicMap = new Map();
+
+    filteredConcepts.forEach((concept) => {
+      const topic = concept.topic_label || 'Other Concepts';
+      if (!topicMap.has(topic)) {
+        const group = {
+          topic,
+          topic_id: concept.topic_id,
+          category: concept.category,
+          category_label: concept.category_label,
+          items: []
+        };
+        topicMap.set(topic, group);
+        groups.push(group);
+      }
+      topicMap.get(topic).items.push(concept);
+    });
+
+    return groups;
+  }, [filteredConcepts]);
+
   // Selected Concept resolution: prioritize match in filteredConcepts
   const selectedConcept = useMemo(() => {
     const foundInFiltered = filteredConcepts.find((c) => c.id === selectedConceptId);
@@ -247,44 +274,54 @@ export default function ConceptsPage() {
           </div>
         </div>
 
-        {/* Concept Items Scrollable List */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {filteredConcepts.map((concept) => {
-            const isSelected = selectedConcept?.id === concept.id;
-            const isDone = isCompleted(`concept-${concept.id}`);
-
-            return (
-              <div
-                key={concept.id}
-                id={`concept-item-${concept.id}`}
-                onClick={() => handleSelect(concept.id)}
-                className={`p-2.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-2 text-xs ${
-                  isSelected
-                    ? 'bg-rose-600/20 text-white border border-rose-500/40 shadow-sm font-semibold'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white border border-transparent'
-                }`}
-              >
-                <div className="min-w-0 flex items-center gap-2">
-                  {isDone && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Mastered" />
-                  )}
-                  <div className="min-w-0">
-                    <div className="truncate text-xs font-medium">
-                      {concept.title}
-                    </div>
-                    <div className="text-[10px] text-slate-400 truncate mt-0.5">
-                      {concept.topic_label}
-                    </div>
-                  </div>
-                </div>
-                <ChevronRight
-                  className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-                    isSelected ? 'text-rose-400 translate-x-0.5' : 'text-slate-600'
-                  }`}
-                />
+        {/* Concept Items Scrollable List: Grouped by Sub-Topic / Module */}
+        <div className="flex-1 overflow-y-auto p-2 space-y-3">
+          {groupedConcepts.map((group, gIdx) => (
+            <div key={gIdx} className="space-y-1">
+              {/* Sub-Topic Header */}
+              <div className="px-2 pt-1 pb-1 flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider sticky top-0 bg-slate-900/95 backdrop-blur-sm z-10 border-b border-slate-800/80">
+                <span className="truncate pr-1">{group.topic}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 font-mono shrink-0">
+                  {group.items.length}
+                </span>
               </div>
-            );
-          })}
+
+              {/* Concepts within Sub-Topic */}
+              <div className="space-y-0.5">
+                {group.items.map((concept) => {
+                  const isSelected = selectedConcept?.id === concept.id;
+                  const isDone = isCompleted(`concept-${concept.id}`);
+
+                  return (
+                    <div
+                      key={concept.id}
+                      id={`concept-item-${concept.id}`}
+                      onClick={() => handleSelect(concept.id)}
+                      className={`p-2 rounded-xl cursor-pointer transition flex items-center justify-between gap-2 text-xs ${
+                        isSelected
+                          ? 'bg-rose-600/20 text-white border border-rose-500/40 shadow-sm font-semibold'
+                          : 'text-slate-300 hover:bg-slate-800/60 hover:text-white border border-transparent'
+                      }`}
+                    >
+                      <div className="min-w-0 flex items-center gap-2">
+                        {isDone && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Mastered" />
+                        )}
+                        <span className="truncate text-xs">
+                          {concept.title}
+                        </span>
+                      </div>
+                      <ChevronRight
+                        className={`w-3.5 h-3.5 shrink-0 transition-transform ${
+                          isSelected ? 'text-rose-400 translate-x-0.5' : 'text-slate-600'
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </aside>
 
@@ -423,29 +460,74 @@ export default function ConceptsPage() {
               </h1>
             </div>
 
-            {/* 1. Plain-English Summary (In a Nutshell) */}
-            {selectedConcept.simple_summary && (
-              <div className="bg-gradient-to-r from-indigo-950/50 via-purple-950/30 to-slate-900 rounded-2xl p-5 sm:p-6 border border-indigo-500/35 shadow-lg space-y-2">
-                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider">
-                  <GraduationCap className="w-4 h-4 text-cyan-400" />
-                  <span>The Basics First (In a Nutshell)</span>
-                </div>
-                <p className="text-white text-sm sm:text-base font-medium leading-relaxed">
-                  {selectedConcept.simple_summary}
-                </p>
-              </div>
-            )}
+            {/* In-Page Quick Section Navigator */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-2 bg-slate-900/90 rounded-xl border border-slate-800 text-[11px] sticky top-0 z-20 backdrop-blur-md shadow-sm">
+              <span className="text-[10px] font-bold text-slate-500 uppercase px-1.5 font-mono shrink-0">Portions:</span>
+              <a href="#portion-logic" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <Lightbulb className="w-3 h-3 text-amber-400" />
+                <span>1. Logic</span>
+              </a>
+              {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
+                <a href="#portion-terms" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                  <Layers className="w-3 h-3 text-cyan-400" />
+                  <span>2. Sub-Topics ({selectedConcept.core_terms.length})</span>
+                </a>
+              )}
+              {selectedConcept.def && (
+                <a href="#portion-definition" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                  <BookOpen className="w-3 h-3 text-rose-400" />
+                  <span>3. Definition</span>
+                </a>
+              )}
+              {selectedConcept.formula && (
+                <a href="#portion-math" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                  <Calculator className="w-3 h-3 text-indigo-400" />
+                  <span>4. Math & Symbols</span>
+                </a>
+              )}
+              <a href="#portion-arch" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <Cpu className="w-3 h-3 text-purple-400" />
+                <span>5. AI Architecture</span>
+              </a>
+              {selectedConcept.example && (
+                <a href="#portion-example" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  <span>6. Real-World</span>
+                </a>
+              )}
+              {selectedConcept.pitfalls && (
+                <a href="#portion-traps" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-400 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                  <AlertTriangle className="w-3 h-3 text-rose-400" />
+                  <span>7. Traps</span>
+                </a>
+              )}
+              <a href="#portion-takeaways" className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-white transition flex items-center gap-1 shrink-0 font-medium">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <span>8. Takeaways</span>
+              </a>
+            </div>
 
-            {/* 2. Separate Term-by-Term Breakdown (Solving 'shrinking all terms into one') */}
+            {/* PORTION 1: Core Intuition & Underlying Logic */}
+            <div id="portion-logic" className="bg-gradient-to-r from-amber-950/30 via-slate-900 to-indigo-950/30 rounded-2xl p-5 sm:p-6 border border-amber-500/30 shadow-md space-y-2.5 scroll-mt-14">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
+                <Lightbulb className="w-4 h-4 text-amber-400" />
+                <span>Portion 1 &bull; Core Intuition &amp; Underlying Logic</span>
+              </div>
+              <p className="text-amber-100/95 text-sm sm:text-base font-medium leading-relaxed">
+                {selectedConcept.core_logic || selectedConcept.logic || selectedConcept.simple_summary}
+              </p>
+            </div>
+
+            {/* PORTION 2: Separate Term-by-Term Breakdown (Sub-Topics) */}
             {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
-              <div className="space-y-3">
+              <div id="portion-terms" className="space-y-3 scroll-mt-14">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
                     <Layers className="w-4 h-4 text-cyan-400" />
-                    <span>Breaking Down Each Term (Don't Confuse Them!)</span>
+                    <span>Portion 2 &bull; Key Terms &amp; Sub-Topics Breakdown</span>
                   </h3>
                   <span className="text-[11px] text-slate-400 font-mono">
-                    {selectedConcept.core_terms.length} distinct {selectedConcept.core_terms.length === 1 ? 'concept' : 'concepts'}
+                    {selectedConcept.core_terms.length} separate {selectedConcept.core_terms.length === 1 ? 'term' : 'terms'}
                   </span>
                 </div>
 
@@ -492,12 +574,12 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 3. Formal Academic Definition */}
+            {/* PORTION 3: Formal Academic Definition & Scope */}
             {selectedConcept.def && (
-              <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-2">
+              <div id="portion-definition" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-2 scroll-mt-14">
                 <h3 className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-rose-400" />
-                  Formal Academic Definition & Role
+                  Portion 3 &bull; Formal Academic Definition &amp; Role
                 </h3>
                 <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.def} />
@@ -505,13 +587,13 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 4. Mathematical Formulation & Symbol Decoder */}
+            {/* PORTION 4: Mathematical Formulation & Symbol Decoder */}
             {selectedConcept.formula && (
-              <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-4">
+              <div id="portion-math" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-4 scroll-mt-14">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-                    Mathematical Formulation & Symbol Decoder
+                    Portion 4 &bull; Mathematical Formulation &amp; Symbol Decoder
                   </h3>
 
                   <button
@@ -541,7 +623,7 @@ export default function ConceptsPage() {
                   <KaTeXRenderer math={selectedConcept.formula} block={true} />
                 </div>
 
-                {/* Symbol-by-Symbol Decoder */}
+                {/* Symbol-by-Symbol Decoder Table */}
                 {selectedConcept.symbol_guide && selectedConcept.symbol_guide.length > 0 && (
                   <div className="space-y-2 pt-3 border-t border-slate-800/80">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
@@ -569,7 +651,7 @@ export default function ConceptsPage() {
                   <div className="p-4 rounded-xl bg-indigo-950/25 border border-indigo-500/20 text-xs sm:text-sm text-indigo-200/95 space-y-2">
                     <div className="font-bold text-indigo-300 flex items-center gap-1.5 text-xs uppercase tracking-wide">
                       <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-                      <span>Step-by-Step Calculation (Concrete Numbers):</span>
+                      <span>Step-by-Step Numerical Calculation (Real Numbers):</span>
                     </div>
                     <p className="whitespace-pre-line font-mono text-xs sm:text-[13px] leading-relaxed text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-indigo-950">
                       {selectedConcept.numerical_example}
@@ -579,25 +661,23 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 5. Intuition & When to Use */}
-            {selectedConcept.logic && (
-              <div className="bg-amber-950/20 rounded-2xl p-5 sm:p-6 border border-amber-500/25 space-y-2">
-                <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-                  Intuition & Why Modern AI Uses It
-                </h3>
-                <p className="text-amber-100/90 leading-relaxed text-sm sm:text-base">
-                  <MathText text={selectedConcept.logic} />
-                </p>
-              </div>
-            )}
+            {/* PORTION 5: Architectural Logic (Inside AI Networks) */}
+            <div id="portion-arch" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-purple-500/25 space-y-2.5 scroll-mt-14">
+              <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                Portion 5 &bull; Architectural Logic (How AI Models Use This Internally)
+              </h3>
+              <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
+                {selectedConcept.architectural_logic || selectedConcept.logic || "This concept is integrated into the core neural layer operations, guiding gradient descent and forward transformations."}
+              </p>
+            </div>
 
-            {/* 6. Real-World Practical Example */}
+            {/* PORTION 6: Real-World Production Example */}
             {selectedConcept.example && (
-              <div className="bg-emerald-950/20 rounded-2xl p-5 sm:p-6 border border-emerald-500/25 space-y-2">
+              <div id="portion-example" className="bg-emerald-950/20 rounded-2xl p-5 sm:p-6 border border-emerald-500/25 space-y-2 scroll-mt-14">
                 <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  Real-World Practical Scenario
+                  Portion 6 &bull; Real-World Production Scenario
                 </h3>
                 <p className="text-emerald-100/90 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.example} />
@@ -605,16 +685,33 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 7. Common Novice Traps & Misconceptions */}
+            {/* PORTION 7: Common Novice Traps & Misconceptions */}
             {selectedConcept.pitfalls && (
-              <div className="bg-rose-950/20 rounded-2xl p-4 sm:p-5 border border-rose-500/30 text-rose-200/90 space-y-1.5">
+              <div id="portion-traps" className="bg-rose-950/20 rounded-2xl p-4 sm:p-5 border border-rose-500/30 text-rose-200/90 space-y-1.5 scroll-mt-14">
                 <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
                   <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>Common Beginner Traps & Misconceptions</span>
+                  <span>Portion 7 &bull; Common Novice Traps &amp; Misconceptions</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {selectedConcept.pitfalls}
                 </p>
+              </div>
+            )}
+
+            {/* PORTION 8: Key Takeaways & Revision Guide */}
+            {selectedConcept.key_takeaways && selectedConcept.key_takeaways.length > 0 && (
+              <div id="portion-takeaways" className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-emerald-500/30 space-y-2.5 scroll-mt-14">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Portion 8 &bull; Key Takeaways (Summary to Remember)</span>
+                </div>
+                <ul className="text-xs sm:text-sm text-slate-300 space-y-1.5 list-disc list-inside">
+                  {selectedConcept.key_takeaways.map((point, kIdx) => (
+                    <li key={kIdx} className="leading-relaxed">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
