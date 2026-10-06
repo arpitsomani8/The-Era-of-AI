@@ -24,10 +24,10 @@ import { MathText } from './KaTeXRenderer';
 export const ASSESSMENT_TRACKS = {
   '0-2': {
     id: '0-2',
-    name: '0–2 Years (Freshers & Novices)',
-    badge: '🌱 Novice & Fresher Track',
+    name: '0–2 Years (Freshers)',
+    badge: '🌱 Freshers Track',
     badgeCls: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    description: '100% intuitive, conceptual questions. Zero complex math, Hessian matrices, or calculus proofs.',
+    description: 'Core intuitive understanding, essential ML foundations, and real-world metrics.',
     pillars: {
       math: { label: 'Foundations & Concepts', total: 2 },
       ml: { label: 'Classical ML', total: 2 },
@@ -187,7 +187,7 @@ export const ASSESSMENT_TRACKS = {
 
   '2-4': {
     id: '2-4',
-    name: '2–4 Years (Mid-Level Engineers)',
+    name: '2–5 Years (Mid-Level Engineers)',
     badge: '🚀 Mid-Level Track',
     badgeCls: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     description: 'Applied machine learning, transformer mechanics, vector search, and production tradeoffs.',
@@ -343,7 +343,7 @@ export const ASSESSMENT_TRACKS = {
 
   '5+': {
     id: '5+',
-    name: '5+ Years (Senior / Staff / Quant)',
+    name: '6+ Years (Senior / Staff / Lead)',
     badge: '🏛️ Senior & Staff Track',
     badgeCls: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
     description: 'Rigorous optimization, GPU memory bandwidth, mathematical derivations, and architecture proofs.',
@@ -564,11 +564,11 @@ export default function AssessmentModal({ isOpen, onClose }) {
         tierColor = 'text-emerald-400';
         tierBadge = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
       } else if (percent >= 70) {
-        tier = 'Promising Novice (Strong Core Intuition)';
+        tier = 'Promising Practitioner (Strong Core Intuition)';
         tierColor = 'text-teal-400';
         tierBadge = 'bg-teal-500/20 text-teal-300 border-teal-500/40';
       } else if (percent >= 50) {
-        tier = 'Developing Beginner (Review Core Concepts)';
+        tier = 'Developing Foundations (Review Core Concepts)';
         tierColor = 'text-amber-400';
         tierBadge = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
       } else {
@@ -712,9 +712,9 @@ export default function AssessmentModal({ isOpen, onClose }) {
           {/* Experience Track Tabs Selector */}
           <div className="bg-slate-950 p-1.5 rounded-2xl border border-slate-800 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {[
-              { id: '0-2', label: '0–2 Years', sub: 'Freshers & Novices (Zero-Math)', icon: '🌱' },
-              { id: '2-4', label: '2–4 Years', sub: 'Mid-Level Applied Engineers', icon: '🚀' },
-              { id: '5+', label: '5+ Years', sub: 'Senior / Staff / Quant', icon: '🏛️' },
+              { id: '0-2', label: '0–2 Years', sub: 'Freshers (Core Intuition & Concepts)', icon: '🌱' },
+              { id: '2-4', label: '2–5 Years', sub: 'Mid-Level Applied Engineers', icon: '🚀' },
+              { id: '5+', label: '6+ Years', sub: 'Senior / Staff / Lead', icon: '🏛️' },
             ].map((track) => (
               <button
                 key={track.id}
@@ -743,13 +743,13 @@ export default function AssessmentModal({ isOpen, onClose }) {
             /* QUESTION TAKING VIEW */
             /* ========================================================= */
             <div className="space-y-5">
-              {/* Novice Track Callout */}
+              {/* Track Callout */}
               {activeTrack === '0-2' && (
                 <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3 sm:p-4 flex items-center gap-3">
                   <span className="text-lg">🌱</span>
                   <div className="text-xs text-emerald-300/90 leading-relaxed">
-                    <strong className="text-emerald-200 font-bold block">Novice & Fresher Track Active:</strong>
-                    Questions focus on fundamental intuition and real-world scenarios. No scary calculus or LaTeX formulas!
+                    <strong className="text-emerald-200 font-bold block">0–2 Years Track Active:</strong>
+                    Questions emphasize core intuitive understanding, practical machine learning definitions, and foundational concepts.
                   </div>
                 </div>
               )}

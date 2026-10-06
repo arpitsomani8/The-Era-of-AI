@@ -214,4 +214,30 @@ if stale_findings:
 else:
     print("[OK] Zero stale hardcoded numbers found across all UI files!")
 
+print("\n=== 7. AUDITING INTERVIEW TIERS & TERMINOLOGY ===")
+valid_tiers = {'0-2', '2-5', '6+'}
+invalid_tiers = [d['id'] for d in questions if d.get('experience_level') not in valid_tiers]
+if invalid_tiers:
+    print(f"[WARN] Found {len(invalid_tiers)} interview questions with invalid experience tier: {invalid_tiers[:5]}")
+else:
+    t0_2 = sum(1 for d in questions if d.get('experience_level') == '0-2')
+    t2_5 = sum(1 for d in questions if d.get('experience_level') == '2-5')
+    t6_plus = sum(1 for d in questions if d.get('experience_level') == '6+')
+    print(f"[OK] Experience tiers 100% verified: 0-2 ({t0_2}), 2-5 ({t2_5}), 6+ ({t6_plus}) = {len(questions)} total!")
+
+novice_refs = []
+for root, dirs, files in os.walk('src'):
+    for file in files:
+        if file.endswith(('.jsx', '.js', '.json')):
+            full_p = os.path.join(root, file)
+            with open(full_p, 'r', encoding='utf-8') as fp:
+                txt = fp.read()
+            if 'novice' in txt.lower():
+                novice_refs.append(os.path.relpath(full_p, 'src'))
+
+if novice_refs:
+    print(f"[WARN] Found residual 'novice' terminology in: {novice_refs}")
+else:
+    print("[OK] Zero 'novice' terminology found across src/ - completely clean & respectful!")
+
 print("\nAudit completed.")

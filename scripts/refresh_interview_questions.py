@@ -2,7 +2,7 @@
 """
 Refresh Interview Questions Bank
 Generates a comprehensive, curated question vault with:
-1. 🌱 0-2 Years Experience (Freshers & Novices): 100% NON-MATHEMATICAL, intuitive, real-world scenario questions.
+1. 🌱 0-2 Years Experience (Freshers & Entry-Level): 100% NON-MATHEMATICAL, intuitive, real-world scenario questions.
 2. 🚀 2-4 Years Experience (Mid-Level Engineers): Applied modeling, trade-offs, debugging, and metrics.
 3. 🏛️ 5+ Years Experience (Senior & Staff / Architect): System design, distributed training, low-latency serving, and MLOps.
 """
@@ -17,13 +17,13 @@ def build_questions():
     questions = []
 
     # =========================================================================
-    # 🌱 0–2 YEARS EXPERIENCE (FRESHERS, NOVICES, ENTRY-LEVEL)
+    # 🌱 0–2 YEARS EXPERIENCE (FRESHERS, ENTRY-LEVEL, ENTRY-LEVEL)
     # 100% NON-MATHEMATICAL, CLEAR INTUITION, REAL-WORLD SCENARIOS
     # =========================================================================
 
-    novice_questions = [
+    fresher_questions = [
         {
-            "id": "novice_01",
+            "id": "fresher_01",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -35,7 +35,7 @@ def build_questions():
             "tip": "In an interview, start with the 1-sentence distinction ('Supervised has correct answers, Unsupervised finds hidden patterns, Reinforcement learns from rewards and penalties') before giving an everyday example for each."
         },
         {
-            "id": "novice_02",
+            "id": "fresher_02",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -47,7 +47,7 @@ def build_questions():
             "tip": "Interviewers frequently ask trick questions like 'Is predicting credit score classification or regression?' (It's regression because the score is a continuous number, though it can be bucketed into risk tiers)."
         },
         {
-            "id": "novice_03",
+            "id": "fresher_03",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -59,7 +59,7 @@ def build_questions():
             "tip": "Always mention that the Test set must never be used to make modeling choices or tune parameters; otherwise, you cause data snooping / test leakage."
         },
         {
-            "id": "novice_04",
+            "id": "fresher_04",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -71,7 +71,7 @@ def build_questions():
             "tip": "Interviewers love the 'Gap' diagnostic: if Training score is high and Validation score is low, the gap indicates overfitting!"
         },
         {
-            "id": "novice_05",
+            "id": "fresher_05",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -83,7 +83,7 @@ def build_questions():
             "tip": "Remember this simple mnemonic: High Recall = 'Cast a wide net, miss nothing'. High Precision = 'Be very selective, only fire when 100% sure'."
         },
         {
-            "id": "novice_06",
+            "id": "fresher_06",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -95,7 +95,7 @@ def build_questions():
             "tip": "If asked about Type I vs Type II errors: Type I is False Positive (a false alarm); Type II is False Negative (a missed danger)."
         },
         {
-            "id": "novice_07",
+            "id": "fresher_07",
             "category": "genai_llm",
             "category_label": "GenAI & LLMs",
             "experience_level": "0-2",
@@ -107,7 +107,7 @@ def build_questions():
             "tip": "Highlight that embeddings allow computers to calculate mathematical distance between concepts (e.g., using Cosine Similarity)."
         },
         {
-            "id": "novice_08",
+            "id": "fresher_08",
             "category": "genai_llm",
             "category_label": "GenAI & LLMs",
             "experience_level": "0-2",
@@ -119,7 +119,7 @@ def build_questions():
             "tip": "Explain that APIs (like OpenAI and Anthropic) bill users per million input and output tokens because GPU memory is allocated per token processed."
         },
         {
-            "id": "novice_09",
+            "id": "fresher_09",
             "category": "genai_llm",
             "category_label": "GenAI & LLMs",
             "experience_level": "0-2",
@@ -131,7 +131,7 @@ def build_questions():
             "tip": "Mention 'Chain-of-Thought' prompting ('Think step-by-step') as another powerful technique that tells the model to write out intermediate logic before concluding."
         },
         {
-            "id": "novice_10",
+            "id": "fresher_10",
             "category": "rag",
             "category_label": "RAG & Vector DB",
             "experience_level": "0-2",
@@ -143,7 +143,7 @@ def build_questions():
             "tip": "Use the 'open-book exam' analogy! It explains RAG to any non-technical interviewer immediately."
         },
         {
-            "id": "novice_11",
+            "id": "fresher_11",
             "category": "genai_llm",
             "category_label": "GenAI & LLMs",
             "experience_level": "0-2",
@@ -155,7 +155,7 @@ def build_questions():
             "tip": "Mention the famous legal case where a lawyer used ChatGPT and submitted fake court case citations to a federal judge as a warning story."
         },
         {
-            "id": "novice_12",
+            "id": "fresher_12",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -167,7 +167,7 @@ def build_questions():
             "tip": "State clearly: 'Fit your preprocessing scalers ONLY on training data; only transform the test data'."
         },
         {
-            "id": "novice_13",
+            "id": "fresher_13",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -179,7 +179,7 @@ def build_questions():
             "tip": "Use the Google ML Crash Course analogy of the hiker on a foggy mountain; interviewers love visual, intuitive explanations."
         },
         {
-            "id": "novice_14",
+            "id": "fresher_14",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -191,7 +191,7 @@ def build_questions():
             "tip": "Always mention that Tree-based algorithms (Random Forest, XGBoost) are scale-invariant because they split on single features independently."
         },
         {
-            "id": "novice_15",
+            "id": "fresher_15",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -203,7 +203,7 @@ def build_questions():
             "tip": "Explain the concept of 'Wisdom of the Crowds': guessing the weight of an ox at a county fair is more accurate when 500 people average their guesses than asking a single expert."
         },
         {
-            "id": "novice_16",
+            "id": "fresher_16",
             "category": "dl",
             "category_label": "Deep Learning",
             "experience_level": "0-2",
@@ -215,7 +215,7 @@ def build_questions():
             "tip": "State that GPU parallelism is the primary hardware catalyst that enabled the modern Deep Learning and Generative AI boom."
         },
         {
-            "id": "novice_17",
+            "id": "fresher_17",
             "category": "dl",
             "category_label": "Deep Learning",
             "experience_level": "0-2",
@@ -227,7 +227,7 @@ def build_questions():
             "tip": "State clearly: 'Without activation functions, stacking 100 layers is mathematically identical to a single-layer model'."
         },
         {
-            "id": "novice_18",
+            "id": "fresher_18",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -239,7 +239,7 @@ def build_questions():
             "tip": "Always mention checking whether data is Missing Completely at Random (MCAR) or Missing Not at Random (MNAR)."
         },
         {
-            "id": "novice_19",
+            "id": "fresher_19",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -251,7 +251,7 @@ def build_questions():
             "tip": "State: 'Never use accuracy on imbalanced datasets; always evaluate Precision, Recall, and PR-AUC'."
         },
         {
-            "id": "novice_20",
+            "id": "fresher_20",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -263,7 +263,7 @@ def build_questions():
             "tip": "Explain that hyperparameter tuning uses techniques like Grid Search, Random Search, or Bayesian Optimization (Optuna)."
         },
         {
-            "id": "novice_21",
+            "id": "fresher_21",
             "category": "dl",
             "category_label": "Deep Learning",
             "experience_level": "0-2",
@@ -275,7 +275,7 @@ def build_questions():
             "tip": "Interviewers check if you know why we use Mini-batches instead of the whole dataset at once (because loading all data into GPU memory causes Out-of-Memory crashes)."
         },
         {
-            "id": "novice_22",
+            "id": "fresher_22",
             "category": "dl",
             "category_label": "Deep Learning",
             "experience_level": "0-2",
@@ -287,7 +287,7 @@ def build_questions():
             "tip": "Mention that almost all production AI today (ResNet, BERT, Llama fine-tuning) is built on Transfer Learning."
         },
         {
-            "id": "novice_23",
+            "id": "fresher_23",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -299,7 +299,7 @@ def build_questions():
             "tip": "Explain that accuracy cannot be used directly as a loss function because its derivative is zero almost everywhere."
         },
         {
-            "id": "novice_24",
+            "id": "fresher_24",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -311,7 +311,7 @@ def build_questions():
             "tip": "Mention that fairness requires evaluating model accuracy separately across diverse data slices (disaggregated evaluation)."
         },
         {
-            "id": "novice_25",
+            "id": "fresher_25",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -323,7 +323,7 @@ def build_questions():
             "tip": "State that K=5 or K=10 is the universal industry standard."
         },
         {
-            "id": "novice_26",
+            "id": "fresher_26",
             "category": "metrics_data",
             "category_label": "Metrics & Data",
             "experience_level": "0-2",
@@ -335,7 +335,7 @@ def build_questions():
             "tip": "Mention the downside of One-Hot Encoding: if a column has 10,000 unique zip codes, one-hot encoding creates 10,000 new columns (curse of dimensionality)."
         },
         {
-            "id": "novice_27",
+            "id": "fresher_27",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -347,7 +347,7 @@ def build_questions():
             "tip": "Explain that machine learning finds statistical correlations; proving causation requires randomized controlled trials (A/B testing)."
         },
         {
-            "id": "novice_28",
+            "id": "fresher_28",
             "category": "ml",
             "category_label": "Classical Machine Learning",
             "experience_level": "0-2",
@@ -359,7 +359,7 @@ def build_questions():
             "tip": "Use the dartboard visual! It is universally recognized by tech interviewers."
         },
         {
-            "id": "novice_29",
+            "id": "fresher_29",
             "category": "genai_llm",
             "category_label": "GenAI & LLMs",
             "experience_level": "0-2",
@@ -371,7 +371,7 @@ def build_questions():
             "tip": "The standard engineering advice is: 'Prompt first, add RAG second, fine-tune only when necessary'."
         },
         {
-            "id": "novice_30",
+            "id": "fresher_30",
             "category": "rag",
             "category_label": "RAG & Vector DB",
             "experience_level": "0-2",
@@ -406,7 +406,7 @@ def build_questions():
         enriched_existing.append(q)
 
     # Combine novice questions first, then enriched existing
-    final_questions = novice_questions + enriched_existing
+    final_questions = fresher_questions + enriched_existing
 
     # Deduplicate by ID
     seen_ids = set()

@@ -858,12 +858,12 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* PORTION 5: Common Novice Traps & Misconceptions */}
+            {/* PORTION 5: Common Pitfalls & Misconceptions */}
             {selectedConcept.pitfalls && (
               <div id="portion-traps" className="bg-rose-950/20 rounded-2xl p-4 sm:p-5 border border-rose-500/30 text-rose-200/90 space-y-1.5 scroll-mt-14">
                 <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
                   <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>Portion 5 &bull; Common Novice Traps &amp; Misconceptions</span>
+                  <span>Portion 5 &bull; Common Pitfalls &amp; Misconceptions</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {selectedConcept.pitfalls}
