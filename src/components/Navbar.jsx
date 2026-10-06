@@ -34,7 +34,6 @@ export default function Navbar({
   onOpenKinetic, 
   onOpenBookmarks, 
   onOpenAssessment, 
-  onOpenCheatsheet, 
   onOpenTimeline,
   onOpenPythonLab
 }) {
@@ -253,7 +252,7 @@ export default function Navbar({
             onClick={onOpenBookmarks}
             id="navbar-bookmarks-btn"
             className="relative p-1.5 px-2 sm:px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
-            title="Open Saved Bookmarks & Study Cheatsheet"
+            title="Open Saved Bookmarks"
           >
             <Bookmark className={`w-3.5 h-3.5 transition-transform group-hover:scale-110 ${bookmarkCount > 0 ? 'text-amber-400 fill-amber-400' : 'text-slate-400'}`} />
             <span className="hidden sm:inline">Bookmarks</span>
@@ -362,24 +361,6 @@ export default function Navbar({
                       </div>
                       <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
                         15-min knowledge evaluation &amp; personalized score
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => { onOpenCheatsheet(); setToolsDropdownOpen(false); }}
-                    id="tools-dropdown-cheatsheet-btn"
-                    className="w-full p-2 rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/30 border border-transparent text-left flex items-start gap-2.5 transition group"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform mt-0.5">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-white group-hover:text-cyan-300">
-                        Cheatsheet Builder
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                        Curate custom exam cards &amp; export vector PDF
                       </p>
                     </div>
                   </button>
@@ -548,14 +529,6 @@ export default function Navbar({
               >
                 <Award className="w-4 h-4 text-purple-400 shrink-0" />
                 <span className="truncate">Diagnostic</span>
-              </button>
-
-              <button
-                onClick={() => { onOpenCheatsheet(); setMobileMenuOpen(false); }}
-                className="p-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-2 transition"
-              >
-                <FileText className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span className="truncate">Cheatsheet</span>
               </button>
 
               <button

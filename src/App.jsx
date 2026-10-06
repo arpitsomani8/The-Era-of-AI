@@ -7,7 +7,6 @@ import BookmarksDrawer from './components/BookmarksDrawer';
 import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
 import AssessmentModal from './components/AssessmentModal';
-import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
 import TimelineModal from './components/TimelineModal';
 import PythonSandboxModal from './components/PythonSandboxModal';
 import LandingHeroPage from './pages/LandingHeroPage';
@@ -135,7 +134,6 @@ export default function App() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [isPythonLabOpen, setIsPythonLabOpen] = useState(false);
   const [showKineticIntro, setShowKineticIntro] = useState(false);
@@ -168,7 +166,6 @@ export default function App() {
         onOpenKinetic={() => setShowKineticIntro(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
         onOpenAssessment={() => setIsAssessmentOpen(true)}
-        onOpenCheatsheet={() => setIsCheatsheetOpen(true)}
         onOpenTimeline={() => setIsTimelineOpen(true)}
         onOpenPythonLab={() => setIsPythonLabOpen(true)}
       />
@@ -211,12 +208,6 @@ export default function App() {
         onClose={() => setIsAssessmentOpen(false)}
       />
 
-      {/* High-Yield Cheatsheet Builder & PDF Exporter Modal */}
-      <CheatsheetBuilderModal
-        isOpen={isCheatsheetOpen}
-        onClose={() => setIsCheatsheetOpen(false)}
-      />
-
       {/* Interactive AI History Timeline Modal (1950–2026) */}
       <TimelineModal
         isOpen={isTimelineOpen}
@@ -229,14 +220,10 @@ export default function App() {
         onClose={() => setIsPythonLabOpen(false)}
       />
 
-      {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}
+      {/* Saved Bookmarks Slide-Over Drawer */}
       <BookmarksDrawer
         isOpen={isBookmarksOpen}
         onClose={() => setIsBookmarksOpen(false)}
-        onOpenCheatsheet={() => {
-          setIsBookmarksOpen(false);
-          setIsCheatsheetOpen(true);
-        }}
       />
 
       {/* Kinetic Physics Opening Visualization */}
