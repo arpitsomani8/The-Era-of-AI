@@ -189,7 +189,51 @@ const hubSubtopicToConceptId = {
   "multimodal foundation models & advanced agentic workflows": "concept_clip_contrastive_multimodal",
   "llmops, multi-tenancy & ai system design": "concept_semantic_caching_latency_cost",
   "software engineering patterns & clean architecture for ai": "concept_swe_design_patterns_ai",
-  "cloud infrastructure, containerization & production tooling": "concept_cloud_ecosystems_aws_vs_azure"
+  "cloud infrastructure, containerization & production tooling": "concept_cloud_ecosystems_aws_vs_azure",
+
+  // 7 New Industry Domains & Hub Mappings
+  "reinforcement learning": "concept_mdp_bellman",
+  "rl": "concept_mdp_bellman",
+  "reinforcement learning (rl) & decision foundations": "concept_mdp_bellman",
+  "dl_rl_foundations": "concept_mdp_bellman",
+
+  "time series": "concept_stationarity_acf_pacf",
+  "forecasting": "concept_stationarity_acf_pacf",
+  "time series analysis & forecasting dynamics": "concept_stationarity_acf_pacf",
+  "ml_time_series": "concept_stationarity_acf_pacf",
+
+  "recsys": "concept_collaborative_filtering_svd",
+  "recommender systems": "concept_collaborative_filtering_svd",
+  "recommender systems (recsys) & retrieval architecture": "concept_collaborative_filtering_svd",
+  "ml_recsys": "concept_collaborative_filtering_svd",
+
+  "gnn": "concept_graph_representations_adjacency",
+  "graph neural networks": "concept_graph_representations_adjacency",
+  "graph neural networks (gnn) & geometric deep learning": "concept_graph_representations_adjacency",
+  "dl_gnn": "concept_graph_representations_adjacency",
+
+  "xai": "concept_shap_game_theory",
+  "explainable ai": "concept_shap_game_theory",
+  "explainable ai (xai) & model interpretability": "concept_shap_game_theory",
+  "eval_xai": "concept_shap_game_theory",
+
+  "audio": "concept_audio_preprocessing_spectrograms",
+  "speech": "concept_audio_preprocessing_spectrograms",
+  "audio, speech ai & voice intelligence": "concept_audio_preprocessing_spectrograms",
+  "genai_audio_speech": "concept_audio_preprocessing_spectrograms",
+
+  "reasoning models": "concept_prm_vs_orm",
+  "test-time compute": "concept_prm_vs_orm",
+  "reasoning models, test-time compute & system 2 ai": "concept_prm_vs_orm",
+  "genai_reasoning_test_time": "concept_prm_vs_orm",
+
+  // Realigned Subtopics
+  "autoencoders & latent bottlenecks": "concept_autoencoders_latent_bottlenecks",
+  "real-time inference acceleration (tensorrt, onnx runtime & cuda graphs)": "concept_inference_acceleration_tensorrt_onnx",
+  "text preprocessing, lemmatization, stopwords & linguistic normalization": "concept_text_preprocessing_normalization",
+  "context window scaling (yarn, longlora & streamingllm)": "concept_context_window_scaling_yarn",
+  "multimodal tool calling & vision-language agents": "concept_multimodal_tool_calling_agents",
+  "hyperparameter tuning (grid search, random search & bayesian optuna)": "concept_hyperparameter_tuning_bayesian"
 };
 
 /**

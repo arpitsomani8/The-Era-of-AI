@@ -95,7 +95,9 @@
       "Unsupervised & Clustering"
     ],
     "connections": [
-      "root"
+      "root",
+      "ml_time_series",
+      "ml_recsys"
     ]
   },
   {
@@ -116,7 +118,8 @@
       "Cross-Validation"
     ],
     "connections": [
-      "root"
+      "root",
+      "eval_xai"
     ]
   },
   {
@@ -141,7 +144,9 @@
       "Diffusion Models"
     ],
     "connections": [
-      "root"
+      "root",
+      "dl_rl_foundations",
+      "dl_gnn"
     ]
   },
   {
@@ -164,7 +169,9 @@
       "Prompt Engineering & Agents"
     ],
     "connections": [
-      "root"
+      "root",
+      "genai_audio_speech",
+      "genai_reasoning_test_time"
     ]
   },
   {
@@ -423,7 +430,7 @@
       "Batch Size (Full Batch vs Mini-Batch vs SGD)",
       "Epochs & Training Passes",
       "Loss Convergence & Stopping Criteria",
-      "Learning Rate Schedules & Cosine Decay"
+      "Hyperparameter Tuning (Grid Search, Random Search & Bayesian Optuna)"
     ],
     "connections": [
       "ml_root"
@@ -773,7 +780,7 @@
     "subtopics": [
       "Subword Tokenization (BPE, WordPiece, SentencePiece)",
       "Dense Vector Embeddings & Semantic Geometry",
-      "Positional Encodings & Rotary Embeddings (RoPE)",
+      "Context Window Scaling (YaRN, LongLoRA & StreamingLLM)",
       "Collaborative Filtering via Matrix Factorization Embeddings",
       "Context Windows & Sequence Length Extrapolation"
     ],
@@ -971,7 +978,7 @@
     "logic": "Raw characters and sentences must be transformed into continuous numeric vectors that preserve semantic similarity, geometric relationships, and syntactic context.",
     "example": "Word arithmetic: Word2Vec vector algebra reveals that Vector('King') - Vector('Man') + Vector('Woman') points directly to Vector('Queen').",
     "subtopics": [
-      "Tokens, Tokenization (BPE, WordPiece) & Vocabulary Bounds",
+      "Text Preprocessing, Lemmatization, Stopwords & Linguistic Normalization",
       "N-Grams, Bigrams & Statistical Language Modeling",
       "Sparse vs Dense Representations & Word2Vec (Skip-Gram & CBOW)",
       "Contextual Embeddings (BERT, ELMo) vs Static Word Vectors",
@@ -1040,7 +1047,7 @@
       "Feed Forward Neural Networks (Multilayer Perceptrons & Dense Layers)",
       "Recurrent Neural Networks (RNNs) & Hidden State Recurrence",
       "Vanishing Gradient & Exploding Gradient Dynamics",
-      "Principal Component Analysis (PCA & Dimensionality Reduction)"
+      "Autoencoders & Latent Bottlenecks"
     ],
     "connections": [
       "dl_root"
@@ -1106,7 +1113,7 @@
     "subtopics": [
       "PyTorch vs TensorFlow Execution Internals (Autograd & Dynamic Graphs)",
       "Object Detection Metrics: Intersection over Union (IoU) & mAP",
-      "YOLO Architectural Evolution & Real-Time Object Detection",
+      "Real-Time Inference Acceleration (TensorRT, ONNX Runtime & CUDA Graphs)",
       "Real-Time Inference Optimization: ONNX Runtime & Model Quantization",
       "DeepSparse, Neural Sparsification & Computer Vision Anomaly Detection"
     ],
@@ -1179,7 +1186,7 @@
       "CLIP Multimodal Embeddings & Contrastive Vision-Language Alignment",
       "Diffusion Models from Scratch: Forward & Reverse Gaussian Markov Processes",
       "Image-to-Image Pipelines, Sketch-to-Image & Fabric Style Transfer",
-      "LangGraph vs LangChain: State Machines, Cyclical Graphs & Checkpointing",
+      "Multimodal Tool Calling & Vision-Language Agents",
       "Multi-Agent Orchestration, Supervisor Swarms & Fashion AI Copilot Architecture"
     ],
     "connections": [
@@ -1256,6 +1263,132 @@
     "connections": [
       "swe_patterns_architecture",
       "mlops_root"
+    ]
+  },
+  {
+    "id": "dl_rl_foundations",
+    "label": "Reinforcement Learning (RL) & Decision Foundations",
+    "level": 2,
+    "category": "dl",
+    "x": 840,
+    "y": 70,
+    "subtopics": [
+      "Markov Decision Processes (MDP) & Bellman Equation",
+      "Q-Learning & Deep Q-Networks (DQN)",
+      "Policy Gradients & REINFORCE Algorithm",
+      "Actor-Critic Architectures (A2C & PPO)",
+      "Exploration vs Exploitation (Epsilon-Greedy & UCB)"
+    ],
+    "connections": [
+      "dl_root"
+    ]
+  },
+  {
+    "id": "ml_time_series",
+    "label": "Time Series Analysis & Forecasting Dynamics",
+    "level": 2,
+    "category": "ml",
+    "x": -300,
+    "y": -940,
+    "subtopics": [
+      "Stationarity, Autocorrelation (ACF/PACF) & Differencing",
+      "ARIMA, SARIMAX & Exponential Smoothing",
+      "Modern Forecasting: Prophet & Temporal Fusion Transformers (TFT)",
+      "Time-Series Feature Engineering & Lag Variables",
+      "Rolling-Window & Expanding-Window Cross Validation"
+    ],
+    "connections": [
+      "ml_root"
+    ]
+  },
+  {
+    "id": "ml_recsys",
+    "label": "Recommender Systems (RecSys) & Retrieval Architecture",
+    "level": 2,
+    "category": "ml",
+    "x": 100,
+    "y": -940,
+    "subtopics": [
+      "Collaborative Filtering & Matrix Factorization (SVD & ALS)",
+      "Two-Tower Neural Retrieval Architectures",
+      "Deep & Cross Networks (DCN) & Wide & Deep Learning",
+      "Candidate Generation vs Heavy Ranking Stages",
+      "RecSys Evaluation Metrics: NDCG, MRR & Hit Rate@K"
+    ],
+    "connections": [
+      "ml_root"
+    ]
+  },
+  {
+    "id": "dl_gnn",
+    "label": "Graph Neural Networks (GNN) & Geometric Deep Learning",
+    "level": 2,
+    "category": "dl",
+    "x": 1260,
+    "y": 70,
+    "subtopics": [
+      "Graph Representations, Adjacency Matrices & Node Features",
+      "Graph Convolutional Networks (GCN) & Message Passing",
+      "Graph Attention Networks (GAT) & Edge Attentions",
+      "Inductive Graph Representation (GraphSAGE)",
+      "Link Prediction & Node Classification Pipelines"
+    ],
+    "connections": [
+      "dl_root"
+    ]
+  },
+  {
+    "id": "eval_xai",
+    "label": "Explainable AI (XAI) & Model Interpretability",
+    "level": 2,
+    "category": "eval",
+    "x": 520,
+    "y": 540,
+    "subtopics": [
+      "SHAP (Shapley Additive Explanations) & Game Theory",
+      "LIME (Local Interpretable Model-agnostic Explanations)",
+      "Integrated Gradients & Neural Saliency Maps",
+      "Permutation Feature Importance & Partial Dependence Plots (PDP)",
+      "Model Governance, Auditing & Regulatory AI Compliance"
+    ],
+    "connections": [
+      "eval_root"
+    ]
+  },
+  {
+    "id": "genai_audio_speech",
+    "label": "Audio, Speech AI & Voice Intelligence",
+    "level": 2,
+    "category": "genai",
+    "x": 840,
+    "y": 520,
+    "subtopics": [
+      "Audio Preprocessing: Mel-Spectrograms, STFT & Waveforms",
+      "Automatic Speech Recognition (ASR & Whisper Architecture)",
+      "CTC (Connectionist Temporal Classification) Loss Mechanics",
+      "Text-to-Speech (TTS) & Neural Audio Synthesizers",
+      "Real-Time Streaming Voice Agents & Audio Embeddings"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_reasoning_test_time",
+    "label": "Reasoning Models, Test-Time Compute & System 2 AI",
+    "level": 2,
+    "category": "genai",
+    "x": 1260,
+    "y": 520,
+    "subtopics": [
+      "Process Reward Models (PRM) vs Outcome Reward Models (ORM)",
+      "Test-Time Search: Monte Carlo Tree Search (MCTS) & Beam Search",
+      "Chain-of-Thought (CoT) Self-Correction & Verification Loops",
+      "Inference Scaling Laws & Compute-Optimal Search Strategies",
+      "System 2 Reasoning Distillation into System 1 Fast Models"
+    ],
+    "connections": [
+      "genai_root"
     ]
   }
 ]

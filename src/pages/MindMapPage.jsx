@@ -40,6 +40,8 @@ export const CAREER_TRACKS = {
       'genai_train',
       'genai_align',
       'genai_prompt_agents',
+      'genai_reasoning_test_time',
+      'genai_audio_speech',
       'dl_root',
       'dl_neurons',
       'dl_opt',
@@ -54,7 +56,7 @@ export const CAREER_TRACKS = {
     color: '#a855f7',
     bg: 'rgba(168, 85, 247, 0.15)',
     border: 'rgba(168, 85, 247, 0.4)',
-    summary: 'Vector spaces, optimization calculus, backpropagation proofs, generative diffusion mathematics, and alignment.',
+    summary: 'Vector spaces, optimization calculus, backpropagation proofs, generative diffusion mathematics, RL, and alignment.',
     path: [
       'root',
       'math_root',
@@ -66,6 +68,8 @@ export const CAREER_TRACKS = {
       'dl_backprop',
       'dl_norm',
       'dl_generative',
+      'dl_rl_foundations',
+      'dl_gnn',
       'genai_root',
       'genai_attention',
       'genai_align',
@@ -81,7 +85,7 @@ export const CAREER_TRACKS = {
     color: '#10b981',
     bg: 'rgba(16, 185, 129, 0.15)',
     border: 'rgba(16, 185, 129, 0.4)',
-    summary: 'Data scrub pipelines, model evaluation curves, drift detection, inference serving, and vector DB infrastructure.',
+    summary: 'Data scrub pipelines, model evaluation curves, drift detection, inference serving, XAI governance, and vector DB infrastructure.',
     path: [
       'root',
       'mlops_root',
@@ -92,6 +96,7 @@ export const CAREER_TRACKS = {
       'eval_root',
       'eval_matrix',
       'eval_curves',
+      'eval_xai',
       'genai_train',
       'genai_rag',
       'dl_opt'
@@ -105,7 +110,7 @@ export const CAREER_TRACKS = {
     color: '#f59e0b',
     bg: 'rgba(245, 158, 11, 0.15)',
     border: 'rgba(245, 158, 11, 0.4)',
-    summary: 'Feature engineering, tabular predictive modeling, tree ensembles (XGBoost/LightGBM), and ROC/PR metric validation.',
+    summary: 'Feature engineering, tabular predictive modeling, tree ensembles, time series forecasting, recommendation retrieval, and model explainability.',
     path: [
       'root',
       'data_root',
@@ -122,10 +127,13 @@ export const CAREER_TRACKS = {
       'ml_reg',
       'ml_trees',
       'ml_unsupervised',
+      'ml_time_series',
+      'ml_recsys',
       'eval_root',
       'eval_matrix',
       'eval_curves',
-      'eval_tradeoff'
+      'eval_tradeoff',
+      'eval_xai'
     ]
   }
 };
