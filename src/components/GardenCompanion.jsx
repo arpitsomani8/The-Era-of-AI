@@ -7,8 +7,7 @@ import {
   Bot, 
   Palette, 
   Compass, 
-  Anchor, 
-  MessageSquare
+  Anchor
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
@@ -138,7 +137,7 @@ const COMPANION_DRESSES = [
     coreColor: '#06b6d4',
     eyeColor: '#06b6d4',
     beaconColor: '#38bdf8',
-    glowColor: 'rgba(99, 102, 241, 0.4)',
+    glowColor: 'rgba(99, 102, 241, 0.45)',
     type: 'antenna'
   },
   {
@@ -149,7 +148,7 @@ const COMPANION_DRESSES = [
     coreColor: '#f59e0b',
     eyeColor: '#fbbf24',
     beaconColor: '#f59e0b',
-    glowColor: 'rgba(245, 158, 11, 0.4)',
+    glowColor: 'rgba(245, 158, 11, 0.45)',
     type: 'halo'
   },
   {
@@ -160,7 +159,7 @@ const COMPANION_DRESSES = [
     coreColor: '#ec4899',
     eyeColor: '#f472b6',
     beaconColor: '#fda4af',
-    glowColor: 'rgba(236, 72, 153, 0.4)',
+    glowColor: 'rgba(236, 72, 153, 0.45)',
     type: 'cat'
   },
   {
@@ -171,7 +170,7 @@ const COMPANION_DRESSES = [
     coreColor: '#10b981',
     eyeColor: '#34d399',
     beaconColor: '#6ee7b7',
-    glowColor: 'rgba(16, 185, 129, 0.4)',
+    glowColor: 'rgba(16, 185, 129, 0.45)',
     type: 'antenna'
   },
   {
@@ -182,13 +181,13 @@ const COMPANION_DRESSES = [
     coreColor: '#ef4444',
     eyeColor: '#fb7185',
     beaconColor: '#f43f5e',
-    glowColor: 'rgba(244, 63, 94, 0.4)',
+    glowColor: 'rgba(244, 63, 94, 0.45)',
     type: 'antenna'
   }
 ];
 
 const COMPANION_TIPS = [
-  "Hi! I'm Aero • Your AI Guide 🤖✨",
+  "Hi! I'm Aero • Exploring with you 🚀",
   "Press ⌘K or Ctrl+K anywhere to search 170+ concepts!",
   "Attention Is All You Need was published in 2017!",
   "LoRA freezes pretrained weights & trains low-rank matrices A & B.",
@@ -250,134 +249,161 @@ function playAeroSynth(type = 'chime', soundEnabled = true) {
 export default function GardenCompanion() {
   const location = useLocation();
 
-  // Screen sizing
-  const [windowSize, setWindowSize] = useState(() => ({
-    w: typeof window !== 'undefined' ? window.innerWidth : 1200,
-    h: typeof window !== 'undefined' ? window.innerHeight : 800
-  }));
-  const isMobile = windowSize.w < 640;
+  // Responsive screen sizing
+  const [isMobile, setIsMobile] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+  });
 
-  // Responsive Aero dimensions
-  const aeroWidth = isMobile ? 68 : 118;
-  const aeroHeight = isMobile ? 78 : 132;
+  const aeroWidth = isMobile ? 62 : 115;
+  const aeroHeight = isMobile ? 70 : 130;
 
   // Docked bottom-right coordinates
   const getDockPosition = useCallback(() => {
     const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const h = typeof window !== 'undefined' ? window.innerHeight : 800;
     return {
-      x: Math.max(16, w - (isMobile ? 84 : 140)),
-      y: Math.max(68, h - (isMobile ? 96 : 155))
+      x: Math.max(16, w - (isMobile ? 78 : 140)),
+      y: Math.max(68, h - (isMobile ? 86 : 155))
     };
   }, [isMobile]);
 
-  const [position, setPosition] = useState(getDockPosition);
-  const [velocity, setVelocity] = useState({ vx: 1.3, vy: 0.8 });
-  const [isRoaming, setIsRoaming] = useState(false); // Free-flight patrol
+  const [isRoaming, setIsRoaming] = useState(false); // True when flying all over screen
   const [isHovered, setIsHovered] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [dressIndex, setDressIndex] = useState(0);
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-  const [showSpeech, setShowSpeech] = useState(true);
+  const [showSpeech, setShowSpeech] = useState(false);
 
   const selectedDress = COMPANION_DRESSES[dressIndex];
+  const containerRef = useRef(null);
   const waveTimerRef = useRef(null);
   const idleTimerRef = useRef(null);
   const animFrameRef = useRef(null);
-  const posRef = useRef(position);
-  posRef.current = position;
-  const velRef = useRef(velocity);
-  velRef.current = velocity;
 
-  // Window resize listener
+  // Position, target, and velocity refs for 120fps direct DOM animation
+  const posRef = useRef(getDockPosition());
+  const targetRef = useRef(getDockPosition());
+  const isRoamingRef = useRef(false);
+  const isHoveredRef = useRef(false);
+
+  isRoamingRef.current = isRoaming;
+  isHoveredRef.current = isHovered;
+
+  // Pick random waypoint across full screen
+  const pickNewWaypoint = useCallback(() => {
+    const minX = 24;
+    const maxX = Math.max(minX + 60, window.innerWidth - aeroWidth - 24);
+    const minY = 76; // Below navbar
+    const maxY = Math.max(minY + 60, window.innerHeight - aeroHeight - 30);
+
+    const nextX = Math.round(minX + Math.random() * (maxX - minX));
+    const nextY = Math.round(minY + Math.random() * (maxY - minY));
+
+    targetRef.current = { x: nextX, y: nextY };
+  }, [aeroWidth, aeroHeight]);
+
+  // Window resize handler
   useEffect(() => {
     const handleResize = () => {
-      setWindowSize({
-        w: window.innerWidth,
-        h: window.innerHeight
-      });
-      if (!isRoaming) {
-        setPosition(getDockPosition());
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
+      if (!isRoamingRef.current) {
+        const dock = {
+          x: Math.max(16, window.innerWidth - (mobile ? 78 : 140)),
+          y: Math.max(68, window.innerHeight - (mobile ? 86 : 155))
+        };
+        posRef.current = dock;
+        targetRef.current = dock;
+        if (containerRef.current) {
+          containerRef.current.style.transform = `translate3d(${dock.x}px, ${dock.y}px, 0px)`;
+        }
       }
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [isRoaming, getDockPosition]);
+  }, []);
 
-  // Idle Detection: After 5 seconds of inactivity, Aero takes off into free-flight patrol
+  // Idle Timer: Takes off into full screen flight after 4.5 seconds of user inactivity
   useEffect(() => {
-    const resetIdle = () => {
+    const onUserActivity = () => {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+
       idleTimerRef.current = setTimeout(() => {
         setIsRoaming(true);
+        pickNewWaypoint();
         playAeroSynth('whoosh', soundEnabled);
-      }, 5500);
+      }, 4500);
     };
 
-    window.addEventListener('mousemove', resetIdle);
-    window.addEventListener('keydown', resetIdle);
-    window.addEventListener('scroll', resetIdle);
-    resetIdle();
+    window.addEventListener('mousemove', onUserActivity);
+    window.addEventListener('keydown', onUserActivity);
+    window.addEventListener('scroll', onUserActivity);
+    onUserActivity();
 
     return () => {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      window.removeEventListener('mousemove', resetIdle);
-      window.removeEventListener('keydown', resetIdle);
-      window.removeEventListener('scroll', resetIdle);
+      window.removeEventListener('mousemove', onUserActivity);
+      window.removeEventListener('keydown', onUserActivity);
+      window.removeEventListener('scroll', onUserActivity);
     };
-  }, [soundEnabled]);
+  }, [pickNewWaypoint, soundEnabled]);
 
-  // Free-Flight Motion Physics Engine
+  // High-performance 120 FPS Flight Animation Loop
   useEffect(() => {
-    if (!isRoaming || isHovered) {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      return;
-    }
+    let lastTime = performance.now();
 
-    const minX = 16;
-    const maxX = Math.max(minX, window.innerWidth - aeroWidth - 16);
-    const minY = 68; // Stay below top navbar
-    const maxY = Math.max(minY, window.innerHeight - aeroHeight - 20);
+    const loop = (time) => {
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
 
-    const step = () => {
-      let { x, y } = posRef.current;
-      let { vx, vy } = velRef.current;
+      if (containerRef.current) {
+        if (isRoamingRef.current && !isHoveredRef.current) {
+          // Autonomous Flight Physics: Glide towards target waypoint
+          const dx = targetRef.current.x - posRef.current.x;
+          const dy = targetRef.current.y - posRef.current.y;
+          const dist = Math.hypot(dx, dy);
 
-      x += vx;
-      y += vy;
+          if (dist < 45) {
+            // Reached target waypoint -> pick a new location on the full screen!
+            pickNewWaypoint();
+          } else {
+            const speed = isMobile ? 120 : 180; // px per second
+            const moveStep = Math.min(dist, speed * dt);
+            const dirX = dx / dist;
+            const dirY = dy / dist;
 
-      // Wall reflections with soft bounce
-      if (x <= minX) {
-        x = minX;
-        vx = Math.abs(vx);
-      } else if (x >= maxX) {
-        x = maxX;
-        vx = -Math.abs(vx);
+            posRef.current.x += dirX * moveStep;
+            posRef.current.y += dirY * moveStep;
+
+            // Gentle bank tilt in direction of movement
+            const bankAngle = Math.max(-16, Math.min(16, dirX * 14));
+            // Subtle altitude oscillation
+            const hoverBob = Math.sin(time * 0.004) * 3;
+
+            containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y + hoverBob}px, 0px) rotate(${bankAngle}deg)`;
+          }
+        } else if (!isRoamingRef.current) {
+          // Docked at bottom right
+          const dock = getDockPosition();
+          posRef.current.x += (dock.x - posRef.current.x) * 0.15;
+          posRef.current.y += (dock.y - posRef.current.y) * 0.15;
+          containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0px) rotate(0deg)`;
+        } else {
+          // Hovered / Paused mid-air
+          containerRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0px) rotate(0deg)`;
+        }
       }
 
-      if (y <= minY) {
-        y = minY;
-        vy = Math.abs(vy);
-      } else if (y >= maxY) {
-        y = maxY;
-        vy = -Math.abs(vy);
-      }
-
-      velRef.current = { vx, vy };
-      posRef.current = { x, y };
-      setPosition({ x, y });
-
-      animFrameRef.current = requestAnimationFrame(step);
+      animFrameRef.current = requestAnimationFrame(loop);
     };
 
-    animFrameRef.current = requestAnimationFrame(step);
-
+    animFrameRef.current = requestAnimationFrame(loop);
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [isRoaming, isHovered, aeroWidth, aeroHeight]);
+  }, [pickNewWaypoint, getDockPosition, isMobile]);
 
   // Rotate tips periodically
   useEffect(() => {
@@ -400,7 +426,7 @@ export default function GardenCompanion() {
   const handleDockAero = (e) => {
     e.stopPropagation();
     setIsRoaming(false);
-    setPosition(getDockPosition());
+    setShowSpeech(false);
     playAeroSynth('whoosh', soundEnabled);
   };
 
@@ -411,33 +437,36 @@ export default function GardenCompanion() {
     triggerWave();
   };
 
-  // Do not render floating corner Aero on landing welcome page (since Big Aero is already center)
+  // Do not render floating companion on landing page /
   if (location.pathname === '/' || location.pathname === '') return null;
   if (isClosed) return null;
 
-  // Calculate tilt angle in flight direction
-  const flightTilt = isRoaming && !isHovered ? Math.max(-14, Math.min(14, velRef.current.vx * 8)) : 0;
+  // In idle flight mode, options and speech are hidden for a clean flying experience
+  const showControls = isHovered || isWaving || !isRoaming;
 
   return (
     <aside 
+      ref={containerRef}
       aria-label="Aero Floating AI Companion"
-      style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0px) rotate(${flightTilt}deg)`,
-        transition: isRoaming && !isHovered ? 'none' : 'transform 0.4s ease-out'
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setShowSpeech(true);
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="fixed top-0 left-0 z-50 pointer-events-auto select-none flex flex-col items-center cursor-pointer group"
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setShowSpeech(false);
+      }}
+      className="fixed top-0 left-0 z-50 pointer-events-auto select-none flex flex-col items-center cursor-pointer will-change-transform"
       onClick={triggerWave}
     >
-      {/* Floating Speech Bubble Above Aero */}
+      {/* Floating Speech Bubble: Only shows on hover or click, hidden during idle flight */}
       {showSpeech && (
         <div 
           onClick={(e) => {
             e.stopPropagation();
             setCurrentTipIndex((prev) => (prev + 1) % COMPANION_TIPS.length);
           }}
-          className={`absolute bottom-[105%] left-1/2 -translate-x-1/2 max-w-[220px] sm:max-w-[260px] p-2 sm:p-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 text-slate-100 shadow-2xl shadow-indigo-500/25 flex items-start gap-2 text-left mb-1 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
+          className={`absolute bottom-[104%] left-1/2 -translate-x-1/2 max-w-[210px] sm:max-w-[250px] p-2 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 text-slate-100 shadow-2xl shadow-indigo-500/25 flex items-start gap-2 text-left mb-1 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
             isMobile ? 'text-[10px]' : 'text-xs'
           }`}
           title="Click to cycle next tip"
@@ -461,14 +490,14 @@ export default function GardenCompanion() {
 
       {/* Floating Ambient Glow */}
       <div 
-        className="absolute inset-0 rounded-full filter blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none scale-110"
+        className="absolute inset-0 rounded-full filter blur-2xl opacity-70 transition-opacity duration-300 pointer-events-none scale-110"
         style={{ backgroundColor: selectedDress.glowColor }}
       />
 
       {/* BIG AERO VECTOR SVG COMPANION (No garden, no child, purely Aero) */}
       <div 
         style={{ width: `${aeroWidth}px`, height: `${aeroHeight}px` }}
-        className="relative flex items-center justify-center filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+        className="relative flex items-center justify-center filter drop-shadow-[0_12px_22px_rgba(0,0,0,0.65)]"
       >
         <svg viewBox="0 0 140 160" className="w-full h-full overflow-visible">
           <defs>
@@ -484,7 +513,7 @@ export default function GardenCompanion() {
 
           {/* Hovering Motion Group */}
           <g className="animate-robot-hover">
-            {/* Jet Flame */}
+            {/* Jet Flame & Glow */}
             <ellipse cx="70" cy="106" rx="12" ry="5" fill={selectedDress.beaconColor} opacity="0.85" />
             <polygon points="62 106, 78 106, 70 128" fill={selectedDress.coreColor} className="animate-pulse" />
             <polygon points="65 106, 75 106, 70 119" fill="#ffffff" />
@@ -569,10 +598,14 @@ export default function GardenCompanion() {
         </svg>
       </div>
 
-      {/* Floating Micro Controls (Appear on hover/interaction) */}
+      {/* Floating Micro Controls: HIDDEN WHEN IDLE / FLYING, appears on hover or interaction */}
       <div 
         onClick={(e) => e.stopPropagation()} 
-        className="mt-1 flex items-center gap-1 p-1 rounded-full bg-slate-900/90 backdrop-blur-md border border-slate-700/80 shadow-lg transition-opacity duration-200"
+        className={`mt-1 flex items-center gap-1 p-1 rounded-full bg-slate-900/95 backdrop-blur-md border border-slate-700/80 shadow-xl transition-all duration-300 ${
+          showControls 
+            ? 'opacity-100 scale-100 pointer-events-auto' 
+            : 'opacity-0 scale-90 pointer-events-none'
+        }`}
       >
         {/* Wave Button */}
         <button
@@ -596,6 +629,7 @@ export default function GardenCompanion() {
           <button
             onClick={() => {
               setIsRoaming(true);
+              pickNewWaypoint();
               playAeroSynth('whoosh', soundEnabled);
             }}
             className="p-1 rounded-full text-indigo-300 hover:bg-slate-800 transition"
