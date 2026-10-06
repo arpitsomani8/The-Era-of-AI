@@ -348,10 +348,13 @@ export default function MindMapPage() {
           k: 0.85
         });
       } else {
+        const scaleX = (w * 0.92) / 2800;
+        const scaleY = (h * 0.92) / 2000;
+        const optimalK = Math.min(Math.max(Math.min(scaleX, scaleY), 0.38), 0.72);
         setTransform({
-          x: Math.round(w / 2),
+          x: Math.round(w / 2 - 200 * optimalK),
           y: Math.round(h / 2),
-          k: 0.8
+          k: Number(optimalK.toFixed(2))
         });
       }
     };
@@ -401,6 +404,7 @@ export default function MindMapPage() {
   // Hierarchy lines calculation
   const hierarchyLinks = useMemo(() => {
     const links = [];
+    const seen = new Set();
     const nodeMap = new Map(allNodesData.map((n) => [n.id, n]));
 
     for (const node of allNodesData) {
@@ -408,11 +412,15 @@ export default function MindMapPage() {
         for (const targetId of node.connections) {
           const target = nodeMap.get(targetId);
           if (target) {
-            links.push({
-              source: node,
-              target: target,
-              id: `${node.id}-${target.id}`
-            });
+            const edgeKey = [node.id, target.id].sort().join('--');
+            if (!seen.has(edgeKey)) {
+              seen.add(edgeKey);
+              links.push({
+                source: node,
+                target: target,
+                id: edgeKey
+              });
+            }
           }
         }
       }
@@ -466,10 +474,15 @@ export default function MindMapPage() {
   const resetView = () => {
     if (svgRef.current) {
       const rect = svgRef.current.getBoundingClientRect();
+      const w = rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+      const h = rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
+      const scaleX = (w * 0.92) / 2800;
+      const scaleY = (h * 0.92) / 2000;
+      const optimalK = Math.min(Math.max(Math.min(scaleX, scaleY), 0.38), 0.72);
       setTransform({
-        x: rect.width / 2,
-        y: rect.height / 2,
-        k: 0.8
+        x: Math.round(w / 2 - 200 * optimalK),
+        y: Math.round(h / 2),
+        k: Number(optimalK.toFixed(2))
       });
     }
   };
