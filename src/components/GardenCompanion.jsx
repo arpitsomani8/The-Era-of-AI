@@ -149,11 +149,6 @@ export default function GardenCompanion() {
     return false;
   });
   const [isClosed, setIsClosed] = useState(false);
-
-  // Do not show floating corner companion on landing page /
-  if (location.pathname === '/' || location.pathname === '') {
-    return null;
-  }
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [isWaving, setIsWaving] = useState(true);
   const [robotMood, setRobotMood] = useState('happy'); // 'happy', 'curious', 'love'
@@ -358,6 +353,8 @@ export default function GardenCompanion() {
   };
 
   if (isClosed) return null;
+  // Do not show floating corner companion on landing page /
+  if (location.pathname === '/' || location.pathname === '') return null;
 
   // Minimized floating badge
   if (isMinimized) {

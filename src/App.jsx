@@ -41,6 +41,44 @@ function HashListener() {
   return null;
 }
 
+// Global UI Error Boundary to prevent any route crash from unmounting the app
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('UI ErrorBoundary caught error:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex-1 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-950 text-slate-100">
+          <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 max-w-md space-y-4 shadow-2xl">
+            <h2 className="text-xl font-bold text-white">Mind Map Loading Alert</h2>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              {this.state.error?.message || 'The interactive graph encountered a layout recovery event.'}
+            </p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition shadow-lg shadow-indigo-600/30"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // SEO Manager for dynamic document titles and meta descriptions
 function SEOManager() {
   const location = useLocation();
@@ -92,6 +130,7 @@ function SEOManager() {
 }
 
 export default function App() {
+  const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
@@ -136,20 +175,22 @@ export default function App() {
 
       {/* Main Routed Page Viewport */}
       <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
-        <Routes>
-          <Route path="/" element={<LandingHeroPage />} />
-          <Route path="/mindmap" element={<KnowledgeHubPage />} />
-          <Route path="/syllabus" element={<KnowledgeHubPage />} />
-          <Route path="/papers" element={<PapersPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/case-studies" element={<ProjectsPage />} />
-          <Route path="/interview" element={<InterviewPage onOpenAssessment={() => setIsAssessmentOpen(true)} />} />
-          <Route path="/concepts" element={<ConceptsPage />} />
-          <Route path="/concept" element={<ConceptsPage />} />
-          <Route path="/playgrounds" element={<PlaygroundsPage />} />
-          <Route path="/playground" element={<PlaygroundsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<LandingHeroPage />} />
+            <Route path="/mindmap" element={<KnowledgeHubPage />} />
+            <Route path="/syllabus" element={<KnowledgeHubPage />} />
+            <Route path="/papers" element={<PapersPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/case-studies" element={<ProjectsPage />} />
+            <Route path="/interview" element={<InterviewPage onOpenAssessment={() => setIsAssessmentOpen(true)} />} />
+            <Route path="/concepts" element={<ConceptsPage />} />
+            <Route path="/concept" element={<ConceptsPage />} />
+            <Route path="/playgrounds" element={<PlaygroundsPage />} />
+            <Route path="/playground" element={<PlaygroundsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
       {/* Universal Search Modal (Cmd+K) */}
@@ -205,7 +246,7 @@ export default function App() {
       />
 
       {/* Interactive Corner Companion: Moving Robot & Child in Garden */}
-      <GardenCompanion />
+      {location.pathname !== '/' && location.pathname !== '' && <GardenCompanion />}
     </div>
   );
 }
