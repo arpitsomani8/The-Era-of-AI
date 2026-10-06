@@ -178,20 +178,39 @@ print("\n=== 6. CHECKING FOR STALE HARDCODED NUMBERS IN USER-FACING CODE ===")
 stale_findings = []
 stale_patterns = ['170', '150+', '180+', '22 landmark', '22+', '41 node', '41 domain', '41-node', '34 module', '34 curriculum', '34+ module', '7 tracks']
 
+multiline_patterns = [
+    (r'\b41\b(?:\s*<[^>]+>\s*|\s)+(?:node|graph\s*node|domain)', '41 graph/node'),
+    (r'\b34\b(?:\s*<[^>]+>\s*|\s)+(?:module|curriculum)', '34 module/curriculum'),
+    (r'\b170\b(?:\s*<[^>]+>\s*|\s)+(?:concept|breakdown)', '170 concepts'),
+    (r'\b22\b(?:\s*<[^>]+>\s*|\s)+(?:paper|landmark)', '22 landmark papers'),
+    (r'\b270\+?\b(?:\s*<[^>]+>\s*|\s)+(?:concept|breakdown)', '270+ concepts'),
+]
+
 for f in all_jsx:
     with open(f, 'r', encoding='utf-8') as fp:
-        lines = fp.readlines()
+        content = fp.read()
+    lines = content.splitlines()
+
     for idx, l in enumerate(lines):
         for pat in stale_patterns:
             if pat in l.lower():
                 # Ignore coordinate/styling
-                if not any(k in l for k in ['x=', 'y=', 'width=', 'height=', 'min-w-', '1706.03762', 'board states']):
+                if not any(k in l for k in ['x=', 'y=', 'width=', 'height=', 'min-w-', '1706.03762', 'board states', '170k']):
                     stale_findings.append((f, idx + 1, pat, l.strip()))
+
+    for rgx, label in multiline_patterns:
+        matches = re.finditer(rgx, content, re.IGNORECASE)
+        for m in matches:
+            line_no = content[:m.start()].count('\n') + 1
+            snippet = content[m.start():m.end()].replace('\n', ' ')
+            # Avoid duplicate if caught by line check
+            if not any(f == sf[0] and abs(line_no - sf[1]) <= 2 for sf in stale_findings):
+                stale_findings.append((f, line_no, label, snippet))
 
 if stale_findings:
     print(f"[WARN] Found {len(stale_findings)} potential stale number references:")
-    for f, lno, pat, content in stale_findings:
-        print(f"  {os.path.relpath(f, 'src')}:{lno} ({pat}) -> {content}")
+    for f, lno, pat, content_snippet in stale_findings:
+        print(f"  {os.path.relpath(f, 'src')}:{lno} ({pat}) -> {content_snippet}")
 else:
     print("[OK] Zero stale hardcoded numbers found across all UI files!")
 

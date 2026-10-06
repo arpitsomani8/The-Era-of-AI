@@ -15,6 +15,11 @@ import {
   Palette,
   Info
 } from 'lucide-react';
+import allNodes from '../data/allNodes.json';
+import topicsData from '../data/topics.json';
+import conceptsData from '../data/concepts.json';
+import interviewData from '../data/interviewQuestions.json';
+import papersData from '../data/papers.json';
 
 /**
  * Interactive Costume / Dress Wardrobe for Aero
@@ -212,37 +217,37 @@ export default function LandingHeroPage({ onOpenAbout }) {
     {
       to: '/mindmap',
       title: 'Interactive Mind Map',
-      subtitle: '63 interconnected domain nodes',
+      subtitle: `${allNodes.length} interconnected domain nodes`,
       icon: Network,
       color: 'from-indigo-500/10 to-indigo-600/5 border-indigo-500/20 text-indigo-400'
     },
     {
       to: '/syllabus',
       title: 'Line-Wise Syllabus',
-      subtitle: '55 structured curriculum modules',
+      subtitle: `${topicsData.length} structured curriculum modules`,
       icon: BookOpen,
       color: 'from-blue-500/10 to-blue-600/5 border-blue-500/20 text-blue-400'
     },
     {
-      to: '/papers',
-      title: 'Research Publications',
-      subtitle: '35 milestone AI publications',
-      icon: FileText,
-      color: 'from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400'
-    },
-    {
       to: '/concepts',
       title: 'Core Concepts & Math',
-      subtitle: '270+ in-depth technical breakdowns',
+      subtitle: `${conceptsData.length} in-depth technical breakdowns`,
       icon: Layers,
       color: 'from-rose-500/10 to-rose-600/5 border-rose-500/20 text-rose-400'
     },
     {
       to: '/interview',
       title: 'Interview Vault',
-      subtitle: '1,000+ math, coding & design questions',
+      subtitle: `${interviewData.length.toLocaleString()}+ math, coding & design questions`,
       icon: HelpCircle,
       color: 'from-purple-500/10 to-purple-600/5 border-purple-500/20 text-purple-400'
+    },
+    {
+      to: '/papers',
+      title: 'Research Publications',
+      subtitle: `${papersData.length} milestone AI publications`,
+      icon: FileText,
+      color: 'from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400'
     },
     {
       to: '/playgrounds',
@@ -491,7 +496,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
             <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" />
           </button>
           <p className="text-[11px] text-slate-400 mt-2 text-center font-normal">
-            Step directly into the 63-node Interactive Knowledge Graph
+            Step directly into the {allNodes.length}-node Interactive Knowledge Graph
           </p>
         </div>
 
@@ -532,27 +537,27 @@ export default function LandingHeroPage({ onOpenAbout }) {
         {/* Key Curriculum Metrics Bar */}
         <div className="w-full max-w-3xl pt-4 border-t border-slate-800/60 flex items-center justify-around flex-wrap gap-4 text-center">
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">41</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">{allNodes.length}</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Graph Nodes</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">34</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">{topicsData.length}</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Modules</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">270+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">{conceptsData.length}</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Core Concepts</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">1,000+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">{interviewData.length.toLocaleString()}+</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Interview Q&amp;A</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">24+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">{papersData.length}</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Landmark Papers</div>
           </div>
         </div>
