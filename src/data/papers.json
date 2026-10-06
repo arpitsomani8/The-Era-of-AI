@@ -358,5 +358,20 @@
     "breakthrough": "Large language models (LLMs) are increasingly deployed in public health, finance, and governance, requiring both accuracy and societal value alignment. Despite recent advances, LLMs often perpetuate or amplify bias embedded in their training data, posing challenges to fairness. While self-debiasing encourages an LLM to identify and correct its own biases, re...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2610_04211_curvecodec_2_skeleton_agnostic",
+    "title": "CurveCodec 2: Skeleton-agnostic animation compression with a learned entropy model",
+    "authors": "Mingyi Shi, Huancheng Lin, Xuelin Chen, Taku Komura",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "vision_dl",
+    "arxiv_id": "2610.04211",
+    "url": "https://arxiv.org/abs/2610.04211",
+    "one_liner": "Skeletal motion is stored as every joint's transform at every frame, yet most of it is implied by the body rather than by what the motion is about. Compression ...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Skeletal motion is stored as every joint's transform at every frame, yet most of it is implied by the body rather than by what the motion is about. Compression is one way to ask what a motion must still say once the body is known, and a production codec must answer it for any skeleton with a stated error bound. Our earlier codec, CurveCodec, matched the mean...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
