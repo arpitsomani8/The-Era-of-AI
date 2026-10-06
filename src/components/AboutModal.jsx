@@ -115,7 +115,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <HelpCircle className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">150+</div>
+                <div className="text-base font-bold text-white">1,000+</div>
                 <div className="text-[11px] text-slate-400">Interview Vault</div>
               </div>
             </div>

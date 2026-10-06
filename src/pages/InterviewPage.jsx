@@ -33,6 +33,7 @@ export default function InterviewPage({ onOpenAssessment }) {
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'bookmarked', 'mastered', 'unmastered'
   const [openIds, setOpenIds] = useState(new Set());
   const [copiedId, setCopiedId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(50);
 
   // Flashcard mode state
   const [isFlashcardMode, setIsFlashcardMode] = useState(false);
@@ -64,6 +65,7 @@ export default function InterviewPage({ onOpenAssessment }) {
 
   const difficulties = [
     'all',
+    'Junior / Fresher',
     'Junior / Mid',
     'Mid',
     'Mid / Senior',
@@ -89,7 +91,8 @@ export default function InterviewPage({ onOpenAssessment }) {
 
   const toggleAll = (expand) => {
     if (expand) {
-      setOpenIds(new Set(interviewData.map((q) => q.id)));
+      setVisibleCount(filteredQuestions.length);
+      setOpenIds(new Set(filteredQuestions.map((q) => q.id)));
     } else {
       setOpenIds(new Set());
     }
@@ -140,6 +143,14 @@ export default function InterviewPage({ onOpenAssessment }) {
       return true;
     });
   }, [selectedExperience, selectedCategory, selectedDifficulty, searchQuery, statusFilter, isCompleted, isBookmarked]);
+
+  React.useEffect(() => {
+    setVisibleCount(50);
+  }, [selectedExperience, selectedCategory, selectedDifficulty, searchQuery, statusFilter, selectedRound]);
+
+  const displayedQuestions = useMemo(() => {
+    return filteredQuestions.slice(0, visibleCount);
+  }, [filteredQuestions, visibleCount]);
 
   const getExperienceBadge = (level) => {
     if (level === '0-2') {
@@ -205,7 +216,7 @@ export default function InterviewPage({ onOpenAssessment }) {
               Master AI & Machine Learning Interview Vault
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
-              180+ curated technical questions tailored for all stages: <span className="text-emerald-400 font-semibold">🌱 0–2 Yrs (Freshers & Novices - Math-Free & Intuitive)</span>, <span className="text-blue-400 font-semibold">🚀 2–4 Yrs (Mid-Level)</span>, and <span className="text-purple-400 font-semibold">🏛️ 5+ Yrs (Senior / Staff)</span>.
+              1,000+ curated technical questions tailored for all stages: <span className="text-emerald-400 font-semibold">🌱 0–2 Yrs (Freshers & Novices - Math-Free & Intuitive)</span>, <span className="text-blue-400 font-semibold">🚀 2–4 Yrs (Mid-Level)</span>, and <span className="text-purple-400 font-semibold">🏛️ 5+ Yrs (Senior / Staff)</span>.
             </p>
           </div>
 
@@ -499,7 +510,7 @@ export default function InterviewPage({ onOpenAssessment }) {
         {/* STANDARD LIST OF QUESTIONS */}
         {!isFlashcardMode && (
           <div className="space-y-4">
-            {filteredQuestions.map((item) => {
+            {displayedQuestions.map((item) => {
               const isOpen = openIds.has(item.id);
               const qKey = `interview-${item.id}`;
               const isDone = isCompleted(qKey);
@@ -665,6 +676,25 @@ export default function InterviewPage({ onOpenAssessment }) {
                 </div>
               );
             })}
+
+            {/* Load More Pagination */}
+            {visibleCount < filteredQuestions.length && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 pb-4">
+                <button
+                  onClick={() => setVisibleCount((prev) => Math.min(prev + 50, filteredQuestions.length))}
+                  className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-purple-600/30 transition flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Load More Questions (Showing {displayedQuestions.length} of {filteredQuestions.length})</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setVisibleCount(filteredQuestions.length)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs border border-slate-700 transition cursor-pointer"
+                >
+                  Show All ({filteredQuestions.length})
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

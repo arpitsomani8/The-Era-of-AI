@@ -240,7 +240,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
     {
       to: '/interview',
       title: 'Interview Vault',
-      subtitle: '150+ math, coding & design questions',
+      subtitle: '1,000+ math, coding & design questions',
       icon: HelpCircle,
       color: 'from-purple-500/10 to-purple-600/5 border-purple-500/20 text-purple-400'
     },
@@ -542,12 +542,12 @@ export default function LandingHeroPage({ onOpenAbout }) {
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">170+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">270+</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Core Concepts</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />
           <div>
-            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">150+</div>
+            <div className="text-lg sm:text-xl font-bold text-cyan-400 font-mono">1,000+</div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">Interview Q&amp;A</div>
           </div>
           <div className="w-px h-5 bg-slate-800 hidden sm:block" />

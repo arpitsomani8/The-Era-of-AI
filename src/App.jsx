@@ -85,7 +85,7 @@ function SEOManager() {
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     let pageTitle = 'The Era of AI — Master Knowledge Graph & Portal';
-    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, and 150+ Interview Vault.';
+    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, and 1,000+ Interview Vault.';
 
     if (path === '/' || path === '') {
       pageTitle = 'The Era of AI — Enter the World of AI | Master Knowledge Portal';
@@ -103,8 +103,8 @@ function SEOManager() {
       pageTitle = 'Production ML & LLM Case Studies — The Era of AI';
       metaDesc = '5 end-to-end industrial architectures, fraud detection engines, enterprise RAG systems, and medical vision pipelines.';
     } else if (path.includes('/interview')) {
-      pageTitle = '150+ AI & ML Technical Interview Vault — The Era of AI';
-      metaDesc = 'Comprehensive vault of 150+ technical interview questions with mathematical proofs, Python implementations, and deep architectural explanations.';
+      pageTitle = '1,000+ AI & ML Technical Interview Vault — The Era of AI';
+      metaDesc = 'Comprehensive vault of 1,000+ technical interview questions with mathematical proofs, Python implementations, and deep architectural explanations.';
     } else if (path.includes('/concept')) {
       pageTitle = 'Core Concepts & Deep Technical Guides — The Era of AI';
       metaDesc = 'In-depth mathematical formulations, code implementations, and visual explanations across all machine learning and deep learning domains.';

@@ -107,7 +107,7 @@ export default function Navbar({
       label: 'Interview Vault',
       icon: HelpCircle,
       color: 'purple',
-      badge: '150+',
+      badge: '1000+',
       badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
     },
     {
@@ -166,7 +166,7 @@ export default function Navbar({
                 </span>
               </span>
               <p className="text-[10px] text-slate-400 hidden 2xl:block">
-                Interactive Knowledge Universe &bull; Syllabus &bull; Papers &bull; 150+ Questions
+                Interactive Knowledge Universe &bull; Syllabus &bull; Papers &bull; 1000+ Questions
               </p>
             </div>
           </NavLink>
