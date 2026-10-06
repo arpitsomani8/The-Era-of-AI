@@ -199,6 +199,17 @@ export default function InterviewFlashcardDeck({
                 <span className={`text-[11px] px-2.5 py-0.5 rounded-full border ${getDifficultyBadge(currentCard.difficulty)}`}>
                   {currentCard.difficulty}
                 </span>
+                {currentCard.experience_level && (
+                  <span className={`text-[11px] px-2.5 py-0.5 rounded-full border ${
+                    currentCard.experience_level === '0-2'
+                      ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                      : currentCard.experience_level === '2-4'
+                      ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+                      : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                  }`}>
+                    {currentCard.experience_level === '0-2' ? '🌱 0–2 Yrs' : currentCard.experience_level === '2-4' ? '🚀 2–4 Yrs' : '🏛️ 5+ Yrs'}
+                  </span>
+                )}
               </div>
 
               {isCardDone && (

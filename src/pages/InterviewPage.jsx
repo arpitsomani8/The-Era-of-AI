@@ -38,9 +38,19 @@ export default function InterviewPage({ onOpenAssessment }) {
   const [isFlashcardMode, setIsFlashcardMode] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [selectedExperience, setSelectedExperience] = useState('0-2'); // '0-2', '2-4', '5+', 'all'
+
+  const experienceCounts = useMemo(() => {
+    const counts = { all: interviewData.length, '0-2': 0, '2-4': 0, '5+': 0 };
+    interviewData.forEach((q) => {
+      const exp = q.experience_level || '5+';
+      if (counts[exp] !== undefined) counts[exp]++;
+    });
+    return counts;
+  }, []);
 
   const categories = [
-    { id: 'all', label: 'All (150)' },
+    { id: 'all', label: `All (${interviewData.length})` },
     { id: 'ml', label: 'Classical ML' },
     { id: 'dl', label: 'Deep Learning' },
     { id: 'genai_llm', label: 'GenAI & LLMs' },
@@ -100,6 +110,12 @@ export default function InterviewPage({ onOpenAssessment }) {
       if (statusFilter === 'mastered' && !isDone) return false;
       if (statusFilter === 'unmastered' && isDone) return false;
 
+      // Filter by Experience Tier
+      if (selectedExperience !== 'all') {
+        const itemExp = item.experience_level || '5+';
+        if (itemExp !== selectedExperience) return false;
+      }
+
       if (selectedCategory !== 'all' && item.category !== selectedCategory) {
         return false;
       }
@@ -116,7 +132,26 @@ export default function InterviewPage({ onOpenAssessment }) {
       }
       return true;
     });
-  }, [selectedCategory, selectedDifficulty, searchQuery, statusFilter, isCompleted, isBookmarked]);
+  }, [selectedExperience, selectedCategory, selectedDifficulty, searchQuery, statusFilter, isCompleted, isBookmarked]);
+
+  const getExperienceBadge = (level) => {
+    if (level === '0-2') {
+      return {
+        label: '🌱 0–2 Yrs (Fresher / Novice)',
+        cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+      };
+    }
+    if (level === '2-4') {
+      return {
+        label: '🚀 2–4 Yrs (Mid-Level)',
+        cls: 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+      };
+    }
+    return {
+      label: '🏛️ 5+ Yrs (Senior / Staff)',
+      cls: 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+    };
+  };
 
   const getDifficultyBadge = (diff) => {
     if (diff?.includes('Staff') || diff?.includes('Quant')) {
@@ -157,13 +192,13 @@ export default function InterviewPage({ onOpenAssessment }) {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
               <HelpCircle className="w-3.5 h-3.5" />
-              Technical Interview Question Bank
+              Technical Interview Question Vault
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Master AI & Machine Learning Interview Vault
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
-              150+ rigorously curated technical interview questions asked at Google, Meta, OpenAI, Anthropic, and top quant funds. Includes proofs, code walkthroughs, and practical insider tips.
+              180+ curated technical questions tailored for all stages: <span className="text-emerald-400 font-semibold">🌱 0–2 Yrs (Freshers & Novices - Math-Free & Intuitive)</span>, <span className="text-blue-400 font-semibold">🚀 2–4 Yrs (Mid-Level)</span>, and <span className="text-purple-400 font-semibold">🏛️ 5+ Yrs (Senior / Staff)</span>.
             </p>
           </div>
 
@@ -244,6 +279,77 @@ export default function InterviewPage({ onOpenAssessment }) {
           </div>
         </div>
 
+        {/* Experience Tier Selector */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-slate-400 font-medium">Select Experience Level:</span>
+            <span className="text-purple-300 font-mono text-[11px]">
+              Active: {selectedExperience === '0-2' ? '🌱 0–2 Years' : selectedExperience === '2-4' ? '🚀 2–4 Years' : selectedExperience === '5+' ? '🏛️ 5+ Years' : 'All Levels'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { id: '0-2', label: '0–2 Years', sub: 'Freshers & Novices', icon: '🌱', count: experienceCounts['0-2'], color: 'emerald' },
+              { id: '2-4', label: '2–4 Years', sub: 'Mid-Level Engineers', icon: '🚀', count: experienceCounts['2-4'], color: 'blue' },
+              { id: '5+', label: '5+ Years', sub: 'Senior / Staff / Quant', icon: '🏛️', count: experienceCounts['5+'], color: 'purple' },
+              { id: 'all', label: 'All Levels', sub: 'Complete Question Bank', icon: '🌐', count: experienceCounts.all, color: 'slate' },
+            ].map((tier) => {
+              const isActive = selectedExperience === tier.id;
+              return (
+                <button
+                  key={tier.id}
+                  onClick={() => setSelectedExperience(tier.id)}
+                  className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between gap-1.5 ${
+                    isActive
+                      ? tier.id === '0-2'
+                        ? 'bg-emerald-950/50 border-emerald-500/60 ring-1 ring-emerald-500/40 text-emerald-200'
+                        : tier.id === '2-4'
+                        ? 'bg-blue-950/50 border-blue-500/60 ring-1 ring-blue-500/40 text-blue-200'
+                        : tier.id === '5+'
+                        ? 'bg-purple-950/50 border-purple-500/60 ring-1 ring-purple-500/40 text-purple-200'
+                        : 'bg-slate-850 border-slate-700 ring-1 ring-slate-600 text-white'
+                      : 'bg-slate-900/90 border-slate-800 hover:border-slate-700 text-slate-300 hover:bg-slate-850'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-base">{tier.icon}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                      isActive ? 'bg-black/30' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {tier.count} Qs
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold leading-tight">{tier.label}</div>
+                    <div className="text-[10px] text-slate-400 leading-tight mt-0.5">{tier.sub}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Novice Track Guidance Banner */}
+          {selectedExperience === '0-2' && (
+            <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5 text-sm font-bold">
+                🌱
+              </div>
+              <div className="text-xs space-y-1">
+                <div className="font-bold text-emerald-200 flex items-center gap-2">
+                  <span>Zero-Math & Novice-Friendly Questions (54 Questions)</span>
+                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-semibold uppercase">
+                    No Complex Formulas
+                  </span>
+                </div>
+                <p className="text-emerald-300/80 leading-relaxed text-[11px] sm:text-xs">
+                  We stripped away dense mathematical proofs, Hessian matrices, and subgradient calculus for this track. These questions focus 100% on conceptual intuition, practical machine learning definitions, train/test splits, real-world metrics, embeddings, tokens, and core interview scenarios asked by tech recruiters.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Filters */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -253,7 +359,7 @@ export default function InterviewPage({ onOpenAssessment }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search 150 questions (e.g. FlashAttention, LoRA, ROC-AUC)..."
+                placeholder="Search 180 questions (e.g. Overfitting, RAG, Embeddings, LoRA)..."
                 className="w-full bg-slate-900 border border-slate-800 text-xs sm:text-sm text-white rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500"
               />
               <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -381,6 +487,15 @@ export default function InterviewPage({ onOpenAssessment }) {
                         >
                           {item.difficulty}
                         </span>
+                        {item.experience_level && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getExperienceBadge(
+                              item.experience_level
+                            ).cls}`}
+                          >
+                            {getExperienceBadge(item.experience_level).label}
+                          </span>
+                        )}
                         {item.company_tags?.map((comp, cIdx) => (
                           <span
                             key={cIdx}
