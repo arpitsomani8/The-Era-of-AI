@@ -85,20 +85,20 @@ function SEOManager() {
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     let pageTitle = 'The Era of AI — Master Knowledge Graph & Portal';
-    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, and 1,000+ Interview Vault.';
+    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, 274 Core Concepts, and 1,000+ Interview Vault.';
 
     if (path === '/' || path === '') {
       pageTitle = 'The Era of AI — Enter the World of AI | Master Knowledge Portal';
       metaDesc = 'Explore the complete multidimensional universe of Artificial Intelligence and Machine Learning: interactive mind map, line-wise curriculum, research papers, and technical interview vault.';
     } else if (path.includes('/mindmap')) {
-      pageTitle = 'Interactive Mind Map — The Era of AI | 41 Domain Graph Nodes';
+      pageTitle = 'Interactive Mind Map — The Era of AI | 63 Domain Graph Nodes';
       metaDesc = 'Explore the 2D interactive knowledge graph of AI, Classical ML, Deep Learning, and Transformers with dynamic cross-links and mathematical foundations.';
     } else if (path.includes('/syllabus')) {
-      pageTitle = 'Line-Wise Syllabus & Curriculum — The Era of AI | 7 Tracks';
-      metaDesc = 'Comprehensive line-wise curriculum covering Mathematical Foundations, Preprocessing, Classical ML, Evaluation, Deep Learning, and GenAI.';
+      pageTitle = 'Line-Wise Syllabus & Curriculum — The Era of AI | 8 Tracks & 55 Modules';
+      metaDesc = 'Comprehensive line-wise curriculum covering Mathematical Foundations, Preprocessing, Classical ML, Evaluation, Deep Learning, GenAI, MLOps, and SWE & Cloud.';
     } else if (path.includes('/papers')) {
       pageTitle = 'Landmark AI & ML Research Papers — The Era of AI | Daily Updated';
-      metaDesc = 'Curated collection of 22+ milestone AI papers from Attention Is All You Need to DeepSeek-R1 with daily arXiv tracking and summaries.';
+      metaDesc = 'Curated collection of 24 milestone AI papers from Attention Is All You Need to DeepSeek-R1 with daily arXiv tracking and summaries.';
     } else if (path.includes('/projects') || path.includes('/case-studies')) {
       pageTitle = 'Production ML & LLM Case Studies — The Era of AI';
       metaDesc = '5 end-to-end industrial architectures, fraud detection engines, enterprise RAG systems, and medical vision pipelines.';
@@ -106,7 +106,7 @@ function SEOManager() {
       pageTitle = '1,000+ AI & ML Technical Interview Vault — The Era of AI';
       metaDesc = 'Comprehensive vault of 1,000+ technical interview questions with mathematical proofs, Python implementations, and deep architectural explanations.';
     } else if (path.includes('/concept')) {
-      pageTitle = 'Core Concepts & Deep Technical Guides — The Era of AI';
+      pageTitle = '274 Core Concepts & Deep Technical Guides — The Era of AI';
       metaDesc = 'In-depth mathematical formulations, code implementations, and visual explanations across all machine learning and deep learning domains.';
     } else if (path.includes('/playground')) {
       pageTitle = 'Interactive ML Playgrounds & Simulators — The Era of AI';

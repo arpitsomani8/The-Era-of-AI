@@ -501,7 +501,7 @@ export default function MindMapPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 34+ modules (AdamW, LoRA)..."
+              placeholder="Search 55 modules (AdamW, LoRA)..."
               className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg pl-8 pr-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-52 md:w-64 placeholder-slate-500"
             />
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" />

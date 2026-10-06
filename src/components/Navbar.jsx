@@ -27,6 +27,9 @@ import {
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
 import papersData from '../data/papers.json';
+import conceptsData from '../data/concepts.json';
+import projectsData from '../data/projects.json';
+import interviewData from '../data/interviewQuestions.json';
 
 export default function Navbar({ 
   onOpenSearch, 
@@ -99,7 +102,7 @@ export default function Navbar({
       label: 'Case Studies',
       icon: Briefcase,
       color: 'emerald',
-      badge: '5',
+      badge: String(projectsData.length),
       badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
     },
     {
@@ -115,7 +118,7 @@ export default function Navbar({
       label: 'Core Concepts',
       icon: Layers,
       color: 'rose',
-      badge: '170',
+      badge: String(conceptsData.length),
       badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     },
     {

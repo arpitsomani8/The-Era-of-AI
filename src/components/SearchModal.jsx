@@ -41,7 +41,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
     const results = [];
 
-    // Search Concepts (170)
+    // Search Concepts (274)
     for (const c of conceptsData) {
       if (
         c.title?.toLowerCase().includes(q) ||
@@ -164,7 +164,7 @@ export default function SearchModal({ isOpen, onClose }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search all 170 concepts, 150 questions, 22 landmark papers, architectures..."
+            placeholder={`Search all ${conceptsData.length} concepts, ${interviewData.length}+ questions, ${papersData.length} papers, architectures...`}
             className="flex-1 bg-transparent text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none"
           />
           {query && (

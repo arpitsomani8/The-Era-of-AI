@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
 import { X, Sparkles, Network, BookOpen, FileText, Briefcase, HelpCircle, Layers, ExternalLink, Github, Heart } from 'lucide-react';
+import allNodesData from '../data/allNodes.json';
+import topicsData from '../data/topics.json';
+import conceptsData from '../data/concepts.json';
+import papersData from '../data/papers.json';
+import interviewData from '../data/interviewQuestions.json';
+import projectsData from '../data/projects.json';
 
 export default function AboutModal({ isOpen, onClose }) {
   useEffect(() => {
@@ -85,7 +91,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Network className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">41</div>
+                <div className="text-base font-bold text-white">{allNodesData.length}</div>
                 <div className="text-[11px] text-slate-400">Graph Nodes</div>
               </div>
             </div>
@@ -95,7 +101,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">34</div>
+                <div className="text-base font-bold text-white">{topicsData.length}</div>
                 <div className="text-[11px] text-slate-400">Syllabus Modules</div>
               </div>
             </div>
@@ -105,7 +111,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Layers className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">170+</div>
+                <div className="text-base font-bold text-white">{conceptsData.length}</div>
                 <div className="text-[11px] text-slate-400">Core Concepts</div>
               </div>
             </div>
@@ -115,7 +121,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <HelpCircle className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">1,000+</div>
+                <div className="text-base font-bold text-white">{interviewData.length}+</div>
                 <div className="text-[11px] text-slate-400">Interview Vault</div>
               </div>
             </div>
@@ -125,8 +131,8 @@ export default function AboutModal({ isOpen, onClose }) {
                 <FileText className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">Daily</div>
-                <div className="text-[11px] text-slate-400">Paper Updates</div>
+                <div className="text-base font-bold text-white">{papersData.length}</div>
+                <div className="text-[11px] text-slate-400">Landmark Papers</div>
               </div>
             </div>
 
@@ -135,7 +141,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Briefcase className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">5</div>
+                <div className="text-base font-bold text-white">{projectsData.length}</div>
                 <div className="text-[11px] text-slate-400">Case Studies</div>
               </div>
             </div>

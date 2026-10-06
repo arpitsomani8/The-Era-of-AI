@@ -304,7 +304,7 @@ export default function ConceptsPage() {
 
   return (
     <div className="flex-1 w-full h-full flex flex-col md:flex-row overflow-hidden bg-slate-950 text-slate-100">
-      {/* Left Sidebar: 170 Concepts Directory */}
+      {/* Left Sidebar: 274 Concepts Directory */}
       <aside className="w-full md:w-80 lg:w-96 border-r border-slate-800 bg-slate-900/60 flex flex-col shrink-0 h-1/3 md:h-full">
         {/* Sidebar Header & Search */}
         <div className="p-4 border-b border-slate-800 space-y-3 bg-slate-950/40">
@@ -350,7 +350,7 @@ export default function ConceptsPage() {
                   onClick={() => setActiveCategory('all')}
                   className="text-[10px] text-rose-400 hover:text-rose-300 font-medium transition cursor-pointer"
                 >
-                  Clear filter (Show all 170)
+                  Clear filter (Show all {conceptsData.length})
                 </button>
               )}
             </div>

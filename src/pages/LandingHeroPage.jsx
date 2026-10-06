@@ -491,7 +491,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
             <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" />
           </button>
           <p className="text-[11px] text-slate-400 mt-2 text-center font-normal">
-            Step directly into the 41-node Interactive Knowledge Graph
+            Step directly into the 63-node Interactive Knowledge Graph
           </p>
         </div>
 

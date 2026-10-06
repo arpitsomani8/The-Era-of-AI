@@ -174,4 +174,25 @@ if import_errors:
 else:
     print(f"[OK] All relative imports across {len(all_jsx)} JS/JSX files resolve cleanly!")
 
+print("\n=== 6. CHECKING FOR STALE HARDCODED NUMBERS IN USER-FACING CODE ===")
+stale_findings = []
+stale_patterns = ['170', '150+', '180+', '22 landmark', '22+', '41 node', '41 domain', '41-node', '34 module', '34 curriculum', '34+ module', '7 tracks']
+
+for f in all_jsx:
+    with open(f, 'r', encoding='utf-8') as fp:
+        lines = fp.readlines()
+    for idx, l in enumerate(lines):
+        for pat in stale_patterns:
+            if pat in l.lower():
+                # Ignore coordinate/styling
+                if not any(k in l for k in ['x=', 'y=', 'width=', 'height=', 'min-w-', '1706.03762', 'board states']):
+                    stale_findings.append((f, idx + 1, pat, l.strip()))
+
+if stale_findings:
+    print(f"[WARN] Found {len(stale_findings)} potential stale number references:")
+    for f, lno, pat, content in stale_findings:
+        print(f"  {os.path.relpath(f, 'src')}:{lno} ({pat}) -> {content}")
+else:
+    print("[OK] Zero stale hardcoded numbers found across all UI files!")
+
 print("\nAudit completed.")
