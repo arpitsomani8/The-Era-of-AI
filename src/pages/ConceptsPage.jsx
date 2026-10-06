@@ -14,7 +14,11 @@ import {
   Bookmark,
   CheckCircle2,
   Copy,
-  Download
+  Download,
+  GraduationCap,
+  AlertTriangle,
+  HelpCircle,
+  ArrowRight
 } from 'lucide-react';
 import conceptsData from '../data/concepts.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
@@ -419,12 +423,81 @@ export default function ConceptsPage() {
               </h1>
             </div>
 
-            {/* 1. Definition */}
+            {/* 1. Plain-English Summary (In a Nutshell) */}
+            {selectedConcept.simple_summary && (
+              <div className="bg-gradient-to-r from-indigo-950/50 via-purple-950/30 to-slate-900 rounded-2xl p-5 sm:p-6 border border-indigo-500/35 shadow-lg space-y-2">
+                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider">
+                  <GraduationCap className="w-4 h-4 text-cyan-400" />
+                  <span>The Basics First (In a Nutshell)</span>
+                </div>
+                <p className="text-white text-sm sm:text-base font-medium leading-relaxed">
+                  {selectedConcept.simple_summary}
+                </p>
+              </div>
+            )}
+
+            {/* 2. Separate Term-by-Term Breakdown (Solving 'shrinking all terms into one') */}
+            {selectedConcept.core_terms && selectedConcept.core_terms.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-cyan-400" />
+                    <span>Breaking Down Each Term (Don't Confuse Them!)</span>
+                  </h3>
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    {selectedConcept.core_terms.length} distinct {selectedConcept.core_terms.length === 1 ? 'concept' : 'concepts'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {selectedConcept.core_terms.map((termItem, idx) => (
+                    <div 
+                      key={idx}
+                      className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 hover:border-cyan-500/40 transition shadow-sm space-y-3 flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-300 text-xs font-mono font-bold flex items-center justify-center shrink-0 border border-cyan-500/30">
+                            {idx + 1}
+                          </span>
+                          <h4 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                            {termItem.term}
+                          </h4>
+                        </div>
+                        
+                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+                          {termItem.what_is_it}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 pt-2.5 border-t border-slate-800">
+                        {termItem.analogy && (
+                          <div className="text-[11px] sm:text-xs text-amber-200/90 bg-amber-950/40 p-2.5 rounded-xl border border-amber-500/25 flex items-start gap-2">
+                            <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                            <div>
+                              <strong className="text-amber-300 font-semibold">Everyday Analogy:</strong> {termItem.analogy}
+                            </div>
+                          </div>
+                        )}
+                        {termItem.why_it_matters && (
+                          <div className="text-[11px] sm:text-xs text-slate-300 flex items-start gap-1.5 pt-0.5">
+                            <ArrowRight className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                            <span><strong className="text-cyan-300 font-semibold">Why AI Needs It:</strong> {termItem.why_it_matters}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 3. Formal Academic Definition */}
             {selectedConcept.def && (
               <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-2">
                 <h3 className="text-xs font-bold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-rose-400" />
-                  1. Formal Definition & Role
+                  Formal Academic Definition & Role
                 </h3>
                 <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.def} />
@@ -432,13 +505,13 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 2. Mathematical Formulation */}
+            {/* 4. Mathematical Formulation & Symbol Decoder */}
             {selectedConcept.formula && (
-              <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-3">
+              <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-indigo-500/25 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-                    2. Core Mathematical Formulation
+                    Mathematical Formulation & Symbol Decoder
                   </h3>
 
                   <button
@@ -447,7 +520,7 @@ export default function ConceptsPage() {
                       setCopiedFormula(true);
                       setTimeout(() => setCopiedFormula(false), 2000);
                     }}
-                    className="p-1 px-2 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1"
+                    className="p-1 px-2.5 rounded-lg bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1"
                     title="Copy raw LaTeX equation"
                   >
                     {copiedFormula ? (
@@ -467,15 +540,51 @@ export default function ConceptsPage() {
                 <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 overflow-x-auto text-center">
                   <KaTeXRenderer math={selectedConcept.formula} block={true} />
                 </div>
+
+                {/* Symbol-by-Symbol Decoder */}
+                {selectedConcept.symbol_guide && selectedConcept.symbol_guide.length > 0 && (
+                  <div className="space-y-2 pt-3 border-t border-slate-800/80">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
+                      <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Symbol-by-Symbol Decoder:</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {selectedConcept.symbol_guide.map((sym, sIdx) => (
+                        <div key={sIdx} className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-xs flex items-start gap-2">
+                          <code className="text-cyan-300 font-mono font-bold shrink-0 bg-slate-900 px-2 py-0.5 rounded border border-slate-700/80">
+                            {sym.symbol}
+                          </code>
+                          <div className="min-w-0">
+                            <div className="text-slate-200 font-semibold">{sym.meaning}</div>
+                            <div className="text-[11px] text-slate-400 leading-tight mt-0.5">{sym.plain_english}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Step-by-Step Numerical Walkthrough */}
+                {selectedConcept.numerical_example && (
+                  <div className="p-4 rounded-xl bg-indigo-950/25 border border-indigo-500/20 text-xs sm:text-sm text-indigo-200/95 space-y-2">
+                    <div className="font-bold text-indigo-300 flex items-center gap-1.5 text-xs uppercase tracking-wide">
+                      <Calculator className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Step-by-Step Calculation (Concrete Numbers):</span>
+                    </div>
+                    <p className="whitespace-pre-line font-mono text-xs sm:text-[13px] leading-relaxed text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-indigo-950">
+                      {selectedConcept.numerical_example}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* 3. Intuition & When to Use */}
+            {/* 5. Intuition & When to Use */}
             {selectedConcept.logic && (
               <div className="bg-amber-950/20 rounded-2xl p-5 sm:p-6 border border-amber-500/25 space-y-2">
                 <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-                  3. Intuition & When to Use
+                  Intuition & Why Modern AI Uses It
                 </h3>
                 <p className="text-amber-100/90 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.logic} />
@@ -483,15 +592,28 @@ export default function ConceptsPage() {
               </div>
             )}
 
-            {/* 4. Real-World Practical Example */}
+            {/* 6. Real-World Practical Example */}
             {selectedConcept.example && (
               <div className="bg-emerald-950/20 rounded-2xl p-5 sm:p-6 border border-emerald-500/25 space-y-2">
                 <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  4. Real-World Practical Example
+                  Real-World Practical Scenario
                 </h3>
                 <p className="text-emerald-100/90 leading-relaxed text-sm sm:text-base">
                   <MathText text={selectedConcept.example} />
+                </p>
+              </div>
+            )}
+
+            {/* 7. Common Novice Traps & Misconceptions */}
+            {selectedConcept.pitfalls && (
+              <div className="bg-rose-950/20 rounded-2xl p-4 sm:p-5 border border-rose-500/30 text-rose-200/90 space-y-1.5">
+                <div className="flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-wider">
+                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>Common Beginner Traps & Misconceptions</span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  {selectedConcept.pitfalls}
                 </p>
               </div>
             )}
