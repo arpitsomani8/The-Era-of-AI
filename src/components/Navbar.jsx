@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
+import { getStoredVoiceGender, setStoredVoiceGender } from '../utils/audioSpeech';
 import papersData from '../data/papers.json';
 import conceptsData from '../data/concepts.json';
 import projectsData from '../data/projects.json';
@@ -49,6 +50,22 @@ export default function Navbar({
   const { bookmarkCount, completedCount } = useProgress();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [voiceGender, setVoiceGender] = useState(getStoredVoiceGender());
+
+  // Real-time synchronization of narrator voice
+  useEffect(() => {
+    const handleVoiceChange = (e) => {
+      setVoiceGender(e.detail || getStoredVoiceGender());
+    };
+    window.addEventListener('era-voice-changed', handleVoiceChange);
+    return () => window.removeEventListener('era-voice-changed', handleVoiceChange);
+  }, []);
+
+  const handleToggleGlobalVoice = () => {
+    const next = voiceGender === 'female' ? 'male' : 'female';
+    setVoiceGender(next);
+    setStoredVoiceGender(next);
+  };
 
   // Close menus on route change
   useEffect(() => {
@@ -163,10 +180,7 @@ export default function Navbar({
             </div>
             <div>
               <span className="font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5 group-hover:text-indigo-300 transition-colors">
-                <span>The Era of AI</span>
-                <span className="hidden md:inline-block text-[10px] font-semibold uppercase px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider">
-                  React Edition
-                </span>
+                The Era of AI
               </span>
               <p className="text-[10px] text-slate-400 hidden 2xl:block">
                 Interactive Knowledge Universe &bull; Syllabus &bull; Papers &bull; 1000+ Questions
@@ -235,6 +249,20 @@ export default function Navbar({
         {/* Right Controls Container */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
           <ThemeSwitcher />
+
+          {/* Narrator Voice Preference Selector */}
+          <button
+            onClick={handleToggleGlobalVoice}
+            id="navbar-voice-toggle-btn"
+            className="p-1.5 px-2 sm:px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm shrink-0 cursor-pointer"
+            title={`Narrator Voice: ${voiceGender === 'female' ? 'Female' : 'Male'} (Click to switch to ${voiceGender === 'female' ? 'Male' : 'Female'})`}
+            aria-label={`Narrator Voice: ${voiceGender === 'female' ? 'Female' : 'Male'}`}
+          >
+            <span className="text-sm leading-none">{voiceGender === 'female' ? '👩' : '👨'}</span>
+            <span className="hidden xl:inline text-xs font-medium">
+              {voiceGender === 'female' ? 'Female' : 'Male'} Voice
+            </span>
+          </button>
 
           {/* Global Search Button */}
           <button
@@ -568,6 +596,20 @@ export default function Navbar({
               >
                 <Info className="w-4 h-4 text-indigo-400 shrink-0" />
                 <span className="truncate">About Portal</span>
+              </button>
+
+              <button
+                onClick={handleToggleGlobalVoice}
+                className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center justify-between gap-2 transition"
+                title="Toggle Narrator Voice"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className="text-base">{voiceGender === 'female' ? '👩' : '👨'}</span>
+                  <span className="truncate font-medium">{voiceGender === 'female' ? 'Female' : 'Male'} Voice</span>
+                </div>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                  TTS
+                </span>
               </button>
 
               {isInstallable && (

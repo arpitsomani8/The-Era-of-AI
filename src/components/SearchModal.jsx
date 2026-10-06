@@ -151,9 +151,12 @@ export default function SearchModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-slate-950/80 backdrop-blur-md">
+    <div 
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-slate-950/80 backdrop-blur-md cursor-pointer animate-in fade-in duration-150"
+      onClick={onClose}
+    >
       <div 
-        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150 cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
@@ -169,17 +172,23 @@ export default function SearchModal({ isOpen, onClose }) {
           />
           {query && (
             <button
-              onClick={() => setQuery('')}
-              className="p-1 rounded-md text-slate-400 hover:text-white mr-1"
+              onClick={() => {
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+              className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition mr-1.5"
+              title="Clear search text"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
           <button
             onClick={onClose}
-            className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition border border-slate-700/70 ml-1 flex items-center justify-center cursor-pointer shadow-sm active:scale-95"
+            title="Close Search (Escape)"
+            aria-label="Close search"
           >
-            ESC
+            <X className="w-4 h-4 text-slate-300" />
           </button>
         </div>
 

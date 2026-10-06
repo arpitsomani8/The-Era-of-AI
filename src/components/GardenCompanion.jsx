@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import aeroThoughts from '../data/aeroThoughts.json';
+import AudioExplainerButton from './AudioExplainerButton';
 
 const COMPANION_DRESSES = [
   {
@@ -164,9 +165,11 @@ export default function GardenCompanion() {
   const [thoughtIndex, setThoughtIndex] = useState(() => Math.floor(Math.random() * COMPANION_THOUGHTS.length));
   const [thoughtBoxOpen, setThoughtBoxOpen] = useState(false);
 
+  const [sayingHi, setSayingHi] = useState(false);
   const selectedDress = COMPANION_DRESSES[dressIndex];
   const containerRef = useRef(null);
   const waveTimerRef = useRef(null);
+  const hiTimerRef = useRef(null);
   const idleTimerRef = useRef(null);
   const animFrameRef = useRef(null);
 
@@ -247,6 +250,7 @@ export default function GardenCompanion() {
       idleTimerRef.current = setTimeout(() => {
         // Double check anchor condition before takeoff
         if (!isAnchoredRef.current) {
+          setThoughtBoxOpen(false); // Close thought box before taking flight
           setIsRoaming(true);
           isRoamingRef.current = true;
           pickNewWaypoint();
@@ -333,14 +337,19 @@ export default function GardenCompanion() {
     });
   }, []);
 
-  const triggerWave = () => {
+  // Star symbol / click on Aero: waves and says Hi, DOES NOT open thought box
+  const triggerWave = (e) => {
+    if (e) e.stopPropagation();
     if (waveTimerRef.current) clearTimeout(waveTimerRef.current);
+    if (hiTimerRef.current) clearTimeout(hiTimerRef.current);
     setIsWaving(true);
-    pickRandomThought();
-    setThoughtBoxOpen(true);
+    setSayingHi(true);
     playAeroSynth('wave', soundEnabled);
     waveTimerRef.current = setTimeout(() => {
       setIsWaving(false);
+    }, 2200);
+    hiTimerRef.current = setTimeout(() => {
+      setSayingHi(false);
     }, 2200);
   };
 
@@ -373,16 +382,17 @@ export default function GardenCompanion() {
     }
   };
 
+  // Cycle Dress: Decoupled from wave & thought box
   const handleCycleDress = (e) => {
     e.stopPropagation();
     setDressIndex((prev) => (prev + 1) % COMPANION_DRESSES.length);
     playAeroSynth('dress', soundEnabled);
-    triggerWave();
   };
 
+  // Next thought acts naturally as a random picker
   const nextThought = (e) => {
     if (e) e.stopPropagation();
-    setThoughtIndex((prev) => (prev + 1) % COMPANION_THOUGHTS.length);
+    pickRandomThought();
   };
 
   const prevThought = (e) => {
@@ -410,39 +420,53 @@ export default function GardenCompanion() {
       className="fixed top-0 left-0 z-50 pointer-events-auto select-none flex flex-col items-center cursor-pointer will-change-transform"
       onClick={triggerWave}
     >
+      {/* Speech greeting bubble when star / wave is triggered */}
+      {sayingHi && !thoughtBoxOpen && (
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          className="absolute -top-11 px-3 py-1.5 rounded-full bg-slate-900/98 backdrop-blur-md border border-cyan-400/60 text-cyan-200 font-bold text-xs shadow-lg shadow-cyan-500/20 animate-in fade-in zoom-in-95 duration-200 flex items-center gap-1.5 z-40 whitespace-nowrap pointer-events-none"
+        >
+          <span>Hi there!</span>
+          <span className="text-sm">👋</span>
+        </div>
+      )}
+
       {/* REAL COMIC THOUGHT BOX:
           - Beautiful, wide, spacious cloud container with comfortable 14px typography
           - Aligned right-0 with a fixed 60px safe margin from window edge, ensuring zero cut-off
           - Real comic thought bubble tail: descending circular bubbles pointing down to Aero's head
           - Stays open for reading until dismissed or toggled
       */}
-      {thoughtBoxOpen && (
+      {thoughtBoxOpen && !isRoaming && (
         <div 
           onClick={(e) => e.stopPropagation()}
           className="absolute bottom-[115%] right-0 w-[300px] sm:w-[350px] max-w-[calc(100vw-36px)] p-4 sm:p-5 rounded-[28px] bg-slate-900/98 backdrop-blur-2xl border-2 border-indigo-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(99,102,241,0.25)] text-left transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 z-30"
         >
           {/* Header Bar */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-base">💭</span>
-              <span className="text-xs font-bold text-indigo-300 tracking-wide">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2.5 gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-base shrink-0">💭</span>
+              <span className="text-xs font-bold text-indigo-300 tracking-wide shrink-0">
                 Aero's Thought
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 truncate max-w-[100px]">
                 {currentThought.badge}
               </span>
             </div>
             
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <span className="font-mono text-[11px] text-slate-400 pr-1">
-                {thoughtIndex + 1}/{COMPANION_THOUGHTS.length}
-              </span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 shrink-0">
+              <AudioExplainerButton
+                variant="compact"
+                label="Listen"
+                title={currentThought.topic}
+                text={`${currentThought.topic}. ${currentThought.thought}`}
+              />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setThoughtBoxOpen(false);
                 }}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition shrink-0"
                 title="Close thought box"
               >
                 <X className="w-4 h-4" />
@@ -475,16 +499,8 @@ export default function GardenCompanion() {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={pickRandomThought}
-                className="px-2 py-1 rounded-md text-xs font-semibold text-amber-300 hover:text-amber-200 hover:bg-amber-500/20 transition flex items-center gap-1"
-                title="Pick random thought"
-              >
-                <Shuffle className="w-3 h-3" />
-                <span>Random</span>
-              </button>
-              <button
                 onClick={nextThought}
-                className="px-2 py-1 rounded-md text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/20 transition flex items-center gap-1"
+                className="px-2.5 py-1 rounded-md text-xs font-semibold text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/20 transition flex items-center gap-1 border border-cyan-500/30"
                 title="Next thought"
               >
                 <span>Next</span>
@@ -661,6 +677,7 @@ export default function GardenCompanion() {
         {!isAnchored && (
           <button
             onClick={() => {
+              setThoughtBoxOpen(false);
               setIsRoaming(true);
               isRoamingRef.current = true;
               pickNewWaypoint();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Gamepad2, 
   Eye, 
@@ -10,11 +10,12 @@ import {
   Sparkles, 
   Brain, 
   Award, 
-  ArrowRight,
-  BookOpen,
-  CheckCircle2
+  ArrowRight, 
+  BookOpen, 
+  CheckCircle2 
 } from 'lucide-react';
 import KaTeXRenderer from './KaTeXRenderer';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export const PLAYGROUND_GUIDES = {
   attention: {
@@ -297,6 +298,20 @@ export default function PlaygroundGuide({ activeTab }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const guide = PLAYGROUND_GUIDES[activeTab];
+
+  const guideNarrative = useMemo(() => {
+    if (!guide) return '';
+    const parts = [
+      `Playground Guide for ${guide.title}.`,
+      guide.subtitle,
+      `Steps to explore: ${guide.steps.map(s => `Step ${s.num}: ${s.title}. ${s.detail}`).join(' ')}`,
+      `Key observations: ${guide.observations.join('. ')}`,
+      `Core Challenge: ${guide.challenge}`,
+      guide.conclusion ? `Conclusion: ${guide.conclusion.mathExplanation}. Production Impact: ${guide.conclusion.productionImpact}. Interview Rule: ${guide.conclusion.interviewRule}` : ''
+    ];
+    return parts.filter(Boolean).join(' ');
+  }, [guide]);
+
   if (!guide) return null;
 
   return (
@@ -326,6 +341,13 @@ export default function PlaygroundGuide({ activeTab }) {
         </div>
 
         <div className="flex items-center gap-2">
+          <div onClick={(e) => e.stopPropagation()}>
+            <AudioExplainerButton 
+              title={guide.title} 
+              text={guideNarrative} 
+              variant="compact"
+            />
+          </div>
           <span className="text-xs text-slate-400 hidden md:inline font-medium">
             {isExpanded ? 'Collapse Guide' : 'Expand Guide'}
           </span>

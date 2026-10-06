@@ -441,8 +441,7 @@ export default function TimelineModal({ isOpen, onClose }) {
                     {/* Audio Explainer for the Milestone */}
                     <AudioExplainerButton
                       title={`${selectedMilestone.year}: ${selectedMilestone.title}`}
-                      definition={selectedMilestone.summary}
-                      intuition={selectedMilestone.impact}
+                      text={`Milestone ${selectedMilestone.year}: ${selectedMilestone.title}. Pioneers and contributors: ${selectedMilestone.pioneers}. Summary: ${selectedMilestone.summary}. Industry Impact: ${selectedMilestone.impact}`}
                     />
                   </div>
 

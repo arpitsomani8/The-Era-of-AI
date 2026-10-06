@@ -6,6 +6,7 @@ import conceptsData from '../data/concepts.json';
 import papersData from '../data/papers.json';
 import interviewData from '../data/interviewQuestions.json';
 import projectsData from '../data/projects.json';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export default function AboutModal({ isOpen, onClose }) {
   useEffect(() => {
@@ -61,9 +62,6 @@ export default function AboutModal({ isOpen, onClose }) {
                 <span className="font-extrabold text-lg text-white tracking-tight drop-shadow-md">
                   The Era of AI
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">
-                  React Edition
-                </span>
               </div>
               <p className="text-xs text-slate-300 drop-shadow">
                 Master Knowledge Graph, Curriculum &amp; Research Portal
@@ -76,9 +74,16 @@ export default function AboutModal({ isOpen, onClose }) {
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Description */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-indigo-400 mb-1">
-              About The Project
-            </h3>
+            <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-indigo-400">
+                About The Project
+              </h3>
+              <AudioExplainerButton
+                variant="compact"
+                title="About The Era of AI"
+                text={`About The Era of AI. The Era of AI is an open-source, production-grade knowledge architecture designed to bridge the gap between theoretical machine learning foundations and state-of-the-art modern generative AI systems. Featuring an interconnected graph of ${allNodesData.length} domain nodes, ${topicsData.length} structured syllabus modules, ${conceptsData.length} mathematical concept breakdowns, ${interviewData.length} interview questions, ${papersData.length} milestone research papers, and ${projectsData.length} production case studies.`}
+              />
+            </div>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               <strong>The Era of AI</strong> is an open-source, production-grade knowledge architecture designed to bridge the gap between theoretical machine learning foundations and state-of-the-art modern generative AI systems.
             </p>

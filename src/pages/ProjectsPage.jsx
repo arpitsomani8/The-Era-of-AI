@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import projectsData from '../data/projects.json';
 import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 export default function ProjectsPage() {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -111,7 +112,12 @@ export default function ProjectsPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                  <AudioExplainerButton
+                    title={project.title}
+                    text={`${project.title}. ${project.subtitle}. Architecture Summary: ${project.architecture_summary}. Key Highlights: ${(project.key_highlights || []).join('. ')}. System Components: ${(project.system_components || []).map(c => `${c.name}: ${c.desc}`).join('. ')}`}
+                  />
+
                   <button
                     onClick={() => toggleCompleted(`project-${project.id}`)}
                     className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition flex items-center gap-1.5 ${

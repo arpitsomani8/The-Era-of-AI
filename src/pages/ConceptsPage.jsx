@@ -507,9 +507,9 @@ export default function ConceptsPage() {
                   {/* Audio / AI Voice Explainer */}
                   <AudioExplainerButton
                     title={selectedConcept.title}
-                    definition={selectedConcept.def || selectedConcept.definition}
-                    intuition={selectedConcept.logic}
-                    example={selectedConcept.example}
+                    definition={selectedConcept.def || selectedConcept.definition || selectedConcept.simple_summary}
+                    intuition={selectedConcept.logic || selectedConcept.core_logic || selectedConcept.formula_explanation}
+                    example={selectedConcept.example || selectedConcept.numerical_example}
                   />
 
                   {/* Mark as Mastered button */}

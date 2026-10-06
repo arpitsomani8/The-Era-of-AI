@@ -18,6 +18,7 @@ import topicsData from '../data/topics.json';
 import allNodesData from '../data/allNodes.json';
 import { findConceptForSubtopic } from '../utils/conceptLookup';
 import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 // Curated inter-topic relationships across the curriculum
 const CURATED_TOPIC_CONNECTIONS = {
@@ -442,6 +443,22 @@ export default function SyllabusPage() {
                 {/* Expanded Body: ONLY Subtopics and Connected Topics with Redirect Links */}
                 {isExpanded && (
                   <div className="p-4 sm:p-5 border-t border-slate-800/80 bg-slate-950/40 space-y-5 text-xs sm:text-sm">
+                    {/* Module Audio Overview */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/70 border border-slate-800 rounded-xl p-3">
+                      <div className="text-xs text-slate-300 min-w-0">
+                        <span className="font-semibold text-white block mb-0.5">{topic.label} Overview:</span>
+                        <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-2">{topic.def}</p>
+                      </div>
+                      <div className="shrink-0">
+                        <AudioExplainerButton
+                          title={topic.label}
+                          text={`Curriculum Module: ${topic.label}. Category: ${topic.category}. Definition: ${topic.def}. This module covers ${topic.subtopics?.length || 0} essential technical subtopics including: ${topic.subtopics?.slice(0, 5).join(', ')}.`}
+                          label="Listen Overview"
+                          variant="compact"
+                        />
+                      </div>
+                    </div>
+
                     {/* 1. Subtopics Section */}
                     {topic.subtopics && topic.subtopics.length > 0 && (
                       <div>

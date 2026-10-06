@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { MathText } from './KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export default function InterviewFlashcardDeck({ 
   questions = [], 
@@ -114,6 +115,13 @@ export default function InterviewFlashcardDeck({
     );
   }
 
+  const qLen = currentCard?.question?.length || 0;
+  const questionSizeClass = qLen > 280 
+    ? 'text-sm sm:text-base md:text-lg' 
+    : qLen > 140 
+    ? 'text-base sm:text-lg md:text-xl' 
+    : 'text-lg sm:text-xl md:text-2xl';
+
   return (
     <div className="space-y-4">
       {/* Session Progress & Controls Bar */}
@@ -140,6 +148,19 @@ export default function InterviewFlashcardDeck({
             <Shuffle className="w-3.5 h-3.5 text-indigo-400" />
             <span className="hidden sm:inline">Shuffle</span>
           </button>
+
+          {/* Audio Flashcard Explainer with Male / Female Voices */}
+          {currentCard && (
+            <AudioExplainerButton
+              title={`Question ${currentIndex + 1}`}
+              text={isFlipped
+                ? `Question: ${currentCard.question}. Answer: ${currentCard.answer}. ${currentCard.tip ? 'Tip: ' + currentCard.tip : ''}`
+                : `Question: ${currentCard.question}. Flip card to reveal and listen to the complete answer.`
+              }
+              label={isFlipped ? "Listen Answer" : "Listen Question"}
+              variant="compact"
+            />
+          )}
 
           <button
             onClick={() => toggleBookmark({
@@ -176,22 +197,22 @@ export default function InterviewFlashcardDeck({
       </div>
 
       {/* 3D FLIP CONTAINER */}
-      <div className="perspective-1200 w-full min-h-[440px]">
+      <div className="perspective-1200 w-full min-h-[480px] sm:min-h-[520px]">
         <div 
           onClick={() => setIsFlipped(!isFlipped)}
-          className={`relative w-full min-h-[440px] transform-style-3d transition-transform duration-500 cursor-pointer rounded-3xl ${
+          className={`relative w-full min-h-[480px] sm:min-h-[520px] transform-style-3d transition-transform duration-500 cursor-pointer rounded-3xl ${
             isFlipped ? 'rotate-y-180' : ''
           }`}
         >
           {/* ========================================================= */}
           {/* FRONT FACE: QUESTION */}
           {/* ========================================================= */}
-          <div className="absolute inset-0 backface-hidden bg-slate-900 border border-purple-500/30 hover:border-purple-500/60 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col justify-between select-none transition-all">
+          <div className="absolute inset-0 backface-hidden bg-slate-900 border border-purple-500/30 hover:border-purple-500/60 rounded-3xl p-5 sm:p-7 shadow-2xl flex flex-col justify-between select-none transition-all overflow-hidden">
             {/* Front Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-mono font-bold">
-                  #{currentCard.id}
+                  #{currentIndex + 1}
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold uppercase tracking-wider">
                   {currentCard.category_label || currentCard.category}
@@ -203,11 +224,11 @@ export default function InterviewFlashcardDeck({
                   <span className={`text-[11px] px-2.5 py-0.5 rounded-full border ${
                     currentCard.experience_level === '0-2'
                       ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                      : currentCard.experience_level === '2-4'
+                      : currentCard.experience_level === '2-5'
                       ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
                       : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
                   }`}>
-                    {currentCard.experience_level === '0-2' ? '🌱 0–2 Yrs' : currentCard.experience_level === '2-4' ? '🚀 2–4 Yrs' : '🏛️ 5+ Yrs'}
+                    {currentCard.experience_level === '0-2' ? '🌱 0–2 Yrs' : currentCard.experience_level === '2-5' ? '🚀 2–5 Yrs' : '🏛️ 6+ Yrs'}
                   </span>
                 )}
               </div>
@@ -221,19 +242,26 @@ export default function InterviewFlashcardDeck({
             </div>
 
             {/* Front Question Body */}
-            <div className="my-auto py-8 text-center space-y-4 max-w-2xl mx-auto">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[11px] font-semibold uppercase tracking-wider">
+            <div 
+              onClick={(e) => {
+                if (window.getSelection()?.toString()?.length > 0) {
+                  e.stopPropagation();
+                }
+              }}
+              className="flex-1 overflow-y-auto my-2 py-3 text-center flex flex-col items-center justify-center space-y-3.5 max-w-4xl w-full mx-auto scrollbar-thin px-2"
+            >
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[11px] font-semibold uppercase tracking-wider shrink-0">
                 <HelpCircle className="w-3.5 h-3.5" />
                 Technical Interview Question
               </span>
 
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-relaxed tracking-tight">
+              <h2 className={`${questionSizeClass} font-bold text-white leading-relaxed tracking-normal max-w-3xl`}>
                 <MathText text={currentCard.question} />
               </h2>
 
               {/* Company Tags */}
               {currentCard.company_tags && currentCard.company_tags.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-1.5 pt-2">
+                <div className="flex flex-wrap justify-center gap-1.5 pt-1 shrink-0">
                   {currentCard.company_tags.map((comp, idx) => (
                     <span 
                       key={idx}
@@ -247,7 +275,7 @@ export default function InterviewFlashcardDeck({
             </div>
 
             {/* Front Footer Prompt */}
-            <div className="flex items-center justify-between border-t border-slate-800/80 pt-3 text-slate-400 text-xs">
+            <div className="flex items-center justify-between border-t border-slate-800/80 pt-3 text-slate-400 text-xs shrink-0">
               <span className="flex items-center gap-1.5 text-purple-400 font-medium">
                 <RotateCw className="w-3.5 h-3.5 animate-spin-slow" />
                 Click card or press [Space] to flip
@@ -261,9 +289,9 @@ export default function InterviewFlashcardDeck({
           {/* ========================================================= */}
           {/* BACK FACE: TECHNICAL ANSWER & PROOFS */}
           {/* ========================================================= */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-slate-900 border border-emerald-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between transition-all">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-slate-900 border border-emerald-500/40 rounded-3xl p-5 sm:p-7 shadow-2xl flex flex-col justify-between transition-all overflow-hidden">
             {/* Back Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
@@ -278,7 +306,7 @@ export default function InterviewFlashcardDeck({
             {/* Back Answer Body */}
             <div 
               onClick={(e) => e.stopPropagation()} 
-              className="my-3 overflow-y-auto max-h-[290px] pr-2 space-y-3 cursor-text text-slate-200 text-xs sm:text-sm leading-relaxed"
+              className="flex-1 overflow-y-auto my-2 py-2 pr-2 space-y-3 cursor-text text-slate-200 text-xs sm:text-sm leading-relaxed scrollbar-thin"
             >
               <div className="whitespace-pre-line">
                 <MathText text={currentCard.answer} />
@@ -298,7 +326,7 @@ export default function InterviewFlashcardDeck({
             {/* Back Active Recall Grading Bar */}
             <div 
               onClick={(e) => e.stopPropagation()} 
-              className="border-t border-slate-800/80 pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
+              className="border-t border-slate-800/80 pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shrink-0"
             >
               <span className="font-semibold text-slate-400 text-[11px] uppercase tracking-wider">
                 Rate Your Recall:

@@ -22,6 +22,7 @@ import interviewData from '../data/interviewQuestions.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
 import InterviewFlashcardDeck from '../components/InterviewFlashcardDeck';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 export default function InterviewPage({ onOpenAssessment }) {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -604,7 +605,17 @@ export default function InterviewPage({ onOpenAssessment }) {
                       </h2>
                     </div>
 
-                    <div className="flex items-center space-x-2 shrink-0 pt-1">
+                    <div className="flex items-center space-x-2 shrink-0 pt-1 flex-wrap">
+                      {/* Audio Question & Answer Narration with Male/Female Voices */}
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <AudioExplainerButton
+                          title={`Question: ${item.question}`}
+                          text={`Question: ${item.question}. Detailed Answer: ${item.answer}. ${item.tip ? 'Interviewer Tip: ' + item.tip : ''}`}
+                          label="Listen"
+                          variant="compact"
+                        />
+                      </div>
+
                       {/* Mark as Mastered button */}
                       <button
                         onClick={(e) => {

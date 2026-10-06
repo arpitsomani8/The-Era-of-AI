@@ -20,6 +20,7 @@ import topicsData from '../data/topics.json';
 import conceptsData from '../data/concepts.json';
 import interviewData from '../data/interviewQuestions.json';
 import papersData from '../data/papers.json';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 /**
  * Interactive Costume / Dress Wardrobe for Aero
@@ -286,6 +287,13 @@ export default function LandingHeroPage({ onOpenAbout }) {
                 <span className="text-[10px]">About</span>
               </button>
             )}
+
+            <AudioExplainerButton
+              variant="compact"
+              label="Intro Audio"
+              title="Welcome to The Era of AI"
+              text="Welcome to The Era of AI. An open-source interactive research platform and comprehensive curriculum spanning artificial intelligence, deep learning, transformers, large language models, mathematical foundations, and enterprise case studies. Explore the interactive mind map, line-wise syllabus, interview question vault, landmark papers, and hands-on playgrounds."
+            />
 
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
