@@ -25,7 +25,9 @@ import {
   Info,
   Clock,
   History,
-  ArrowUpDown
+  ArrowUpDown,
+  ShieldCheck,
+  Scale
 } from 'lucide-react';
 import papersData from '../data/papers.json';
 import arxivLiveFeed from '../data/arxivLiveFeed.json';
@@ -124,7 +126,8 @@ export default function PapersPage() {
   author={${paper.authors}},
   year={${paper.year || 2025}},
   institution={${paper.institution || 'Research Lab'}},
-  url={${paper.url || ''}}
+  url={${paper.url || ''}},
+  note={${paper.license || 'Open Access'}}
 }`;
     navigator.clipboard.writeText(bibtex);
     setCopiedBibId(paper.id);
@@ -312,6 +315,10 @@ export default function PapersPage() {
                   <strong className="text-cyan-300 font-medium">Latest Research (12)</strong> are frontier 2024–2026 breakthrough publications (DeepSeek-R1, FlashAttention-3, Llama 3).
                 </span>
               </div>
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium shrink-0 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/25">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>100% Open Access (CC BY)</span>
             </div>
           </div>
         </div>
@@ -551,6 +558,17 @@ export default function PapersPage() {
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
                           {paper.category}
                         </span>
+
+                        {/* Open Access License Badge */}
+                        {paper.license && (
+                          <span 
+                            className="flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30"
+                            title={`License: ${paper.license} — Verified Open Access`}
+                          >
+                            <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span>{paper.license}</span>
+                          </span>
+                        )}
 
                         {paper.institution && (
                           <span className="flex items-center gap-1 text-xs text-slate-400">
