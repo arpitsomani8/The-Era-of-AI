@@ -4,18 +4,18 @@
     "category": "math",
     "label": "Linear Algebra & Vector Spaces",
     "level": 2,
-    "x": -880,
-    "y": -600,
+    "x": -1100,
+    "y": -660,
     "def": "The mathematical language of multidimensional data: vectors represent individual data points, matrices represent datasets or linear transformations, and dot products quantify directional alignment.",
     "formula": "Dot Product: u · v = ∑ u_i v_i = ||u|| ||v|| cos(θ) | Matrix Multiply: C_{ij} = ∑ A_{ik} B_{kj} | SVD: A = U Σ V^T",
     "logic": "Every tabular row, text token, and image patch is internally stored as an n-dimensional vector. Matrix operations project and rotate these vectors into lower or higher dimensional coordinate systems.",
     "example": "Recommendation systems: A user's genre preferences is a vector [0.9 Action, 0.1 Romance, 0.8 Sci-Fi]. The dot product with a movie's vector [0.85 Action, 0.05 Romance, 0.9 Sci-Fi] yields a high match score of 1.49.",
     "subtopics": [
-      "Vectors, Dot Products & Geometric Cosine Similarity",
+      "Vectors, Dot Products & Cosine Similarity",
       "Matrix Multiplication, Transposition & Inverses",
-      "Eigenvalues & Eigenvectors (Directions of invariant stretch)",
-      "Singular Value Decomposition (SVD for compression)",
-      "Tensors (Multidimensional arrays for batches and images)"
+      "Eigenvalues & Eigenvectors",
+      "Singular Value Decomposition (SVD)",
+      "Tensors & Multidimensional Arrays"
     ],
     "connections": [
       "math_root"
@@ -26,17 +26,17 @@
     "category": "math",
     "label": "Calculus & Optimization Dynamics",
     "level": 2,
-    "x": -880,
-    "y": -480,
+    "x": -1100,
+    "y": -520,
     "def": "The mathematics of continuous change: derivatives calculate the instantaneous slope of an error curve, and gradients indicate the compass direction of steepest ascent.",
     "formula": "Gradient: ∇_w L = [∂L/∂w_1, ..., ∂L/∂w_d]^T | Update Rule: w := w - η ∇_w L",
     "logic": "To minimize loss without guessing, compute the partial derivative of loss with respect to each weight (∂L/∂w). Moving a small step in the opposite direction (-∇L) guarantees that error decreases.",
     "example": "Walking down a foggy mountain (Google MLCC analogy): You cannot see the bottom of the valley through the fog, so you feel the slope of the ground beneath your feet and take a step in the steepest downward direction.",
     "subtopics": [
-      "Partial Derivatives & Univariate Slopes",
-      "The Chain Rule of Calculus (Nested functions f(g(x)))",
-      "Gradient Vector (Direction of steepest increase)",
-      "Hessian Matrix (2nd order curvature & saddle points)",
+      "Partial Derivatives & Slopes",
+      "The Chain Rule of Calculus",
+      "Gradient Vector & Steepest Ascent",
+      "Hessian Matrix & 2nd Order Curvature",
       "Convex vs Non-Convex Loss Landscapes"
     ],
     "connections": [
@@ -48,17 +48,17 @@
     "category": "math",
     "label": "Probability & Statistical Inference",
     "level": 2,
-    "x": -880,
-    "y": -360,
+    "x": -1100,
+    "y": -380,
     "def": "The mathematical framework for modeling uncertainty, estimating likelihood from observed samples, and calculating conditional probabilities.",
     "formula": "Bayes' Rule: P(A|B) = [P(B|A) P(A)] / P(B) | Gaussian PDF: (1 / √(2πσ²)) exp(-(x - μ)² / 2σ²)",
     "logic": "Real-world data is corrupted by noise and sampling bias. Probability allows models to output calibrated likelihoods (e.g. 85% probability) rather than rigid binary guesses.",
     "example": "Medical testing: If 1% of the population has a condition (Prior = 0.01) and a test is 90% accurate, Bayes' rule calculates that a patient testing positive actually has only an ~8.3% true probability of having the condition.",
     "subtopics": [
-      "Random Variables, Expectation (Mean μ) & Variance (σ²)",
-      "Distributions: Gaussian (Bell Curve), Bernoulli, Poisson",
-      "Bayes' Theorem: Prior, Likelihood, Evidence & Posterior",
-      "Maximum Likelihood Estimation (MLE) vs MAP Estimation",
+      "Random Variables, Expectation & Variance",
+      "Distributions: Gaussian, Bernoulli & Poisson",
+      "Bayes' Theorem: Prior, Likelihood & Posterior",
+      "Maximum Likelihood (MLE) vs MAP Estimation",
       "Law of Large Numbers & Central Limit Theorem"
     ],
     "connections": [
@@ -70,17 +70,17 @@
     "category": "math",
     "label": "Information Theory & Cross-Entropy",
     "level": 2,
-    "x": -880,
+    "x": -1100,
     "y": -240,
     "def": "The quantitative measurement of information, unpredictability, and divergence between true and predicted probability distributions.",
     "formula": "Shannon Entropy: H(P) = -∑ P(x) log P(x) | Cross-Entropy: H(P, Q) = -∑ P(x) log Q(x)",
     "logic": "High-probability events contain low 'surprisal' (information); rare events contain high surprisal. Minimizing cross-entropy penalizes models heavily when they are confidently wrong.",
     "example": "Predicting the weather in the Sahara desert (99% Sunny) has very low entropy (predictable); predicting a fair coin toss has maximum entropy of 1 bit (completely unpredictable).",
     "subtopics": [
-      "Shannon Entropy (Measure of inherent uncertainty)",
-      "Cross-Entropy Loss (Standard classification objective)",
-      "Kullback-Leibler (KL) Divergence (Distribution distance)",
-      "Mutual Information (Shared dependency between features)"
+      "Shannon Entropy",
+      "Cross-Entropy Loss",
+      "Kullback-Leibler (KL) Divergence",
+      "Mutual Information"
     ],
     "connections": [
       "math_root"
@@ -91,16 +91,16 @@
     "category": "data",
     "label": "Data Scrubbing & Cleaning",
     "level": 2,
-    "x": -940,
-    "y": 0,
+    "x": -1100,
+    "y": -70,
     "def": "The process of identifying, fixing, or filtering bad data: removing duplicate rows, correcting typos, and handling impossible or anomalous outliers.",
     "formula": "IQR = Q3 - Q1 | Outlier Fence: [Q1 - 1.5*IQR, Q3 + 1.5*IQR] | Z-Score: |z| = |(x - μ)/σ| > 3",
     "logic": "Google MLCC Principle: Machine learning models reflect their training data. Feeding dirty or duplicate data skews weights and damages generalization ('Garbage in, garbage out').",
     "example": "A sensor recording temperature records: [72°, 74°, 71°, -999°, 73°]. Scrubbing recognizes -999° as an unhandled hardware error code and removes or replaces it.",
     "subtopics": [
-      "Deduplication (Dropping duplicate user sessions/records)",
-      "Fixing Structural Errors (Encoding, whitespace, case)",
-      "Outlier Detection (IQR Rule, Isolation Forest, Z-score)",
+      "Deduplication & Record Linkage",
+      "Fixing Structural Errors",
+      "Outlier Detection (IQR, Isolation Forest & Z-Score)",
       "Data Type Validation & Formatting Consistency"
     ],
     "connections": [
@@ -112,17 +112,17 @@
     "category": "data",
     "label": "Missing Value Imputation",
     "level": 2,
-    "x": -940,
-    "y": 90,
+    "x": -1100,
+    "y": 40,
     "def": "Statistical methods to replace null or missing entries with realistic approximations so datasets remain intact without dropping rows.",
     "formula": "Mean: (1/N)∑ x_i | Median: Middle value of sorted x | KNN: Weighted average of k nearest neighbors",
     "logic": "Dropping every row with a missing value can discard 50%+ of your training data. Mean is suitable for normal distributions; Median resists skewness; KNN preserves relational correlations.",
     "example": "In a real estate dataset missing 'house_age' for 10% of listings: Impute with the median age (e.g. 18 years) to avoid being distorted by 120-year-old historic houses.",
     "subtopics": [
-      "Mean & Median Imputation (For numerical columns)",
-      "Mode Imputation (For categorical values)",
-      "KNN & Iterative MICE Imputation (Multivariate)",
-      "Missingness Indicator Flags (Binary column tracking nulls)"
+      "Mean & Median Imputation",
+      "Mode Imputation & Missing Categories",
+      "KNN & Iterative MICE Imputation",
+      "Missingness Indicator Flags"
     ],
     "connections": [
       "data_root"
@@ -133,18 +133,18 @@
     "category": "data",
     "label": "Feature Scaling & Transformations",
     "level": 2,
-    "x": -940,
-    "y": 180,
+    "x": -1100,
+    "y": 150,
     "def": "Transforming continuous numerical features to a uniform range so gradient descent converges smoothly and distance metrics remain unbiased.",
     "formula": "Min-Max: (x - min)/(max - min) ∈ [0, 1] | Z-Score: (x - μ)/σ | Log: log(x + 1) | Clipping: min(max(x, floor), cap)",
     "logic": "Google MLCC Rule: Gradient descent bounces wildly if one feature ranges from 0 to 1 and another ranges from 0 to 1,000,000. Scaling creates symmetrical loss contours for fast convergence.",
     "example": "California housing dataset: A median income of $45,000 and total rooms of 3,200 are converted into Z-scores (+0.2, +1.1), allowing the model to optimize both weights at the same speed.",
     "subtopics": [
-      "Linear Scaling / Min-Max Normalization (Maps to [0, 1])",
-      "Standardization / Z-score Normalization (Zero mean, unit variance)",
-      "Outlier Clipping / Capping (Truncating extreme values)",
-      "Log Scaling (Compressing extreme long-tail power law distributions)",
-      "Robust Scaler (Using Median & IQR for heavy outlier resistance)"
+      "Min-Max Normalization (Linear Scaling)",
+      "Z-score Standardization",
+      "Outlier Clipping & Winsorization",
+      "Log Scaling & Power Transforms",
+      "Robust Scaler (Median & IQR)"
     ],
     "connections": [
       "data_root"
@@ -155,18 +155,18 @@
     "category": "data",
     "label": "Categorical Data & Feature Crosses",
     "level": 2,
-    "x": -940,
-    "y": 270,
+    "x": -1100,
+    "y": 260,
     "def": "Encoding categorical variables into numeric vectors and synthesizing new non-linear features by crossing two or more attributes together.",
     "formula": "One-Hot: [0, 1, 0, 0] | Feature Cross: x_cross = [Bin_A × Bin_B] | Multi-Hot: [1, 0, 1, 0]",
     "logic": "Google MLCC Key Insight: Linear models cannot learn non-linear boundaries. A feature cross (e.g. crossing Latitude buckets with Longitude buckets) lets a linear model learn non-linear spatial regions.",
     "example": "Crossing 'Day_of_Week' and 'Hour_of_Day': Predicts taxi demand spikes specifically on [Friday × 8 PM] without needing a complex non-linear deep network.",
     "subtopics": [
-      "One-Hot Encoding (OHE for low-cardinality categories)",
-      "Binning / Bucketing (Converting continuous values into discrete ranges)",
-      "Feature Crosses (Conjunction of features A × B)",
-      "Multi-Hot Encoding (For items with multiple tags, e.g. genres)",
-      "Out-of-Vocabulary (OOV) Bucketing & Hash Trick"
+      "One-Hot Encoding (OHE)",
+      "Binning & Bucketing",
+      "Feature Crosses (Conjunctions)",
+      "Multi-Hot Encoding",
+      "Hash Trick & OOV Bucketing"
     ],
     "connections": [
       "data_root"
@@ -177,18 +177,18 @@
     "category": "data",
     "label": "Datasets, Splitting & Class Imbalance",
     "level": 2,
-    "x": -940,
-    "y": 360,
+    "x": -1100,
+    "y": 370,
     "def": "Partitioning data into strictly isolated subsets (Train, Validation, Test) to verify generalization, and balancing skewed target label distributions.",
     "formula": "SMOTE: x_new = x_i + λ(x_{zi} - x_i), λ ~ U(0,1) | Weighted Loss: -w_pos * y log(p) - w_neg * (1-y) log(1-p)",
     "logic": "Never train on your test data! A model can achieve 99.9% accuracy on credit card fraud simply by predicting 'No Fraud' every time. Balancing via SMOTE or loss class-weighting forces real learning.",
     "example": "Splitting 100,000 bank transactions into 70% Train, 15% Validation (for tuning hyperparameters), and 15% Test (unseen final exam). Using class weights of 100:1 for fraud cases.",
     "subtopics": [
-      "Train, Validation, and Test Set Hygiene (Preventing leakage)",
-      "Stratified K-Fold Cross-Validation (Preserving class proportions)",
-      "SMOTE (Synthetic Minority Over-sampling Technique)",
-      "Downsampling the Majority vs Upsampling the Minority",
-      "Loss Weighting (Cost-sensitive training)"
+      "Train, Val & Test Hygiene (Preventing Leakage)",
+      "Stratified K-Fold Cross-Validation",
+      "SMOTE (Synthetic Minority Over-sampling)",
+      "Downsampling vs Upsampling",
+      "Cost-Sensitive Training & Loss Weighting"
     ],
     "connections": [
       "data_root"
@@ -200,17 +200,17 @@
     "label": "Linear Regression & Core ML Concepts",
     "level": 2,
     "x": -380,
-    "y": -610,
+    "y": -600,
     "def": "The foundational algorithm for continuous numerical prediction that finds the best-fit linear line or hyperplane relating input features to a numeric target.",
     "formula": "Prediction: y' = b + w_1 x_1 + w_2 x_2 + ... + w_d x_d = b + w^T x",
     "logic": "Google MLCC Framing: 'Features' (x) are inputs; 'Labels' (y) are ground truths; 'Weights' (w) are coefficients learned by the model; 'Bias' (b) is the baseline offset.",
     "example": "Cricket Chirps & Temperature (Google MLCC example): Temperature = 40 + 0.22 * (Chirps_per_Minute). At 100 chirps/min, the predicted temperature is 62°F.",
     "subtopics": [
-      "Features (Input attributes x) & Labels (Target outcome y)",
-      "Weights (Slopes w) & Bias (Intercept b)",
+      "Features (Inputs) & Labels (Targets)",
+      "Weights (Slopes) & Bias (Intercept)",
       "Labeled vs Unlabeled Examples",
-      "Analytical Solution (Closed-form Normal Equation)",
-      "Inference / Prediction (Computing y' from new inputs)"
+      "Analytical Solution (The Normal Equation)",
+      "Model Inference & Serving"
     ],
     "connections": [
       "ml_root"
@@ -222,18 +222,18 @@
     "label": "Loss Functions (L1, L2, MSE, MAE, Log Loss)",
     "level": 2,
     "x": -380,
-    "y": -710,
+    "y": -720,
     "def": "A mathematical formula that evaluates how bad a model's prediction is on a single example or across an entire batch.",
     "formula": "Squared Loss (L2): (y - y')² | MSE: (1/N)∑(y - y')² | Absolute Loss (L1): |y - y'| | RMSE: √MSE",
     "logic": "L2 / MSE penalizes large errors quadratically, making it sensitive to outliers. L1 / MAE penalizes errors linearly, making it robust against extreme spikes.",
     "example": "If a house is worth $300k and the model predicts $350k, the error is $50k. Absolute error (L1) = $50,000. Squared error (L2) = 2,500,000,000.",
     "subtopics": [
-      "Squared Loss / L2 Loss (Penalizes big mistakes harshly)",
-      "Mean Squared Error (MSE across all training examples)",
-      "Mean Absolute Error (MAE / L1 loss, outlier resistant)",
-      "Root Mean Squared Error (RMSE, interpretable in original units)",
-      "Huber Loss (Smooth piecewise hybrid of L1 and L2)",
-      "Log Loss / Binary Cross-Entropy (For probabilistic classification)"
+      "Squared Loss & L2 Loss",
+      "Mean Squared Error (MSE)",
+      "Mean Absolute Error (MAE & L1 Loss)",
+      "Root Mean Squared Error (RMSE)",
+      "Huber Loss (Smooth Robust Loss)",
+      "Log Loss & Binary Cross-Entropy"
     ],
     "connections": [
       "ml_root"
@@ -244,18 +244,18 @@
     "category": "ml",
     "label": "Gradient Descent & Hyperparameters",
     "level": 2,
-    "x": 100,
-    "y": -710,
+    "x": 140,
+    "y": -720,
     "def": "An iterative algorithm that minimizes loss by taking small steps in the direction of negative gradient slope, controlled by user-configured hyperparameters.",
     "formula": "Step: w_new = w_old - (Learning_Rate * ∂L/∂w) | Batch Loss: J_B = (1/|B|) ∑ L_i",
     "logic": "The 'Goldilocks' Learning Rate (Google MLCC): Too small = learning takes forever; Too large = overshoots the minimum and diverges; Just right = converges smoothly to minimal loss.",
     "example": "Mini-batch SGD with Batch Size = 64, Learning Rate = 0.01: The model computes the average gradient across 64 rows, updates all weights, and repeats for 30 epochs.",
     "subtopics": [
-      "Learning Rate (Step size taken per iteration)",
-      "Batch Size (Full Batch vs Mini-Batch vs Single-Sample SGD)",
-      "Epochs (Full passes over the entire training set)",
-      "Convergence (When loss plateaus and stops decreasing)",
-      "Learning Rate Schedules (Decay, Warmup, Cosine Annealing)"
+      "Learning Rate & Step Size",
+      "Batch Size (Full Batch vs Mini-Batch vs SGD)",
+      "Epochs & Training Passes",
+      "Loss Convergence & Stopping Criteria",
+      "Hyperparameter Tuning (Grid Search, Random Search & Bayesian Optuna)"
     ],
     "connections": [
       "ml_root"
@@ -266,18 +266,18 @@
     "category": "ml",
     "label": "Logistic Regression & Sigmoid",
     "level": 2,
-    "x": 100,
-    "y": -610,
+    "x": 140,
+    "y": -600,
     "def": "A classification algorithm that passes linear equation outputs through the Sigmoid activation function to generate calibrated probabilities between 0 and 1.",
     "formula": "Sigmoid: σ(z) = 1 / (1 + e^{-z}) | Log Loss: -[y log(y') + (1-y) log(1-y')] | Classification: y' ≥ Threshold",
     "logic": "Linear regression outputs numbers from -∞ to +∞. Sigmoid squashes any number into the (0, 1) probability range. Log Loss heavily penalizes confident wrong predictions.",
     "example": "Spam filtering: Linear equation yields z = 2.19. Sigmoid converts this to σ(2.19) = 0.90 (90% probability of spam). With default threshold 0.50, the email is classified as Spam.",
     "subtopics": [
-      "Sigmoid Function (S-curve mapping to [0, 1])",
-      "Classification Threshold (Decision cutoff, default 0.5)",
-      "Log Loss (Cross-Entropy penalty for incorrect confidence)",
-      "Log-Odds & Logit Transformation: ln(p / (1-p))",
-      "Multiclass Softmax (Normalizing scores into probability distribution)"
+      "Sigmoid Activation Function",
+      "Classification Decision Threshold",
+      "Log Loss Penalty in Classification",
+      "Log-Odds & Logits",
+      "Multiclass Softmax"
     ],
     "connections": [
       "ml_root"
@@ -288,18 +288,18 @@
     "category": "ml",
     "label": "Regularization (L1 Lasso & L2 Ridge)",
     "level": 2,
-    "x": -460,
-    "y": -810,
+    "x": -380,
+    "y": -840,
     "def": "Techniques that penalize overly complex models by adding weight magnitudes to the loss function, preventing overfitting according to Occam's Razor.",
     "formula": "L2 Ridge: Loss + λ ∑ w_i² | L1 Lasso: Loss + λ ∑ |w_i| | Total Loss = Loss(Data|Model) + λ * Complexity(Model)",
     "logic": "Google MLCC Framing: Models should be as simple as possible, but no simpler. L2 regularization shrinks weights smoothly toward zero; L1 drives unhelpful weights strictly to 0.0 (feature selection).",
     "example": "A model with 10,000 vocabulary words predicting sentiment: L1 regularization zeroes out 9,200 non-predictive words like 'the', 'and', 'table', keeping only high-signal adjectives.",
     "subtopics": [
-      "L2 Regularization / Ridge (Penalizes squared weights)",
-      "L1 Regularization / Lasso (Induces feature sparsity)",
-      "Lambda (λ) Hyperparameter (Tuning penalty strength)",
-      "ElasticNet (Weighted balance of L1 and L2 penalties)",
-      "Early Stopping (Halting training before validation error rises)"
+      "L2 Regularization (Ridge Regression)",
+      "L1 Regularization (Lasso Regression)",
+      "Lambda (λ) Hyperparameter Tuning",
+      "ElasticNet Regularization",
+      "Early Stopping Regularization"
     ],
     "connections": [
       "ml_root"
@@ -310,18 +310,18 @@
     "category": "ml",
     "label": "Decision Trees, Random Forests & XGBoost",
     "level": 2,
-    "x": -90,
-    "y": -810,
+    "x": 140,
+    "y": -840,
     "def": "Non-parametric models that partition data into subsets using decision rules, combined through bagging (Random Forest) or sequential residual boosting (GBDT, XGBoost).",
     "formula": "Gini: 1 - ∑ p_i² | Boosting: Model_m(x) = Model_{m-1}(x) + η * Tree_m(Residuals)",
     "logic": "A single tree easily memorizes training data. Random Forest trains 100+ trees on random feature subsets and averages their votes. Boosting trains each new tree to fix the mistakes of previous trees.",
     "example": "Predicting loan approval: Tree 1 predicts baseline acceptance; Tree 2 corrects for low credit scores; Tree 3 corrects for high debt-to-income ratios.",
     "subtopics": [
-      "Decision Trees (Splitting on Gini Impurity or Entropy)",
-      "Tree Pruning & Max Depth (Preventing memorization)",
-      "Random Forest (Bagging + Feature Subspace Sampling)",
+      "Decision Trees & Splitting Criteria",
+      "Tree Pruning & Depth Limits",
+      "Random Forest & Bagging",
       "Gradient Boosted Decision Trees (GBDT)",
-      "XGBoost, LightGBM & CatBoost (High-performance gradient boosting)"
+      "XGBoost, LightGBM & CatBoost"
     ],
     "connections": [
       "ml_root"
@@ -332,18 +332,18 @@
     "category": "ml",
     "label": "Unsupervised Learning & Clustering",
     "level": 2,
-    "x": 280,
-    "y": -810,
+    "x": 140,
+    "y": -480,
     "def": "Algorithms that find natural patterns, groupings, and low-dimensional manifolds in datasets without human-provided target labels.",
     "formula": "K-Means: min ∑ ||x_i - μ_k||² | PCA: max Var(X w) s.t. ||w|| = 1",
     "logic": "When labels don't exist, clustering groups points by geometric distance. PCA projects high-dimensional data onto orthogonal axes of maximum variance to compress features.",
     "example": "Customer segmentation: An e-commerce platform clusters 500,000 customers into 4 buying profiles (bargain hunters, impulse buyers, tech enthusiasts, luxury shoppers) without manual tags.",
     "subtopics": [
-      "K-Means Clustering (Centroid updates & Elbow method)",
-      "Hierarchical Clustering (Agglomerative tree dendrograms)",
-      "DBSCAN (Density-based spatial clustering for arbitrary shapes)",
-      "Principal Component Analysis (PCA for dimensionality reduction)",
-      "t-SNE & UMAP (High-dimensional manifold projection)"
+      "K-Means Clustering & Centroid Updates",
+      "Hierarchical Clustering & Dendrograms",
+      "DBSCAN Density-Based Clustering",
+      "Principal Component Analysis (PCA)",
+      "t-SNE & UMAP Manifold Projections"
     ],
     "connections": [
       "ml_root"
@@ -354,19 +354,19 @@
     "category": "eval",
     "label": "Confusion Matrix & Classification Metrics",
     "level": 2,
-    "x": -450,
-    "y": 540,
+    "x": -840,
+    "y": 520,
     "def": "A 2x2 table tracking True Positives, False Positives, False Negatives, and True Negatives to evaluate classification models beyond simple accuracy.",
     "formula": "Accuracy = (TP+TN)/Total | Precision = TP/(TP+FP) | Recall = TP/(TP+FN) | F1 = 2*(Prec*Rec)/(Prec+Rec)",
     "logic": "Google MLCC Rule: Accuracy is deceptive for imbalanced datasets! Precision asks: 'Of all examples predicted positive, how many were right?' Recall asks: 'Of all actual positive examples, how many did we find?'",
     "example": "Cancer screening: Out of 10 cancer patients, the model flags 9 (Recall = 90%), but also falsely alarms 20 healthy patients (Precision = 9/29 = 31%). In healthcare, high recall is prioritized over precision.",
     "subtopics": [
       "True Positives (TP) & True Negatives (TN)",
-      "False Positives (FP / Type I Error) & False Negatives (FN / Type II)",
-      "Precision (Quality of positive claims)",
-      "Recall / Sensitivity (Completeness of positive findings)",
-      "F1-Score (Harmonic mean balancing precision and recall)",
-      "Prediction Bias (Comparing average predictions to average reality)"
+      "False Positives (Type I) & False Negatives (Type II)",
+      "Precision (Positive Predictive Value)",
+      "Recall / Sensitivity (True Positive Rate)",
+      "F1-Score (Harmonic Mean)",
+      "Prediction Bias & Calibration"
     ],
     "connections": [
       "eval_root"
@@ -377,17 +377,17 @@
     "category": "eval",
     "label": "Evaluation Curves: ROC & PR",
     "level": 2,
-    "x": -70,
-    "y": 540,
+    "x": -840,
+    "y": 640,
     "def": "Curves that plot true positive rates versus false positive rates across every possible classification threshold from 0.0 to 1.0.",
     "formula": "TPR = TP/(TP+FN) | FPR = FP/(TN+FP) | AUC = Area Under Curve (0.5 = random, 1.0 = perfect)",
     "logic": "The default 0.5 decision threshold is arbitrary. Changing the threshold shifts precision and recall. ROC-AUC evaluates overall ranking ability independent of the chosen threshold.",
     "example": "Spam filter operating at threshold 0.90 to never misclassify important client emails (high precision), versus an airport weapons scanner operating at threshold 0.10 to catch every threat (high recall).",
     "subtopics": [
-      "ROC Curve (Receiver Operating Characteristic: TPR vs FPR)",
-      "AUC (Area Under the ROC Curve - threshold-independent score)",
-      "PR Curve (Precision vs Recall - best for rare event detection)",
-      "Operating Point / Threshold Tuning (Selecting threshold for business goals)"
+      "ROC Curve (TPR vs FPR)",
+      "AUC-ROC (Area Under the ROC Curve)",
+      "Precision-Recall (PR) Curve",
+      "Operating Point & Threshold Tuning"
     ],
     "connections": [
       "eval_root"
@@ -398,18 +398,18 @@
     "category": "eval",
     "label": "Generalization, Overfitting & Complexity",
     "level": 2,
-    "x": 310,
-    "y": 540,
+    "x": -350,
+    "y": 680,
     "def": "The tension between underfitting (model is too simple to learn the signal) and overfitting (model memorizes noise in the training set and fails on new data).",
     "formula": "Expected Test Error = (Bias)² + Variance + Irreducible_Noise",
     "logic": "Google MLCC Warning: If training loss keeps going down while validation loss starts climbing back up, your model is memorizing training noise (Overfitting). Regularize or stop training!",
     "example": "Predicting dog breeds: If your model memorizes that 'all dogs photographed on grass are golden retrievers', it fails when shown a golden retriever on a sidewalk (High Variance / Overfitting).",
     "subtopics": [
-      "Underfitting / High Bias (Model lacks capacity)",
-      "Overfitting / High Variance (Model memorizes noise)",
-      "Generalization Curves (Monitoring Train Loss vs Validation Loss)",
-      "Occam's Razor (Preferring the simplest sufficient model)",
-      "K-Fold Cross-Validation for Robust Performance Estimation"
+      "Underfitting & High Bias",
+      "Overfitting & High Variance",
+      "Generalization Curves (Loss Tracking)",
+      "Occam's Razor & Model Parsimony",
+      "K-Fold Cross-Validation"
     ],
     "connections": [
       "eval_root"
@@ -418,18 +418,18 @@
   {
     "id": "dl_neurons",
     "category": "dl",
-    "label": "Neural Networks & Hidden Layers",
+    "label": "Artificial Neural Networks (ANN) & Hidden Layers",
     "level": 2,
-    "x": 840,
-    "y": -420,
+    "x": 600,
+    "y": -640,
     "def": "Computational graphs arranged in layers of interconnected artificial neurons, each computing a weighted sum of inputs followed by a non-linear activation function.",
     "formula": "Layer Forward Pass: a^{[l]} = g(W^{[l]} a^{[l-1]} + b^{[l]})",
     "logic": "Google MLCC Key Insight: Stacking linear layers without non-linear activations only produces another linear model. Non-linear activations allow networks to learn non-linear decision boundaries.",
     "example": "Self-driving car computer vision: Layer 1 detects horizontal and vertical edges; Layer 2 combines edges into shapes (wheels, stop signs); Layer 3 identifies complete pedestrians and vehicles.",
     "subtopics": [
-      "Artificial Neurons / Perceptrons (Linear sum + activation)",
+      "Artificial Neural Networks (ANN & Perceptrons)",
       "Input, Hidden, and Output Layers",
-      "Non-linear Separability (Solving XOR and concentric circles)",
+      "Non-linear Separability (XOR Problem)",
       "Forward Propagation Matrix Arithmetic",
       "Universal Approximation Theorem"
     ],
@@ -442,18 +442,18 @@
     "category": "dl",
     "label": "Activation Functions (ReLU, GELU, Softmax)",
     "level": 2,
-    "x": 1260,
-    "y": -420,
+    "x": 1100,
+    "y": -640,
     "def": "Mathematical functions applied to each neuron's linear combination to introduce non-linearity, allowing deep networks to learn complex curves and patterns.",
     "formula": "ReLU: max(0, z) | Leaky ReLU: max(0.01z, z) | GELU: x Φ(x) | Softmax: e^{z_i} / ∑ e^{z_j}",
     "logic": "Google MLCC Standard: ReLU (Rectified Linear Unit) is the default choice because it avoids vanishing gradients for positive inputs and computes at lightning speed (simple threshold at 0).",
     "example": "If pre-activation sum z = -4.2, ReLU outputs 0. If z = +3.1, ReLU outputs 3.1. Softmax converts raw output logits [3.0, 1.0, 0.2] into probabilities [84%, 11%, 5%].",
     "subtopics": [
-      "ReLU (Rectified Linear Unit - default for hidden layers)",
-      "Dying ReLU Problem & Leaky ReLU / PReLU",
-      "GELU (Gaussian Error Linear Unit - standard in modern LLMs)",
-      "Softmax (For multi-class probability outputs)",
-      "Sigmoid & Tanh (Historical activations prone to saturation)"
+      "ReLU (Rectified Linear Unit)",
+      "Dying ReLU & Leaky ReLU / PReLU",
+      "GELU (Gaussian Error Linear Unit)",
+      "Softmax Activation Function",
+      "Sigmoid & Tanh Saturated Activations"
     ],
     "connections": [
       "dl_root"
@@ -464,18 +464,18 @@
     "category": "dl",
     "label": "Backpropagation & AutoDiff",
     "level": 2,
-    "x": 840,
-    "y": -290,
+    "x": 600,
+    "y": -530,
     "def": "The algorithm that applies the calculus chain rule backwards through the network to compute how much each individual weight contributed to the final error.",
     "formula": "Chain Rule: ∂L/∂w^{[l]} = (∂L/∂a^{[l]}) * (∂a^{[l]}/∂z^{[l]}) * (∂z^{[l]}/∂w^{[l]})",
     "logic": "Calculating gradients for 100 billion parameters one-by-one is computationally impossible. Backprop calculates all gradients in a single backward pass by reusing intermediate layer derivatives.",
     "example": "When a network incorrectly classifies a cat photo as a dog, backprop calculates which weights in Layer 3 caused the mistake and sends error signals back to Layer 2 and Layer 1.",
     "subtopics": [
-      "Computational Graph (DAG of tensor operations)",
+      "Computational Graph (DAG)",
       "Reverse-Mode Automatic Differentiation",
-      "Vanishing Gradient Problem (Gradients shrinking exponentially)",
-      "Exploding Gradient Problem & Gradient Clipping",
-      "Jacobian & Hessian Matrix Multiplications"
+      "Vanishing Gradient Problem",
+      "Exploding Gradients & Gradient Clipping",
+      "Jacobian & Hessian Matrices"
     ],
     "connections": [
       "dl_root"
@@ -486,18 +486,18 @@
     "category": "dl",
     "label": "Deep Learning Optimizers (Adam, AdamW)",
     "level": 2,
-    "x": 1260,
-    "y": -290,
+    "x": 1100,
+    "y": -530,
     "def": "Advanced optimization algorithms that track momentum and adaptive squared gradients to customize learning rates individually for every single parameter.",
     "formula": "AdamW: m_t = β_1 m_{t-1} + (1-β_1)g_t | v_t = β_2 v_{t-1} + (1-β_2)g_t² | w := w(1 - ηλ) - η m_hat/(√v_hat + ε)",
     "logic": "Standard SGD moves too slowly across flat plateaus and oscillates wildly in steep ravines. Adam uses momentum to power through plateaus and adapts step size based on parameter volatility.",
     "example": "In language models, common words like 'the' get small, cautious updates, while rare technical words like 'quantum' get larger, assertive weight adjustments.",
     "subtopics": [
-      "SGD with Momentum (Building velocity to escape local minima)",
-      "RMSprop (Scaling steps by root mean square of gradients)",
-      "Adam (Combining momentum and adaptive variance scaling)",
-      "AdamW (Decoupling weight decay from gradient updates)",
-      "Learning Rate Warmup & Cosine Decay Schedules"
+      "SGD with Momentum",
+      "RMSprop (Root Mean Square Propagation)",
+      "Adam (Adaptive Moment Estimation)",
+      "AdamW (Decoupled Weight Decay)",
+      "Learning Rate Warmup & Cosine Decay"
     ],
     "connections": [
       "dl_root"
@@ -508,18 +508,18 @@
     "category": "dl",
     "label": "Normalization & Regularization (Dropout, LayerNorm)",
     "level": 2,
-    "x": 840,
-    "y": -160,
+    "x": 600,
+    "y": -420,
     "def": "Techniques that normalize intermediate layer activations and randomly deactivate neurons during training to stabilize convergence and stop co-adaptation.",
     "formula": "BatchNorm: (x - μ_B)/√(σ_B² + ε) | LayerNorm: (x - μ_L)/√(σ_L² + ε) | Dropout: a_dropped = a * Bernoulli(1-p)",
     "logic": "As lower layers change their weights, the inputs to upper layers drift constantly (Internal Covariate Shift). LayerNorm centers activations per token; Dropout forces neurons to learn independently.",
     "example": "Dropout with rate p = 0.2: In every training step, 20% of neurons are randomly shut off, preventing any single neuron from becoming a brittle crutch.",
     "subtopics": [
-      "Dropout (Randomly dropping activations to prevent co-adaptation)",
-      "Batch Normalization (Normalizing across mini-batch samples)",
-      "Layer Normalization (Normalizing across feature dimensions per token)",
-      "RMSNorm (Lightweight LayerNorm used in Llama models)",
-      "Weight Decay (L2 penalty directly integrated into parameter updates)"
+      "Dropout Regularization",
+      "Batch Normalization (BatchNorm)",
+      "Layer Normalization (LayerNorm)",
+      "RMSNorm (Root Mean Square Normalization)",
+      "Weight Decay in Deep Learning"
     ],
     "connections": [
       "dl_root"
@@ -528,20 +528,20 @@
   {
     "id": "dl_vision",
     "category": "dl",
-    "label": "Computer Vision: CNNs & Vision Transformers",
+    "label": "Convolutional Neural Networks (CNN) & Vision Transformers",
     "level": 2,
-    "x": 1260,
-    "y": -160,
+    "x": 1100,
+    "y": -420,
     "def": "Specialized architectures that exploit spatial translation invariance in 2D/3D images using sliding convolutional filters, pooling, and attention patches.",
     "formula": "Conv: (I * K)(i, j) = ∑_m ∑_n I(i-m, j-n) K(m, n) | ResNet: Output = F(x) + x",
     "logic": "A 1080p image has 6 million values — dense layers would require billions of weights. CNNs share tiny 3x3 filters across the whole image; ResNet skip connections prevent gradients from dying in 100+ layers.",
     "example": "Facial recognition: A 3x3 filter scans an image to detect eye corners regardless of whether the face is in the top-left or bottom-right corner of the photo.",
     "subtopics": [
-      "Convolutions (Kernels, Filters, Stride, Padding)",
-      "Pooling (Max Pooling to downsample spatial dimensions)",
-      "ResNet Skip / Residual Connections (F(x) + x)",
-      "Object Detection (YOLO bounding boxes and anchors)",
-      "Vision Transformers (ViT: Splitting images into visual token patches)"
+      "Convolutional Neural Networks (CNN & Feature Extraction)",
+      "Pooling & Max Pooling",
+      "ResNet Skip & Residual Connections",
+      "Object Detection & YOLO Architecture",
+      "Vision Transformers (ViT)"
     ],
     "connections": [
       "dl_root"
@@ -552,18 +552,18 @@
     "category": "dl",
     "label": "Sequence Models: RNNs, LSTMs & GRUs",
     "level": 2,
-    "x": 840,
-    "y": -30,
+    "x": 600,
+    "y": -210,
     "def": "Recurrent neural architectures that process sequential ordered data step-by-step while maintaining an internal memory state across timesteps.",
     "formula": "LSTM Forget Gate: f_t = σ(W_f [h_{t-1}, x_t] + b_f) | Cell State: C_t = f_t * C_{t-1} + i_t * C_tilde_t",
     "logic": "Standard networks cannot remember past words in a sentence. LSTMs maintain an additive memory highway (Cell State) protected by Forget and Input gates to remember context over 100+ timesteps.",
     "example": "Sentiment analysis: Understanding the sentence 'The movie was not great, but I loved it anyway' requires remembering the conjunction 'but' to override earlier negative words.",
     "subtopics": [
-      "Recurrent Neural Networks (RNN & Hidden States)",
-      "Vanishing Gradients across Long Time Horizons (BPTT)",
-      "LSTM (Forget, Input, and Output Gates + Cell State)",
-      "GRU (Gated Recurrent Unit: Reset and Update Gates)",
-      "Bidirectional Sequence Encoding"
+      "Recurrent Neural Networks (RNN)",
+      "Vanishing Gradients in BPTT",
+      "LSTM (Long Short-Term Memory)",
+      "GRU (Gated Recurrent Unit)",
+      "Bidirectional Sequence Encoding (BiLSTM / BERT)"
     ],
     "connections": [
       "dl_root"
@@ -574,18 +574,18 @@
     "category": "dl",
     "label": "Generative Models & Diffusion (DDPM)",
     "level": 2,
-    "x": 1260,
-    "y": -30,
+    "x": 1100,
+    "y": -210,
     "def": "Probabilistic generative frameworks that learn data distributions to generate high-resolution synthetic images, audio, and videos from noise.",
     "formula": "DDPM Forward: q(x_t|x_{t-1}) = N(√(1-β_t)x_{t-1}, β_t I) | Reverse Denoising: x_{t-1} = μ_θ(x_t, t) + σ_t z",
     "logic": "Diffusion models turn image generation into iterative denoising: add tiny amounts of Gaussian noise over 1,000 steps until the image is pure static, then train a neural net to predict and subtract noise step-by-step.",
     "example": "Stable Diffusion starting from pure television static noise and gradually refining it over 30 denoising steps into a photo of a red sports car on a mountain road.",
     "subtopics": [
-      "Variational Autoencoders (VAEs & Reparameterization Trick)",
-      "Generative Adversarial Networks (GANs: Generator vs Discriminator)",
+      "Variational Autoencoders (VAEs)",
+      "Generative Adversarial Networks (GANs)",
       "Denoising Diffusion Probabilistic Models (DDPM)",
-      "Classifier-Free Guidance (Balancing prompt adherence vs diversity)",
-      "Latent Diffusion Models (Running diffusion inside compressed latent space)"
+      "Classifier-Free Guidance (CFG)",
+      "Latent Diffusion Models (LDM / Stable Diffusion)"
     ],
     "connections": [
       "dl_root"
@@ -596,16 +596,16 @@
     "category": "genai",
     "label": "Tokenization & Vector Embeddings",
     "level": 2,
-    "x": 840,
-    "y": 140,
+    "x": 1100,
+    "y": 270,
     "def": "Converting text characters into integer tokens, and projecting those tokens into continuous, high-dimensional vector spaces where geometric distance reflects semantic meaning.",
     "formula": "Embedding Lookup: e = E[token_id] ∈ R^{d_model} | Cosine Similarity: cos(u, v) = (u · v) / (||u|| ||v||)",
     "logic": "Google MLCC Embeddings Insight: High-cardinality categorical data (e.g. 500,000 movie titles) cannot be one-hot encoded without wasting gigabytes. Embeddings compress them into dense 256-d vectors where related items cluster together.",
     "example": "Semantic vector math: Vector('King') - Vector('Man') + Vector('Woman') ≈ Vector('Queen'). 'Paris' to 'France' has the exact same vector direction as 'Tokyo' to 'Japan'.",
     "subtopics": [
-      "Tokenizers (Byte-Pair Encoding BPE, WordPiece, SentencePiece)",
-      "Dense Vector Embeddings (Semantic clustering)",
-      "Positional Encodings (Sinusoidal & Rotary Position Embedding RoPE)",
+      "Subword Tokenization (BPE, WordPiece, SentencePiece)",
+      "Dense Vector Embeddings & Semantic Geometry",
+      "Context Window Scaling (YaRN, LongLoRA & StreamingLLM)",
       "Collaborative Filtering via Matrix Factorization Embeddings",
       "Context Windows & Sequence Length Extrapolation"
     ],
@@ -618,18 +618,18 @@
     "category": "genai",
     "label": "Self-Attention & Transformer Core",
     "level": 2,
-    "x": 1260,
-    "y": 140,
+    "x": 1100,
+    "y": 380,
     "def": "The routing engine of modern AI that computes pairwise relevance scores between all tokens in a sentence simultaneously, eliminating sequential bottlenecking.",
     "formula": "Scaled Dot-Product Attention: Attention(Q, K, V) = softmax((Q K^T) / √d_k) * V",
     "logic": "Every token creates a Query (what am I looking for?), a Key (what do I contain?), and a Value (what information do I pass along?). Dividing by √d_k prevents softmax from saturating in high dimensions.",
     "example": "In the sentence 'The bank of the river overflowed', attention routes strong connection weights between 'bank' and 'river', allowing the model to know it refers to a riverbank, not a financial bank.",
     "subtopics": [
-      "Query (Q), Key (K), and Value (V) Vector Projections",
-      "Scaled Dot-Product Attention & Temperature Scaling (√d_k)",
-      "Multi-Head Attention (MHA for diverse linguistic perspectives)",
-      "Grouped-Query Attention (GQA to compress KV-cache memory)",
-      "Causal Masking (Preventing future token visibility in autoregression)"
+      "Query (Q), Key (K), and Value (V) Projections",
+      "Scaled Dot-Product Attention",
+      "Multi-Head Attention (MHA)",
+      "Grouped-Query Attention (GQA)",
+      "Causal Masking (Autoregressive Attention)"
     ],
     "connections": [
       "genai_root"
@@ -640,18 +640,18 @@
     "category": "genai",
     "label": "Pre-training, SFT & PEFT (LoRA/QLoRA)",
     "level": 2,
-    "x": 840,
-    "y": 260,
+    "x": 1600,
+    "y": 160,
     "def": "The multi-stage foundation model training pipeline: self-supervised pre-training on trillions of words, supervised instruction fine-tuning, and parameter-efficient low-rank adaptation.",
     "formula": "Causal Loss: -∑ log P(token_t | tokens_{<t}) | LoRA Update: W = W_0 + B · A (where B ∈ R^{d×r}, A ∈ R^{r×k}, r ≪ d)",
     "logic": "Full fine-tuning of a 70B parameter model requires clusters of 80GB GPUs. LoRA freezes all 70 billion original weights and trains only two tiny adapter matrices (rank r = 8 or 16), reducing trainable parameters by 99%.",
     "example": "Fine-tuning a 7-billion parameter language model for medical consultation on a single gaming GPU by training only 14 million LoRA adapter weights in 4-bit precision (QLoRA).",
     "subtopics": [
-      "Self-Supervised Pre-training (Next Token Prediction / Causal LM)",
-      "Supervised Fine-Tuning (SFT on question-answer instructions)",
+      "Self-Supervised Pre-training (Causal LM)",
+      "Supervised Fine-Tuning (SFT / Instruction Tuning)",
       "Parameter-Efficient Fine-Tuning (PEFT)",
-      "LoRA (Low-Rank Adaptation with rank r decomposition)",
-      "QLoRA (4-bit NormalFloat quantization + Paged Optimizers)",
+      "LoRA (Low-Rank Adaptation)",
+      "QLoRA (Quantized Low-Rank Adaptation)",
       "Catastrophic Forgetting Mitigation"
     ],
     "connections": [
@@ -663,18 +663,18 @@
     "category": "genai",
     "label": "Alignment: RLHF, DPO & Distillation",
     "level": 2,
-    "x": 1260,
-    "y": 260,
+    "x": 1600,
+    "y": 270,
     "def": "Methods to align raw language models with human values (Helpful, Honest, Harmless) and transfer knowledge from large teacher models into compact student models.",
     "formula": "DPO Loss: -E[log σ(β log(π_θ(y_w|x)/π_ref(y_w|x)) - β log(π_θ(y_l|x)/π_ref(y_l|x)))]",
     "logic": "Pre-trained models just mimic the internet (including toxicity and falsehoods). RLHF uses a reward model to score answers; DPO mathematically optimizes preferences directly from winning/losing pairs without needing a separate reward model.",
     "example": "When asked 'How do I bypass a building security door?', a raw model gives burglary instructions; an aligned DPO model refuses: 'I cannot assist with bypassing security systems, but I can explain access control card reader mechanisms.'",
     "subtopics": [
-      "RLHF (Reinforcement Learning from Human Feedback via PPO)",
-      "DPO (Direct Preference Optimization on paired responses)",
-      "Constitutional AI & Automated Self-Correction",
-      "Knowledge Distillation (Teacher model soft labels train student)",
-      "Model Quantization (FP16 -> INT8 / INT4 via AWQ, GPTQ, GGUF)"
+      "RLHF (Reinforcement Learning from Human Feedback)",
+      "DPO (Direct Preference Optimization)",
+      "Constitutional AI & RLAIF",
+      "Knowledge Distillation (Teacher-Student)",
+      "Model Quantization (AWQ, GPTQ, GGUF)"
     ],
     "connections": [
       "genai_root"
@@ -685,17 +685,17 @@
     "category": "genai",
     "label": "Retrieval-Augmented Generation (RAG)",
     "level": 2,
-    "x": 840,
+    "x": 1600,
     "y": 380,
     "def": "An architecture that retrieves relevant knowledge from external vector databases at runtime and inserts it into the prompt context to eliminate model hallucinations.",
     "formula": "Pipeline: Query q -> Vector_Embed(q) -> Top-K Search (Cosine + BM25) -> Re-ranker -> Context-Injected Prompt -> LLM",
     "logic": "LLM weights are frozen at training time and cannot know private company documents or recent news. RAG supplies verified, up-to-date source paragraphs directly inside the prompt context.",
     "example": "An enterprise legal assistant: An attorney asks 'What is our liability under the 2026 vendor agreement?'. RAG retrieves page 42 of the contract PDF and the LLM answers with exact citations.",
     "subtopics": [
-      "Document Parsing & Chunking (Fixed-size, Recursive, Semantic)",
-      "Vector Databases (Chroma, Pinecone, Milvus, Qdrant, FAISS)",
-      "Hybrid Search (Dense Vector Cosine + Sparse BM25 Keyword Search)",
-      "Cross-Encoder Re-ranking (Rescoring candidate chunks)",
+      "Document Parsing & Chunking Strategies",
+      "Vector Databases & Approximate Nearest Neighbor (ANN)",
+      "Hybrid Search (Dense + Sparse BM25 Fusion)",
+      "Cross-Encoder Re-ranking",
       "Hallucination Mitigation & Source Grounding"
     ],
     "connections": [
@@ -707,19 +707,19 @@
     "category": "genai",
     "label": "Prompt Engineering & Autonomous Agents",
     "level": 2,
-    "x": 1260,
-    "y": 380,
+    "x": 1600,
+    "y": 600,
     "def": "Systematic prompting techniques and autonomous execution loops where models think, plan, invoke tools/APIs, and iterate toward complex multi-step goals.",
     "formula": "ReAct Loop: Thought_t -> Action_t(Tool[args]) -> Observation_t -> Thought_{t+1} -> Final Answer",
     "logic": "LLMs struggle with multi-step math and live queries in single-shot prompts. The ReAct pattern forces the model to verbalize reasoning steps and execute tools (calculator, database, web search) before generating a final answer.",
     "example": "A customer support agent: 1. Reads user inquiry; 2. Calls `get_order_status(id=4921)`; 3. Observes shipment delayed; 4. Calls `issue_refund(amount=15)`; 5. Replies politely with refund confirmation.",
     "subtopics": [
       "Zero-shot & Few-shot In-Context Learning",
-      "Chain of Thought (CoT - 'Let's think step by step')",
-      "ReAct Framework (Reasoning + Acting in iterative loops)",
-      "Function Calling & Tool Use (APIs, Code Interpreters, SQL)",
-      "Agent Memory (Short-term working context + Long-term vector memory)",
-      "Multi-Agent Orchestration (Specialized agents collaborating)"
+      "Chain of Thought (CoT Reasoning)",
+      "ReAct Framework (Reasoning + Acting)",
+      "Function Calling & Tool Use",
+      "Agent Memory Architectures",
+      "Multi-Agent Orchestration"
     ],
     "connections": [
       "genai_root"
@@ -730,21 +730,482 @@
     "category": "mlops",
     "label": "Production ML Systems & MLOps",
     "level": 1,
-    "x": 140,
-    "y": -250,
+    "x": 80,
+    "y": 540,
     "def": "The engineering practices, automated pipelines, serving infrastructure, and monitoring systems required to keep models running reliably in production.",
     "formula": "Data Drift: P(X)_{t+1} ≠ P(X)_t | Concept Drift: P(Y|X)_{t+1} ≠ P(Y|X)_t | Covariate Shift",
     "logic": "Google MLCC Production Principle: Writing ML code is only 5% of the battle; 95% is data pipelines, serving infrastructure, monitoring drift, and automated retraining.",
     "example": "A fraud detection model trained in 2025 starts failing in 2026 because scammers invented a new payment technique (Concept Drift); automated monitoring alerts engineers to retrain on fresh data.",
     "subtopics": [
-      "Model Registry & Experiment Tracking (MLflow, Weights & Biases)",
-      "High-Throughput Serving (vLLM PagedAttention, TensorRT-LLM, ONNX)",
-      "Data Drift vs Concept Drift Monitoring (PSI, KS-Test)",
-      "Feature Stores & Continuous Training CI/CD Pipelines",
+      "Model Registry & Experiment Tracking",
+      "High-Throughput Serving & PagedAttention (vLLM)",
+      "Data Drift vs Concept Drift Monitoring",
+      "Feature Stores & Continuous Training CI/CD",
       "Fairness, Accountability & Responsible AI Auditing"
     ],
     "connections": [
       "root"
+    ]
+  },
+  {
+    "id": "eval_fairness_bias",
+    "category": "eval",
+    "label": "Fairness, Types of Bias & Mitigation",
+    "level": 2,
+    "x": -840,
+    "y": 760,
+    "def": "The study and measurement of systematic distortions, historical prejudices, and unfair algorithmic discrepancies across demographic cohorts, alongside mitigation techniques.",
+    "formula": "Demographic Parity: P(Ŷ=1 | A=0) = P(Ŷ=1 | A=1) | Equality of Opportunity: P(Ŷ=1 | Y=1, A=0) = P(Ŷ=1 | Y=1, A=1)",
+    "logic": "Machine learning models learn patterns directly from past data. When training data reflects societal prejudices, sampling imbalances, or cognitive blind spots, the model codifies and magnifies those biases into automated decisions.",
+    "example": "Credit lending algorithms: Ensuring an automated loan approval model approves qualified applicants at identical rates regardless of protected demographic attributes (gender, ethnicity, geographic zip code).",
+    "subtopics": [
+      "Human & Cognitive Biases (Reporting, Historical, Automation & Confirmation Bias)",
+      "Selection Bias (Coverage, Non-Response & Sampling Bias)",
+      "Fairness Metrics (Demographic Parity, Equality of Opportunity & Counterfactual Fairness)",
+      "Algorithmic Bias Mitigation (MinDiff & Counterfactual Logit Pairing)",
+      "Group Attribution Bias (In-Group Bias & Out-Group Homogeneity)"
+    ],
+    "connections": [
+      "eval_root"
+    ]
+  },
+  {
+    "id": "mlops_hygiene",
+    "category": "mlops",
+    "label": "Production Data Hygiene & Engineering Pitfalls",
+    "level": 2,
+    "x": 80,
+    "y": 680,
+    "def": "Engineering principles and architectural hygiene to eliminate training-serving skew, prevent silent data leakage, evaluate granular cohort slices, and operate reliable ML pipelines.",
+    "formula": "Skew Metric: Δ(P_train(X, Y), P_serve(X, Y)) > 0 | Slice Loss: L_slice = (1 / |S_k|) ∑_{i ∈ S_k} l(y_i, f(x_i))",
+    "logic": "A model with 99% validation accuracy in a Jupyter notebook will immediately fail in production if features peek at the future, if serving inputs drift from training distributions, or if aggregate accuracy hides failure on critical cohorts.",
+    "example": "E-commerce fraud detection: Logging features with real-time timestamps instead of post-transaction backfills to prevent label leakage and ensure training mirrors production serving reality.",
+    "subtopics": [
+      "Training-Serving Skew & Label Leakage",
+      "Data Slices, Sliced Metrics & The Unicorn Model Antipattern",
+      "Static vs Dynamic Training & Static vs Dynamic Inference",
+      "Production ML Pipelines, Randomization & AutoML",
+      "Big Data Infrastructure & Distributed Feature Stores"
+    ],
+    "connections": [
+      "mlops_root"
+    ]
+  },
+  {
+    "id": "genai_nlp_foundations",
+    "category": "genai",
+    "label": "NLP Foundations: N-Grams, Tokens & Word2Vec",
+    "level": 2,
+    "x": 1100,
+    "y": 820,
+    "def": "The evolution of natural language processing from statistical count-based N-grams and sparse bags-of-words to dense semantic embeddings and subword tokenization.",
+    "formula": "Bigram Probability: P(w_t | w_{t-1}) = Count(w_{t-1}, w_t) / Count(w_{t-1}) | Word2Vec Objective: L = ∑ log σ(v'_{w_O}^T v_{w_I})",
+    "logic": "Raw characters and sentences must be transformed into continuous numeric vectors that preserve semantic similarity, geometric relationships, and syntactic context.",
+    "example": "Word arithmetic: Word2Vec vector algebra reveals that Vector('King') - Vector('Man') + Vector('Woman') points directly to Vector('Queen').",
+    "subtopics": [
+      "Text Preprocessing, Lemmatization, Stopwords & Linguistic Normalization",
+      "N-Grams, Bigrams & Statistical Language Modeling",
+      "Sparse vs Dense Representations & Word2Vec (Skip-Gram & CBOW)",
+      "Contextual Embeddings (BERT, ELMo) vs Static Word Vectors",
+      "Positional Encodings (Sinusoidal, RoPE & ALiBi)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_transformer_deep_dive",
+    "category": "genai",
+    "label": "Transformers, Attention & LLM Lifecycle",
+    "level": 2,
+    "x": 1100,
+    "y": 490,
+    "def": "The deep architectural mechanics of Multi-Head Self-Attention, Bidirectional vs Unidirectional models, the complete 3-stage LLM training lifecycle, and core failure modes.",
+    "formula": "MultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O | head_i = Attention(Q W_i^Q, K W_i^K, V W_i^V)",
+    "logic": "Attention allows every token to broadcast queries and match keys with all other tokens simultaneously. By stacking multiple heads, the model learns distinct semantic, syntactic, and factual relationships in parallel.",
+    "example": "Disambiguating word senses: In 'The animal didn't cross the street because it was too tired', self-attention connects 'it' strongly to 'animal' rather than 'street'.",
+    "subtopics": [
+      "Multi-Head, Multi-Layer Self-Attention Dynamics",
+      "Bidirectional Encoders (BERT) vs Unidirectional Decoders (GPT)",
+      "The LLM Training Lifecycle (Pretraining, SFT, RLHF) & Local Training Feasibility",
+      "Problems & Failure Modes with LLMs (Hallucinations, Sycophancy & Prompt Injection)",
+      "Prompt Engineering (Zero-Shot, One-Shot, Few-Shot & Chain-of-Thought)"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_agentic_stack",
+    "category": "genai",
+    "label": "Agentic AI, Fine-Tuning & Application Infrastructure",
+    "level": 2,
+    "x": 1600,
+    "y": 710,
+    "def": "Modern production GenAI engineering: Low-rank parameter adaptation, 4-bit quantization, cyclical agent graphs, structured RAG indexing, and high-throughput async serving.",
+    "formula": "LoRA Update: W = W_0 + B · A, where B ∈ ℝ^{d × r}, A ∈ ℝ^{r × k}, r ≪ min(d, k)",
+    "logic": "Rather than retraining 70B parameter weights, freeze the base model and inject small rank decomposition matrices (LoRA), quantize weights to 4 bits (QLoRA), and equip models with iterative reasoning loops (ReAct agents).",
+    "example": "Autonomous research agent: An LLM parses a user question, uses LangGraph to plan steps, calls a search API tool, queries a LlamaIndex vector store, reviews intermediate findings, and generates a cited report.",
+    "subtopics": [
+      "LoRA, QLoRA & Parameter-Efficient Fine-Tuning (PEFT)",
+      "Model Quantization Dynamics (FP16, INT8, INT4, AWQ & GGUF)",
+      "FastAPI Production Serving & Streaming LLM Endpoints",
+      "LangChain, LangGraph (Cyclical State Machines) & LlamaIndex RAG",
+      "Agentic AI: ReAct Loops, Tool Calling & Autonomous Agent Swarms"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "dl_foundations_limits",
+    "category": "dl",
+    "label": "Feed Forward, Sequence Limits & Gradient Dynamics",
+    "level": 2,
+    "x": 600,
+    "y": -100,
+    "def": "Foundational deep neural architectures, recurrent unrolling over time, mathematical causes of vanishing/exploding gradients, and dimensional compression with PCA.",
+    "formula": "Vanishing Gradient: ∂L/∂h_1 = ∂L/∂h_T ∏_{t=2}^T (W_{hh}^T diag(1 - tanh²(a_t))) | PCA: C = (1/n) X^T X, C v = λ v",
+    "logic": "Deep networks compose successive layers to learn hierarchical feature representations. When gradients propagate backward across many matrix multiplications, repeated multiplication by singular values < 1 decays gradients to zero.",
+    "example": "Language understanding across long sentences: Plain RNNs forget subject nouns from earlier paragraphs because gradients vanish after 10-15 time steps, motivating the development of LSTMs and Attention.",
+    "subtopics": [
+      "Feed Forward Neural Networks (Multilayer Perceptrons & Dense Layers)",
+      "Recurrent Neural Networks (RNNs) & Hidden State Recurrence",
+      "Vanishing Gradient & Exploding Gradient Dynamics",
+      "Autoencoders & Latent Bottlenecks"
+    ],
+    "connections": [
+      "dl_root"
+    ]
+  },
+  {
+    "id": "ml_svm_ensembles",
+    "category": "ml",
+    "label": "Support Vector Machines & Production Ensembles",
+    "level": 2,
+    "x": 140,
+    "y": -360,
+    "def": "Maximum-margin hyperplane classification using convex quadratic optimization, kernel trick projections for non-linear decision boundaries, and production model ensembles (voting, stacking, bagging).",
+    "formula": "\\min_{w, b, \\xi} \\frac{1}{2}\\|w\\|^2 + C \\sum_{i=1}^n \\xi_i \\quad \\text{s.t.} \\quad y_i(w^T \\phi(x_i) + b) \\ge 1 - \\xi_i",
+    "logic": "Maximizing the margin between support vectors maximizes generalization robustness against unseen noise.",
+    "example": "Multi-tenant fraud classification using scikit-learn pipelines serialized with Joblib for sub-millisecond scoring.",
+    "connections": [
+      "ml_root"
+    ],
+    "subtopics": [
+      "Support Vector Machines (SVM & Maximum Margin Hyperplanes)",
+      "The Kernel Trick & RBF Kernels (Non-Linear Mapping)",
+      "Soft-Margin Optimization & Slack Variables (C-Hyperparameter)",
+      "Ensemble Architectures (Voting, Bagging, Boosting & Stacking)",
+      "Scikit-Learn, Joblib Model Serialization & Multi-Tenant Classifiers"
+    ]
+  },
+  {
+    "id": "dl_frameworks_cv_inference",
+    "category": "dl",
+    "label": "Deep Learning Framework Internals & Real-Time CV Inference",
+    "level": 2,
+    "x": 1100,
+    "y": -100,
+    "def": "Execution graph internals in PyTorch vs TensorFlow, computer vision object detection evaluation metrics (mAP, IoU), YOLO real-time architectures, and high-performance inference acceleration via ONNX and DeepSparse.",
+    "formula": "\\text{IoU} = \\frac{\\text{Area}(B_p \\cap B_{gt})}{\\text{Area}(B_p \\cup B_{gt})}, \\quad \\text{mAP} = \\frac{1}{N}\\sum_{k=1}^N \\text{AP}_k",
+    "logic": "Separating model graph compilation from execution and quantizing weights to INT8 enables ultra-low latency inference on edge and server hardware.",
+    "example": "Real-time industrial defect anomaly detection running a YOLOv8 model optimized via ONNX Runtime on edge cameras at 120 FPS.",
+    "connections": [
+      "dl_root"
+    ],
+    "subtopics": [
+      "PyTorch vs TensorFlow Execution Internals (Autograd & Dynamic Graphs)",
+      "Object Detection Metrics: Intersection over Union (IoU) & mAP",
+      "Real-Time Inference Acceleration (TensorRT, ONNX Runtime & CUDA Graphs)",
+      "Real-Time Inference Optimization: ONNX Runtime & Model Quantization",
+      "DeepSparse, Neural Sparsification & Computer Vision Anomaly Detection"
+    ]
+  },
+  {
+    "id": "genai_decoding_architectures",
+    "category": "genai",
+    "label": "LLM Decoding Dynamics & GPT vs Llama Architecture",
+    "level": 2,
+    "x": 1100,
+    "y": 600,
+    "def": "Token generation sampling strategies (temperature, top-k, top-p nucleus), architectural divergences between GPT and open-weight Llama ecosystems (RoPE, SwiGLU, RMSNorm, GQA), structured output guarantees via Pydantic/JSON schemas, and classical NLP tool bridging.",
+    "formula": "P(w_i) = \\frac{\\exp(z_i / T)}{\\sum_j \\exp(z_j / T)}, \\quad \\sum_{i \\in V^{(p)}} P(w_i) \\ge p",
+    "logic": "Temperature controls the entropy of the softmax distribution while nucleus sampling dynamically truncates improbable long-tail hallucinations.",
+    "example": "Generating strict JSON API payloads for automated booking systems using Pydantic schema validation and constrained grammar decoding.",
+    "connections": [
+      "genai_root"
+    ],
+    "subtopics": [
+      "LLM Generation Decoding: Temperature, Top-K, Top-P & Repetition Penalty",
+      "GPT-Family vs Llama-Family Architecture (RoPE, GQA, SwiGLU & RMSNorm)",
+      "Decision Matrix: Prompting vs Fine-Tuning vs RAG (When to Use Which)",
+      "Structured Output Prompting: Pydantic, JSON Schema & Function Calling",
+      "NLP Industrial Pipelines: spaCy, NLTK & Contextual Embedding Bridges"
+    ]
+  },
+  {
+    "id": "genai_vector_db_pinecone",
+    "category": "genai",
+    "label": "Vector Databases, Pinecone & Enterprise Hybrid Retrieval",
+    "level": 2,
+    "x": 1600,
+    "y": 490,
+    "def": "High-dimensional vector indexing (HNSW graphs, IVF-PQ), cloud vector database infrastructure (Pinecone namespaces, metadata filtering, serverless index scaling), and hybrid dense-sparse search evaluation.",
+    "formula": "\\text{RRF\\_Score}(d) = \\sum_{m \\in \\{\\text{dense}, \\text{sparse}\\}} \\frac{1}{k + r_m(d)}",
+    "logic": "Combining dense semantic embeddings with sparse keyword BM25 rankings guarantees high recall for rare acronyms and entity lookups.",
+    "example": "Multi-tenant enterprise knowledge base indexing 10 million technical PDFs with customer-isolated Pinecone namespaces and sub-50ms hybrid retrieval.",
+    "connections": [
+      "genai_root"
+    ],
+    "subtopics": [
+      "Vector Database Internals: HNSW, IVF-PQ & High-Dimensional Indexing",
+      "Pinecone Architecture: Namespaces, Metadata Filtering & Pods/Serverless",
+      "Hybrid Search Fusion: Reciprocal Rank Fusion (RRF) & BM25 + Dense",
+      "Retrieval Evaluation Metrics: Hit Rate, MRR & Context Relevance",
+      "RAG Failure Modes: Context Overflow, Retrieval Misses & Lost in the Middle"
+    ]
+  },
+  {
+    "id": "genai_multimodal_agents",
+    "category": "genai",
+    "label": "Multimodal Foundation Models & Advanced Agentic Workflows",
+    "level": 2,
+    "x": 1600,
+    "y": 820,
+    "def": "Joint text-vision contrastive embeddings (CLIP), diffusion generation processes (DDPM forward/reverse Gaussian transitions), sketch-to-image and style transfer, stateful agent graphs (LangGraph cyclical execution, checkpoints), and multi-agent supervisor swarms.",
+    "formula": "\\mathcal{L}_{\\text{CLIP}} = -\\frac{1}{2N}\\sum_{i=1}^N \\left(\\log \\frac{\\exp(\\langle u_i, v_i \\rangle/\\tau)}{\\sum_j \\exp(\\langle u_i, v_j \\rangle/\\tau)} + \\log \\frac{\\exp(\\langle u_i, v_i \\rangle/\\tau)}{\\sum_j \\exp(\\langle u_j, v_i \\rangle/\\tau)}\\right)",
+    "logic": "Mapping disparate modalities into a shared latent metric space enables cross-modal similarity search, zero-shot image classification, and visual reasoning.",
+    "example": "Fashion AI Copilot analyzing hand-drawn clothing sketches and generating production fabric textures with multi-agent trend intelligence.",
+    "connections": [
+      "genai_root"
+    ],
+    "subtopics": [
+      "CLIP Multimodal Embeddings & Contrastive Vision-Language Alignment",
+      "Diffusion Models from Scratch: Forward & Reverse Gaussian Markov Processes",
+      "Image-to-Image Pipelines, Sketch-to-Image & Fabric Style Transfer",
+      "Multimodal Tool Calling & Vision-Language Agents",
+      "Multi-Agent Orchestration, Supervisor Swarms & Fashion AI Copilot Architecture"
+    ]
+  },
+  {
+    "id": "mlops_llmops_system_design",
+    "category": "mlops",
+    "label": "LLMOps, Multi-Tenancy & AI System Design",
+    "level": 2,
+    "x": 80,
+    "y": 800,
+    "def": "Productionizing generative AI at scale: semantic response caching (Redis, GPTCache), safety guardrails, token budget rate limiting, multi-tenant resource isolation, and complete architectural system design patterns for enterprise AI platforms.",
+    "formula": "\\text{CacheHit}(q) = \\mathbb{I}\\left(\\max_{k \\in \\mathcal{K}} \\cos(\\mathbf{e}_q, \\mathbf{e}_k) \\ge \\tau_{\\text{sim}}\\right)",
+    "logic": "Semantic vector caching bypasses costly foundation model API roundtrips for repeated intent queries, slashing latency and inference bills by 60%+.",
+    "example": "Architecture of a multi-tenant enterprise LLM gateway serving 50,000 queries per minute with tenant quota enforcement, PII scrubbing, and fallback routing.",
+    "connections": [
+      "mlops_root"
+    ],
+    "subtopics": [
+      "Production LLMOps: Semantic Caching (Redis), Latency & Cost Optimization",
+      "AI Safety Guardrails, NeMo Guardrails & Hallucination Drift Monitoring",
+      "Multi-Tenant AI Architecture: Isolation, Rate-Limiting & Model Routing",
+      "System Design Mock: Enterprise Semantic Search & Hybrid RAG System",
+      "System Design Mock: High-Throughput Multi-Tenant ML Platform"
+    ]
+  },
+  {
+    "id": "swe_patterns_architecture",
+    "category": "swe_cloud",
+    "label": "Software Engineering Patterns & Clean Architecture for AI",
+    "level": 2,
+    "x": 560,
+    "y": 770,
+    "def": "Software engineering principles tailored for AI engineers: creational and structural design patterns (Singleton, Factory, Strategy), Onion / Clean architecture with dependency inversion, high-throughput asynchronous REST APIs (FastAPI vs Flask), and automated PyTest testing suites.",
+    "formula": "\\text{DIP}: \\quad \\text{High-Level Policy} \\longrightarrow \\text{Abstract Interface} \\longleftarrow \\text{Low-Level Infra}",
+    "logic": "Decoupling machine learning core logic from external databases, GPU runners, and API frameworks ensures models can be updated and unit-tested without external dependencies.",
+    "example": "Refactoring an inference pipeline using the Strategy pattern to seamlessly swap between local PyTorch, ONNX Runtime, and AWS SageMaker endpoints.",
+    "connections": [
+      "hub_swe_cloud"
+    ],
+    "subtopics": [
+      "Design Patterns in AI Engineering: Singleton, Factory & Strategy",
+      "Onion Architecture & Dependency Inversion in Machine Learning Services",
+      "REST API Design & Async Inference: FastAPI vs Flask Tradeoffs",
+      "Testing Strategy for ML Systems: PyTest, Mocks, Fixtures & Data Validations",
+      "SOLID Principles & Clean Code in Scalable AI Repositories"
+    ]
+  },
+  {
+    "id": "swe_cloud_infra",
+    "category": "swe_cloud",
+    "label": "Cloud Infrastructure, Containerization & Production Tooling",
+    "level": 2,
+    "x": 560,
+    "y": 900,
+    "def": "Industrial cloud ML deployment infrastructure: AWS vs Azure ecosystem tradeoffs, Docker containerization with NVIDIA CUDA runtime acceleration, ONNX model serialization, Postman API contract verification, and automated Git CI/CD deployment pipelines.",
+    "formula": "\\text{Latency}_{\\text{P99}} = T_{\\text{network}} + T_{\\text{queue}} + T_{\\text{CUDA\\_inference}} + T_{\\text{deserialization}}",
+    "logic": "Immutable multi-stage Docker builds ensure deterministic Python dependencies, preventing 'works on my machine' drift between dev environments and production GPU clusters.",
+    "example": "Packaging a PyTorch sentiment analysis microservice into a multi-stage Docker container with CUDA base images deployed to AWS ECS with automatic scaling.",
+    "connections": [
+      "hub_swe_cloud"
+    ],
+    "subtopics": [
+      "Cloud ML Ecosystems: AWS (SageMaker, S3) vs Azure AI & OpenAI",
+      "Docker Containerization for ML Services & GPU CUDA Environments",
+      "ONNX Cross-Platform Portability & Model Optimization Pipelines",
+      "API Validation & Contract Testing: Postman, OpenAPI & Swagger",
+      "Git Workflows, CI/CD Automated Deployment & Model Release Hygiene"
+    ]
+  },
+  {
+    "id": "dl_rl_foundations",
+    "category": "dl",
+    "label": "Reinforcement Learning (RL) & Decision Foundations",
+    "level": 2,
+    "x": 600,
+    "y": 10,
+    "def": "The paradigm of machine learning where an autonomous agent learns optimal behavioral policies through sequential trial-and-error interactions with a dynamic environment to maximize cumulative scalar rewards.",
+    "formula": "Bellman Optimality: Q^*(s,a) = R(s,a) + \\gamma \\sum_{s'} P(s'|s,a) \\max_{a'} Q^*(s',a') | Policy Gradient: \\nabla_\\theta J(\\theta) = \\mathbb{E}_{\\pi_\\theta} [\\nabla_\\theta \\log \\pi_\\theta(a|s) Q^{\\pi}(s,a)]",
+    "logic": "Unlike supervised learning with static labels, RL models sequential credit assignment: determining which historical action caused a delayed reward or penalty in environments with transition uncertainty.",
+    "example": "Autonomous driving robotics and game agents (AlphaGo, Dota 2): The agent controls steering and acceleration actions based on sensor state inputs, optimizing for distance traveled without collisions.",
+    "subtopics": [
+      "Markov Decision Processes (MDP) & Bellman Equation",
+      "Q-Learning & Deep Q-Networks (DQN)",
+      "Policy Gradients & REINFORCE Algorithm",
+      "Actor-Critic Architectures (A2C & PPO)",
+      "Exploration vs Exploitation (Epsilon-Greedy & UCB)"
+    ],
+    "connections": [
+      "dl_root"
+    ]
+  },
+  {
+    "id": "ml_time_series",
+    "category": "ml",
+    "label": "Time Series Analysis & Forecasting Dynamics",
+    "level": 2,
+    "x": -380,
+    "y": -960,
+    "def": "Statistical and machine learning methodologies for sequential, timestamped observations where temporal dependency, trend, seasonal periodicity, and non-stationarity govern future state predictions.",
+    "formula": "ARIMA(p,d,q): \\Phi(B)(1 - B)^d X_t = \\Theta(B) \\epsilon_t | Autocorrelation: \\rho_k = \\frac{\\sum (X_t - \\bar{X})(X_{t-k} - \\bar{X})}{\\sum (X_t - \\bar{X})^2}",
+    "logic": "Standard cross-validation leaks future information into the past. Time series models enforce strict chronological causality through rolling-origin evaluation and temporal feature engineering.",
+    "example": "Retail demand forecasting: Predicting hourly sales of 10,000 SKUs using rolling lag features, calendar holidays, and historical promo windows to minimize warehouse inventory stockouts.",
+    "subtopics": [
+      "Stationarity, Autocorrelation (ACF/PACF) & Differencing",
+      "ARIMA, SARIMAX & Exponential Smoothing",
+      "Modern Forecasting: Prophet & Temporal Fusion Transformers (TFT)",
+      "Time-Series Feature Engineering & Lag Variables",
+      "Rolling-Window & Expanding-Window Cross Validation"
+    ],
+    "connections": [
+      "ml_root"
+    ]
+  },
+  {
+    "id": "ml_recsys",
+    "category": "ml",
+    "label": "Recommender Systems (RecSys) & Retrieval Architecture",
+    "level": 2,
+    "x": 140,
+    "y": -960,
+    "def": "Information filtering engines that predict user preference or engagement ratings across millions of catalog items using matrix factorization, two-tower vector embeddings, and ranking cascades.",
+    "formula": "Matrix Factorization: \\min_{P,Q} \\sum_{(u,i) \\in R} (r_{ui} - p_u^T q_i)^2 + \\lambda (\\|p_u\\|^2 + \\|q_i\\|^2) | NDCG@K = \\frac{DCG@K}{IDCG@K}",
+    "logic": "Industrial recommendation uses a multi-stage funnel: fast candidate generation (retrieving top 1,000 from 100M items in 10ms) followed by heavy neural scoring and calibration.",
+    "example": "E-commerce and streaming homepages (Netflix, Amazon): Personalizing real-time video carousels based on watch history, session clicks, and collaborative user interaction clusters.",
+    "subtopics": [
+      "Collaborative Filtering & Matrix Factorization (SVD & ALS)",
+      "Two-Tower Neural Retrieval Architectures",
+      "Deep & Cross Networks (DCN) & Wide & Deep Learning",
+      "Candidate Generation vs Heavy Ranking Stages",
+      "RecSys Evaluation Metrics: NDCG, MRR & Hit Rate@K"
+    ],
+    "connections": [
+      "ml_root"
+    ]
+  },
+  {
+    "id": "dl_gnn",
+    "category": "dl",
+    "label": "Graph Neural Networks (GNN) & Geometric Deep Learning",
+    "level": 2,
+    "x": 1100,
+    "y": 10,
+    "def": "Deep learning architectures designed for non-Euclidean graph topologies where nodes, edges, and relational message-passing aggregate neighborhood features invariant to graph isomorphism.",
+    "formula": "GCN Layer: H^{(l+1)} = \\sigma\\left(\\tilde{D}^{-\\frac{1}{2}} \\tilde{A} \\tilde{D}^{-\\frac{1}{2}} H^{(l)} W^{(l)}\\right) | Message Passing: m_{v} = \\sum_{u \\in \\mathcal{N}(v)} M(h_u, h_v, e_{uv})",
+    "logic": "Standard convolutions assume rigid 2D grids (pixels). GNNs generalize convolution by aggregating permutation-invariant feature messages across variable-degree neighbor graphs.",
+    "example": "Financial fraud rings and drug discovery: Predicting toxic molecular properties by modeling chemical bonds as graph edges and atomic elements as feature-laden nodes.",
+    "subtopics": [
+      "Graph Representations, Adjacency Matrices & Node Features",
+      "Graph Convolutional Networks (GCN) & Message Passing",
+      "Graph Attention Networks (GAT) & Edge Attentions",
+      "Inductive Graph Representation (GraphSAGE)",
+      "Link Prediction & Node Classification Pipelines"
+    ],
+    "connections": [
+      "dl_root"
+    ]
+  },
+  {
+    "id": "eval_xai",
+    "category": "eval",
+    "label": "Explainable AI (XAI) & Model Interpretability",
+    "level": 2,
+    "x": -350,
+    "y": 800,
+    "def": "Theoretical frameworks and empirical diagnostics that deconstruct black-box machine learning decisions into human-interpretable feature attributions, counterfactuals, and sensitivity profiles.",
+    "formula": "Shapley Value: \\phi_i(v) = \\sum_{S \\subseteq N \\setminus \\{i\\}} \\frac{|S|!(|N|-|S|-1)!}{|N|!} (v(S \\cup \\{i\\}) - v(S)) | LIME: \\xi(x) = \\arg\\min_{g \\in G} \\mathcal{L}(f, g, \\pi_x) + \\Omega(g)",
+    "logic": "High predictive accuracy without transparency creates catastrophic risks in regulated sectors. Explainability methods guarantee fairness, uncover spurious shortcuts, and satisfy GDPR compliance.",
+    "example": "Credit underwriting and medical triage: Explaining why a mortgage applicant was flagged as high risk by quantifying the exact marginal contribution of debt-to-income ratio vs credit history.",
+    "subtopics": [
+      "SHAP (Shapley Additive Explanations) & Game Theory",
+      "LIME (Local Interpretable Model-agnostic Explanations)",
+      "Integrated Gradients & Neural Saliency Maps",
+      "Permutation Feature Importance & Partial Dependence Plots (PDP)",
+      "Model Governance, Auditing & Regulatory AI Compliance"
+    ],
+    "connections": [
+      "eval_root"
+    ]
+  },
+  {
+    "id": "genai_audio_speech",
+    "category": "genai",
+    "label": "Audio, Speech AI & Voice Intelligence",
+    "level": 2,
+    "x": 1100,
+    "y": 710,
+    "def": "Multimodal neural architectures that process continuous 1D acoustic sound waves, spectrogram representations, and speech tokens for transcription, synthesis, and voice interaction.",
+    "formula": "STFT: X(\\tau, \\omega) = \\int_{-\\infty}^{\\infty} x(t) w(t-\\tau) e^{-j\\omega t} dt | CTC Loss: \\mathcal{L}_{\\text{CTC}} = -\\log \\sum_{\\pi \\in \\mathcal{B}^{-1}(y)} P(\\pi|x)",
+    "logic": "Raw audio samples arrive at 16,000 to 48,000 Hz. Audio AI transforms raw pressure waves into 2D time-frequency Mel-spectrograms before feeding them into deep conformer or transformer encoders.",
+    "example": "Real-time multilingual voice assistants (Whisper, ElevenLabs): Streaming acoustic transcription and zero-shot voice cloning with sub-200ms latency for conversational human-AI phone support.",
+    "subtopics": [
+      "Audio Preprocessing: Mel-Spectrograms, STFT & Waveforms",
+      "Automatic Speech Recognition (ASR & Whisper Architecture)",
+      "CTC (Connectionist Temporal Classification) Loss Mechanics",
+      "Text-to-Speech (TTS) & Neural Audio Synthesizers",
+      "Real-Time Streaming Voice Agents & Audio Embeddings"
+    ],
+    "connections": [
+      "genai_root"
+    ]
+  },
+  {
+    "id": "genai_reasoning_test_time",
+    "category": "genai",
+    "label": "Reasoning Models, Test-Time Compute & System 2 AI",
+    "level": 2,
+    "x": 1600,
+    "y": 930,
+    "def": "Frontier architectures and search algorithms that scale inference-time compute (test-time search, verification loops, and process reward guidance) to solve complex multi-step reasoning problems.",
+    "formula": "Test-Time Scaling: \\text{Accuracy} \\propto f(N_{\\text{search}}, N_{\\text{tokens}}) | PRM Value: R_{\\text{step}} = P(\\text{Step } k \\text{ is correct} | s_{1:k-1})",
+    "logic": "Standard LLMs generate next tokens impulsively (System 1 fast thinking). Reasoning models (like OpenAI o1/o3 and DeepSeek R1) allocate adaptive compute at inference time to deliberate, verify, and backtrack.",
+    "example": "Autonomous competitive coding and formal mathematical proofs: An agent generates multiple solution trajectories, evaluates step-level validity with a verifier, and prunes flawed logic branches.",
+    "subtopics": [
+      "Process Reward Models (PRM) vs Outcome Reward Models (ORM)",
+      "Test-Time Search: Monte Carlo Tree Search (MCTS) & Beam Search",
+      "Chain-of-Thought (CoT) Self-Correction & Verification Loops",
+      "Inference Scaling Laws & Compute-Optimal Search Strategies",
+      "System 2 Reasoning Distillation into System 1 Fast Models"
+    ],
+    "connections": [
+      "genai_root"
     ]
   }
 ]

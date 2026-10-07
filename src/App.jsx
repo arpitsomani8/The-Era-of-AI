@@ -7,9 +7,10 @@ import BookmarksDrawer from './components/BookmarksDrawer';
 import KineticIntro from './components/KineticIntro';
 import GardenCompanion from './components/GardenCompanion';
 import AssessmentModal from './components/AssessmentModal';
-import CheatsheetBuilderModal from './components/CheatsheetBuilderModal';
 import TimelineModal from './components/TimelineModal';
 import PythonSandboxModal from './components/PythonSandboxModal';
+import LandingHeroPage from './pages/LandingHeroPage';
+import KnowledgeHubPage from './pages/KnowledgeHubPage';
 import MindMapPage from './pages/MindMapPage';
 import SyllabusPage from './pages/SyllabusPage';
 import PapersPage from './pages/PapersPage';
@@ -27,7 +28,8 @@ function HashListener() {
     const hash = window.location.hash.replace('#', '').toLowerCase();
     if (!hash) return;
 
-    if (hash === 'interview') navigate('/interview', { replace: true });
+    if (hash === 'home' || hash === 'hero') navigate('/', { replace: true });
+    else if (hash === 'interview') navigate('/interview', { replace: true });
     else if (hash === 'papers') navigate('/papers', { replace: true });
     else if (hash === 'projects' || hash === 'casestudies') navigate('/projects', { replace: true });
     else if (hash === 'syllabus') navigate('/syllabus', { replace: true });
@@ -38,6 +40,44 @@ function HashListener() {
   return null;
 }
 
+// Global UI Error Boundary to prevent any route crash from unmounting the app
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('UI ErrorBoundary caught error:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex-1 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-950 text-slate-100">
+          <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 max-w-md space-y-4 shadow-2xl">
+            <h2 className="text-xl font-bold text-white">Mind Map Loading Alert</h2>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              {this.state.error?.message || 'The interactive graph encountered a layout recovery event.'}
+            </p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition shadow-lg shadow-indigo-600/30"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // SEO Manager for dynamic document titles and meta descriptions
 function SEOManager() {
   const location = useLocation();
@@ -45,25 +85,28 @@ function SEOManager() {
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     let pageTitle = 'The Era of AI — Master Knowledge Graph & Portal';
-    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, and 150+ Interview Vault.';
+    let metaDesc = 'Master AI & Machine Learning Knowledge Graph, Interactive Mind Map, Complete Syllabus, Landmark Research Papers Hub, Production Case Studies, 274 Core Concepts, and 1,000+ Interview Vault.';
 
-    if (path.includes('/mindmap')) {
-      pageTitle = 'Interactive Mind Map — The Era of AI | 41 Domain Graph Nodes';
+    if (path === '/' || path === '') {
+      pageTitle = 'The Era of AI — Enter the World of AI | Master Knowledge Portal';
+      metaDesc = 'Explore the complete multidimensional universe of Artificial Intelligence and Machine Learning: interactive mind map, line-wise curriculum, research papers, and technical interview vault.';
+    } else if (path.includes('/mindmap')) {
+      pageTitle = 'Interactive Mind Map — The Era of AI | 63 Domain Graph Nodes';
       metaDesc = 'Explore the 2D interactive knowledge graph of AI, Classical ML, Deep Learning, and Transformers with dynamic cross-links and mathematical foundations.';
     } else if (path.includes('/syllabus')) {
-      pageTitle = 'Line-Wise Syllabus & Curriculum — The Era of AI | 7 Tracks';
-      metaDesc = 'Comprehensive line-wise curriculum covering Mathematical Foundations, Preprocessing, Classical ML, Evaluation, Deep Learning, and GenAI.';
+      pageTitle = 'Line-Wise Syllabus & Curriculum — The Era of AI | 8 Tracks & 55 Modules';
+      metaDesc = 'Comprehensive line-wise curriculum covering Mathematical Foundations, Preprocessing, Classical ML, Evaluation, Deep Learning, GenAI, MLOps, and SWE & Cloud.';
     } else if (path.includes('/papers')) {
-      pageTitle = 'Landmark AI & ML Research Papers — The Era of AI | Daily Updated';
-      metaDesc = 'Curated collection of 22+ milestone AI papers from Attention Is All You Need to DeepSeek-R1 with daily arXiv tracking and summaries.';
+      pageTitle = 'Game-Changing AI Research Publications — The Era of AI | 36 Breakthrough Papers';
+      metaDesc = '36 game-changing AI research papers and preprints: from foundational classics like Attention Is All You Need and ResNet to 2024–2026 breakthroughs like DeepSeek-R1 and FlashAttention-3.';
     } else if (path.includes('/projects') || path.includes('/case-studies')) {
       pageTitle = 'Production ML & LLM Case Studies — The Era of AI';
       metaDesc = '5 end-to-end industrial architectures, fraud detection engines, enterprise RAG systems, and medical vision pipelines.';
     } else if (path.includes('/interview')) {
-      pageTitle = '150+ AI & ML Technical Interview Vault — The Era of AI';
-      metaDesc = 'Comprehensive vault of 150+ technical interview questions with mathematical proofs, Python implementations, and deep architectural explanations.';
+      pageTitle = '1,000+ AI & ML Technical Interview Vault — The Era of AI';
+      metaDesc = 'Comprehensive vault of 1,000+ technical interview questions with mathematical proofs, Python implementations, and deep architectural explanations.';
     } else if (path.includes('/concept')) {
-      pageTitle = 'Core Concepts & Deep Technical Guides — The Era of AI';
+      pageTitle = '274 Core Concepts & Deep Technical Guides — The Era of AI';
       metaDesc = 'In-depth mathematical formulations, code implementations, and visual explanations across all machine learning and deep learning domains.';
     } else if (path.includes('/playground')) {
       pageTitle = 'Interactive ML Playgrounds & Simulators — The Era of AI';
@@ -86,20 +129,16 @@ function SEOManager() {
 }
 
 export default function App() {
+  const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
   const [isPythonLabOpen, setIsPythonLabOpen] = useState(false);
-  const [showKineticIntro, setShowKineticIntro] = useState(() => {
-    // Show kinetic intro on first visit of the session
-    return !sessionStorage.getItem('era_of_ai_kinetic_seen');
-  });
+  const [showKineticIntro, setShowKineticIntro] = useState(false);
 
   const handleCloseKinetic = () => {
-    sessionStorage.setItem('era_of_ai_kinetic_seen', 'true');
     setShowKineticIntro(false);
   };
 
@@ -127,27 +166,28 @@ export default function App() {
         onOpenKinetic={() => setShowKineticIntro(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
         onOpenAssessment={() => setIsAssessmentOpen(true)}
-        onOpenCheatsheet={() => setIsCheatsheetOpen(true)}
         onOpenTimeline={() => setIsTimelineOpen(true)}
         onOpenPythonLab={() => setIsPythonLabOpen(true)}
       />
 
       {/* Main Routed Page Viewport */}
       <main className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
-        <Routes>
-          <Route path="/" element={<Navigate to="/mindmap" replace />} />
-          <Route path="/mindmap" element={<MindMapPage />} />
-          <Route path="/syllabus" element={<SyllabusPage />} />
-          <Route path="/papers" element={<PapersPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/case-studies" element={<ProjectsPage />} />
-          <Route path="/interview" element={<InterviewPage onOpenAssessment={() => setIsAssessmentOpen(true)} />} />
-          <Route path="/concepts" element={<ConceptsPage />} />
-          <Route path="/concept" element={<ConceptsPage />} />
-          <Route path="/playgrounds" element={<PlaygroundsPage />} />
-          <Route path="/playground" element={<PlaygroundsPage />} />
-          <Route path="*" element={<Navigate to="/mindmap" replace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<LandingHeroPage onOpenAbout={() => setIsAboutOpen(true)} />} />
+            <Route path="/mindmap" element={<KnowledgeHubPage />} />
+            <Route path="/syllabus" element={<KnowledgeHubPage />} />
+            <Route path="/papers" element={<PapersPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/case-studies" element={<ProjectsPage />} />
+            <Route path="/interview" element={<InterviewPage onOpenAssessment={() => setIsAssessmentOpen(true)} />} />
+            <Route path="/concepts" element={<ConceptsPage />} />
+            <Route path="/concept" element={<ConceptsPage />} />
+            <Route path="/playgrounds" element={<PlaygroundsPage />} />
+            <Route path="/playground" element={<PlaygroundsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
       {/* Universal Search Modal (Cmd+K) */}
@@ -168,12 +208,6 @@ export default function App() {
         onClose={() => setIsAssessmentOpen(false)}
       />
 
-      {/* High-Yield Cheatsheet Builder & PDF Exporter Modal */}
-      <CheatsheetBuilderModal
-        isOpen={isCheatsheetOpen}
-        onClose={() => setIsCheatsheetOpen(false)}
-      />
-
       {/* Interactive AI History Timeline Modal (1950–2026) */}
       <TimelineModal
         isOpen={isTimelineOpen}
@@ -186,14 +220,10 @@ export default function App() {
         onClose={() => setIsPythonLabOpen(false)}
       />
 
-      {/* Saved Bookmarks & Study Cheatsheet Slide-Over Drawer */}
+      {/* Saved Bookmarks Slide-Over Drawer */}
       <BookmarksDrawer
         isOpen={isBookmarksOpen}
         onClose={() => setIsBookmarksOpen(false)}
-        onOpenCheatsheet={() => {
-          setIsBookmarksOpen(false);
-          setIsCheatsheetOpen(true);
-        }}
       />
 
       {/* Kinetic Physics Opening Visualization */}
@@ -203,7 +233,7 @@ export default function App() {
       />
 
       {/* Interactive Corner Companion: Moving Robot & Child in Garden */}
-      <GardenCompanion />
+      {location.pathname !== '/' && location.pathname !== '' && <GardenCompanion />}
     </div>
   );
 }

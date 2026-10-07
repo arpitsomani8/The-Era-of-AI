@@ -16,7 +16,8 @@
     "problem": "Frontier reasoning models (e.g. OpenAI o1) were closed-source and relied heavily on massive proprietary human-annotated chain-of-thought demonstrations.",
     "breakthrough": "Trained DeepSeek-R1-Zero directly via pure Group Relative Policy Optimization (GRPO) using accuracy and formatting rewards, discovering self-verification, reflection, and lengthy chain-of-thought exploration natively.",
     "formula": "$$\\mathcal{J}_{\\text{GRPO}}(\\theta) = \\mathbb{E}\\left[ \\frac{1}{G} \\sum_{i=1}^G \\left( \\min\\left(\\frac{\\pi_\\theta(o_i|q)}{\\pi_{\\text{old}}(o_i|q)} \\tilde{A}_i, \\text{clip}\\left(\\frac{\\pi_\\theta(o_i|q)}{\\pi_{\\text{old}}(o_i|q)}, 1\\pm\\epsilon\\right) \\tilde{A}_i\\right) - \\beta D_{\\text{KL}}(\\pi_\\theta || \\pi_{\\text{ref}}) \\right) \\right]$$",
-    "impact": "Democratized frontier reasoning globally and established GRPO as the new benchmark for post-training reasoning models."
+    "impact": "Democratized frontier reasoning globally and established GRPO as the new benchmark for post-training reasoning models.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "flashattention3_2024",
@@ -35,7 +36,8 @@
     "problem": "Standard attention algorithms failed to saturate newer GPU architectures like NVIDIA H100 Hopper due to memory synchronization overhead and non-overlapping GEMM vs. Softmax pipelines.",
     "breakthrough": "Introduced Producer-Consumer warp specialization, asynchronous Tensor Memory Accelerator (TMA) pipelining, and block-quantized FP8 attention with online scaling.",
     "formula": "$$\\text{Throughput} \\approx 1.2 \\times 10^{15} \\; \\text{FLOP/s} \\quad (\\approx 75\\% \\; \\text{Hopper theoretical peak})$$",
-    "impact": "Enables 1M+ token context windows to train and infer at near-hardware limit speeds on modern datacenter GPUs."
+    "impact": "Enables 1M+ token context windows to train and infer at near-hardware limit speeds on modern datacenter GPUs.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "mamba2_2024",
@@ -54,7 +56,8 @@
     "problem": "While Mamba-1 provided $O(N)$ linear inference, it could not leverage high-throughput GPU Tensor Cores optimized for matrix-matrix multiplication (GEMM).",
     "breakthrough": "Unveiled SSD framework connecting SSM recurrence to semiseparable 1-semiseparable matrix multiplication, allowing block-level parallel matrix math at 8x faster training throughput.",
     "formula": "$$Y = (M \\circ (C B^T)) X, \\quad M_{i,j} = \\prod_{k=j+1}^i A_k$$",
-    "impact": "Bridges the gap between attention-based LLMs and linear RNNs, powering next-generation hybrid architectures like Jamba and Nemotron."
+    "impact": "Bridges the gap between attention-based LLMs and linear RNNs, powering next-generation hybrid architectures like Jamba and Nemotron.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "llama3_2024",
@@ -73,7 +76,8 @@
     "problem": "Open-weight models lagged behind proprietary closed models (GPT-4) in reasoning, coding, and multilingual translation capabilities.",
     "breakthrough": "Standard dense autoregressive decoder architecture scaled to 405B parameters with Grouped-Query Attention (GQA), 128k context window, and multi-stage alignment involving iterative rejection sampling and DPO.",
     "formula": "$$\\text{Compute} \\approx 6 \\times N \\times D \\approx 3.8 \\times 10^{25} \\; \\text{FLOPs}$$",
-    "impact": "Serves as the foundational open backbone for thousands of fine-tuned research models and synthetic data generation."
+    "impact": "Serves as the foundational open backbone for thousands of fine-tuned research models and synthetic data generation.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "dpo_2023",
@@ -92,7 +96,8 @@
     "problem": "PPO reinforcement learning from human feedback is notorious for training instability, hyperparameter brittleness, and extreme GPU memory overhead.",
     "breakthrough": "Reparametrized the Bradley-Terry reward function directly in terms of the optimal policy's implicit log-likelihood ratio relative to a reference model.",
     "formula": "$$\\mathcal{L}_{\\text{DPO}}(\\pi_\\theta; \\pi_{\\text{ref}}) = -\\mathbb{E}_{(x, y_w, y_l)} \\left[ \\log \\sigma \\left( \\beta \\log \\frac{\\pi_\\theta(y_w|x)}{\\pi_{\\text{ref}}(y_w|x)} - \\beta \\log \\frac{\\pi_\\theta(y_l|x)}{\\pi_{\\text{ref}}(y_l|x)} \\right) \\right]$$",
-    "impact": "Replaced PPO in the vast majority of modern LLM alignment pipelines (Zephyr, Mistral, Llama, Gemma)."
+    "impact": "Replaced PPO in the vast majority of modern LLM alignment pipelines (Zephyr, Mistral, Llama, Gemma).",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "dit_diffusion_2023",
@@ -111,7 +116,8 @@
     "problem": "U-Net convolutional backbones lacked standardized compute-scaling properties that enabled large language models to scale predictably.",
     "breakthrough": "Tokenized image latents into spatial patches and applied adaptive layer normalization (adaLN-Zero) conditioning inside standard Transformer blocks.",
     "formula": "$$\\text{adaLN}(h) = (1 + \\gamma) \\odot \\text{LayerNorm}(h) + \\beta$$",
-    "impact": "The foundational vision architecture behind OpenAI Sora, Stable Diffusion 3, Flux, and Runway Gen-3."
+    "impact": "The foundational vision architecture behind OpenAI Sora, Stable Diffusion 3, Flux, and Runway Gen-3.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "qlora_2023",
@@ -130,7 +136,8 @@
     "problem": "Full 16-bit fine-tuning of 65B models required >780GB of GPU VRAM across multi-node clusters, locking out independent researchers.",
     "breakthrough": "Introduced 4-bit NormalFloat (NF4) quantization optimal for normally distributed weights, Double Quantization, and Paged Optimizers to manage memory spikes.",
     "formula": "$$W^{\\text{Dequant}} = \\text{dequantize}(c_1, c_2, W^{\\text{NF4}}), \\quad Y = W^{\\text{Dequant}} X + \\frac{\\alpha}{r} B A X$$",
-    "impact": "Enabled consumer-grade GPUs to fine-tune enterprise-grade LLMs, democratizing open-source AI tuning."
+    "impact": "Enabled consumer-grade GPUs to fine-tune enterprise-grade LLMs, democratizing open-source AI tuning.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "colbertv2_2022",
@@ -149,7 +156,8 @@
     "problem": "Single-vector bi-encoders (e.g. OpenAI ada-002) compress entire documents into one point, suffering catastrophic loss of fine-grained entity detail.",
     "breakthrough": "Retained per-token contextual vectors and computed similarity using MaxSim sum over token dot products, compressed with residual quantization.",
     "formula": "$$\\text{Score}(Q, D) = \\sum_{i \\in Q} \\max_{j \\in D} \\left( E_q(q_i) \\cdot E_d(d_j)^T \\right)$$",
-    "impact": "Underpins modern high-precision RAG engines, providing token-level interpretability and superior retrieval on complex multi-hop queries."
+    "impact": "Underpins modern high-precision RAG engines, providing token-level interpretability and superior retrieval on complex multi-hop queries.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "bitnet_b158_2024",
@@ -168,7 +176,8 @@
     "problem": "Dense matrix multiplications (FP16/BF16) consume massive electrical power and memory bandwidth in GPU tensor cores.",
     "breakthrough": "Proposed BitLinear layer where weights are constrained to ternary values $\\{-1, 0, 1\\}$, replacing expensive matrix multiplication with integer addition.",
     "formula": "$$\\widetilde{W} = \\text{RoundClip}\\left( \\frac{W}{\\gamma + \\epsilon}, -1, 1 \\right), \\quad \\gamma = \\frac{1}{nm} \\sum_{ij} |W_{ij}|$$",
-    "impact": "Unlocks orders-of-magnitude energy and memory reductions for edge devices and future custom non-silicon accelerators."
+    "impact": "Unlocks orders-of-magnitude energy and memory reductions for edge devices and future custom non-silicon accelerators.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "gemma2_2024",
@@ -187,7 +196,8 @@
     "problem": "Small LLMs (2B-9B) suffered from training instability and high inference latency when running full attention over long sequences.",
     "breakthrough": "Interleaved sliding window attention with global attention every alternating layer, and applied soft logit capping to prevent gradient explosions without clipping.",
     "formula": "$$\\text{Logits} = \\text{cap} \\times \\tanh\\left( \\frac{\\text{Logits}}{\\text{cap}} \\right)$$",
-    "impact": "Delivered GPT-3.5-class reasoning capabilities at single-GPU footprint, setting an efficiency benchmark for open enterprise deployment."
+    "impact": "Delivered GPT-3.5-class reasoning capabilities at single-GPU footprint, setting an efficiency benchmark for open enterprise deployment.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "whisper_2022",
@@ -206,7 +216,8 @@
     "problem": "Traditional ASR systems overfitted to clean benchmark distributions (e.g. LibriSpeech) and failed in noisy real-world environments.",
     "breakthrough": "Trained an end-to-end sequence-to-sequence model using multi-task conditioning tokens that simultaneously perform language identification, voice activity detection, and translation.",
     "formula": "$$P(y_1, \\dots, y_T | X) = \\prod_{t=1}^T P(y_t | y_{<t}, \\text{Encoder}(X))$$",
-    "impact": "Became the global standard for universal audio transcription, speech-to-text pipelines, and voice interfaces."
+    "impact": "Became the global standard for universal audio transcription, speech-to-text pipelines, and voice interfaces.",
+    "license": "Open Access (CC BY 4.0)"
   },
   {
     "id": "cot_mcts_reasoning_2024",
@@ -225,6 +236,7 @@
     "problem": "Outcome reward models (ORMs) only evaluate final answers, giving positive feedback to flawed reasoning that accidentally arrived at the right number.",
     "breakthrough": "Trained step-by-step Process-Supervised Reward Models (PRMs) to score individual thought steps, enabling Monte Carlo Tree Search (MCTS) exploration at inference time.",
     "formula": "$$\\mathcal{R}_{\\text{step}}(s_t) = \\sigma(W \\cdot h_t), \\quad \\text{Compute}_{\\text{Test}} \\propto N_{\\text{rollouts}} \\times \\text{Depth}$$",
-    "impact": "Unlocked the System-2 reasoning paradigm (OpenAI o1/o3, DeepSeek-R1), proving test-time compute can substitute for pre-training scale."
+    "impact": "Unlocked the System-2 reasoning paradigm (OpenAI o1/o3, DeepSeek-R1), proving test-time compute can substitute for pre-training scale.",
+    "license": "Open Access (CC BY 4.0)"
   }
 ]

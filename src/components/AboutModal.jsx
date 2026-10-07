@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react';
 import { X, Sparkles, Network, BookOpen, FileText, Briefcase, HelpCircle, Layers, ExternalLink, Github, Heart } from 'lucide-react';
+import allNodesData from '../data/allNodes.json';
+import topicsData from '../data/topics.json';
+import conceptsData from '../data/concepts.json';
+import papersData from '../data/papers.json';
+import interviewData from '../data/interviewQuestions.json';
+import projectsData from '../data/projects.json';
+import AudioExplainerButton from './AudioExplainerButton';
 
 export default function AboutModal({ isOpen, onClose }) {
   useEffect(() => {
@@ -55,9 +62,6 @@ export default function AboutModal({ isOpen, onClose }) {
                 <span className="font-extrabold text-lg text-white tracking-tight drop-shadow-md">
                   The Era of AI
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">
-                  React Edition
-                </span>
               </div>
               <p className="text-xs text-slate-300 drop-shadow">
                 Master Knowledge Graph, Curriculum &amp; Research Portal
@@ -70,9 +74,16 @@ export default function AboutModal({ isOpen, onClose }) {
         <div className="p-6 overflow-y-auto space-y-6">
           {/* Description */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-indigo-400 mb-1">
-              About The Project
-            </h3>
+            <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-indigo-400">
+                About The Project
+              </h3>
+              <AudioExplainerButton
+                variant="compact"
+                title="About The Era of AI"
+                text={`About The Era of AI. The Era of AI is an open-source, production-grade knowledge architecture designed to bridge the gap between theoretical machine learning foundations and state-of-the-art modern generative AI systems. Featuring an interconnected graph of ${allNodesData.length} domain nodes, ${topicsData.length} structured syllabus modules, ${conceptsData.length} mathematical concept breakdowns, ${interviewData.length} interview questions, ${papersData.length} milestone research papers, and ${projectsData.length} production case studies.`}
+              />
+            </div>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               <strong>The Era of AI</strong> is an open-source, production-grade knowledge architecture designed to bridge the gap between theoretical machine learning foundations and state-of-the-art modern generative AI systems.
             </p>
@@ -85,7 +96,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Network className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">41</div>
+                <div className="text-base font-bold text-white">{allNodesData.length}</div>
                 <div className="text-[11px] text-slate-400">Graph Nodes</div>
               </div>
             </div>
@@ -95,7 +106,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">34</div>
+                <div className="text-base font-bold text-white">{topicsData.length}</div>
                 <div className="text-[11px] text-slate-400">Syllabus Modules</div>
               </div>
             </div>
@@ -105,7 +116,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Layers className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">170+</div>
+                <div className="text-base font-bold text-white">{conceptsData.length}</div>
                 <div className="text-[11px] text-slate-400">Core Concepts</div>
               </div>
             </div>
@@ -115,7 +126,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <HelpCircle className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">150+</div>
+                <div className="text-base font-bold text-white">{interviewData.length}+</div>
                 <div className="text-[11px] text-slate-400">Interview Vault</div>
               </div>
             </div>
@@ -125,8 +136,8 @@ export default function AboutModal({ isOpen, onClose }) {
                 <FileText className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">Daily</div>
-                <div className="text-[11px] text-slate-400">Paper Updates</div>
+                <div className="text-base font-bold text-white">{papersData.length}</div>
+                <div className="text-[11px] text-slate-400">Landmark Papers</div>
               </div>
             </div>
 
@@ -135,7 +146,7 @@ export default function AboutModal({ isOpen, onClose }) {
                 <Briefcase className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-base font-bold text-white">5</div>
+                <div className="text-base font-bold text-white">{projectsData.length}</div>
                 <div className="text-[11px] text-slate-400">Case Studies</div>
               </div>
             </div>
@@ -150,8 +161,7 @@ export default function AboutModal({ isOpen, onClose }) {
               <li>Interactive SVG Mind Map with physics-inspired hierarchy and cross-domain links</li>
               <li>Multi-Theme Support: Default Theme, OLED Dark, Bright Day &amp; Metallic Green</li>
               <li>KaTeX Math Engine rendering inline and block mathematical formulas</li>
-              <li>Instant Universal Search with <kbd className="px-1 py-0.5 bg-slate-800 rounded font-mono text-[10px]">⌘K</kbd> / <kbd className="px-1 py-0.5 bg-slate-800 rounded font-mono text-[10px]">Ctrl+K</kbd></li>
-              <li>Automated daily arXiv AI paper crawler powered by GitHub Actions</li>
+              <li>Curated library of breakthrough AI publications and frontier research</li>
             </ul>
           </div>
         </div>

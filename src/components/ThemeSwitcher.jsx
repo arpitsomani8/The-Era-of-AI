@@ -52,21 +52,15 @@ export default function ThemeSwitcher() {
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      {/* Trigger Button */}
+      {/* Trigger Button: Only show theme symbol on header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-200 border border-slate-700/70 transition flex items-center gap-2 text-xs font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        title="Change Theme (Default, Dark, Bright, Metallic Green)"
-        aria-label="Theme selector"
+        className="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700/80 text-slate-200 border border-slate-700/70 transition flex items-center justify-center text-xs shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+        title={`Theme: ${currentThemeObj.name} (Click to switch)`}
+        aria-label={`Theme: ${currentThemeObj.name}`}
         aria-expanded={isOpen}
       >
-        <span className="flex items-center gap-1.5">
-          {getThemeIcon(theme)}
-          <span className="hidden sm:inline font-medium">{currentThemeObj.name}</span>
-        </span>
-        <span
-          className={`w-2 h-2 rounded-full ${currentThemeObj.dotColor} shadow-sm shrink-0`}
-        />
+        {getThemeIcon(theme)}
       </button>
 
       {/* Dropdown Menu */}

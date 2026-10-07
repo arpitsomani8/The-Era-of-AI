@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Network, 
   BookOpen, 
@@ -26,7 +26,11 @@ import {
 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { useProgress } from '../context/ProgressContext';
+import { getStoredVoiceGender, setStoredVoiceGender } from '../utils/audioSpeech';
 import papersData from '../data/papers.json';
+import conceptsData from '../data/concepts.json';
+import projectsData from '../data/projects.json';
+import interviewData from '../data/interviewQuestions.json';
 
 export default function Navbar({ 
   onOpenSearch, 
@@ -34,11 +38,11 @@ export default function Navbar({
   onOpenKinetic, 
   onOpenBookmarks, 
   onOpenAssessment, 
-  onOpenCheatsheet, 
   onOpenTimeline,
   onOpenPythonLab
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [logoError, setLogoError] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
@@ -46,6 +50,22 @@ export default function Navbar({
   const { bookmarkCount, completedCount } = useProgress();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [voiceGender, setVoiceGender] = useState(getStoredVoiceGender());
+
+  // Real-time synchronization of narrator voice
+  useEffect(() => {
+    const handleVoiceChange = (e) => {
+      setVoiceGender(e.detail || getStoredVoiceGender());
+    };
+    window.addEventListener('era-voice-changed', handleVoiceChange);
+    return () => window.removeEventListener('era-voice-changed', handleVoiceChange);
+  }, []);
+
+  const handleToggleGlobalVoice = () => {
+    const next = voiceGender === 'female' ? 'male' : 'female';
+    setVoiceGender(next);
+    setStoredVoiceGender(next);
+  };
 
   // Close menus on route change
   useEffect(() => {
@@ -87,16 +107,28 @@ export default function Navbar({
 
   const navItems = [
     {
-      to: '/mindmap',
-      label: 'Mind Map',
-      icon: Network,
-      color: 'indigo',
+      to: '/concepts',
+      label: 'Core Concepts',
+      icon: Layers,
+      color: 'rose',
+      badge: String(conceptsData.length),
+      badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     },
     {
-      to: '/syllabus',
-      label: 'Line-wise Syllabus',
-      icon: BookOpen,
-      color: 'blue',
+      to: '/interview',
+      label: 'Interview Vault',
+      icon: HelpCircle,
+      color: 'purple',
+      badge: '1000+',
+      badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    },
+    {
+      to: '/projects',
+      label: 'Case Studies',
+      icon: Briefcase,
+      color: 'emerald',
+      badge: String(projectsData.length),
+      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
     },
     {
       to: '/papers',
@@ -105,30 +137,6 @@ export default function Navbar({
       color: 'amber',
       badge: String(papersData.length),
       badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    },
-    {
-      to: '/projects',
-      label: 'Case Studies',
-      icon: Briefcase,
-      color: 'emerald',
-      badge: '5',
-      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    },
-    {
-      to: '/interview',
-      label: 'Interview Vault',
-      icon: HelpCircle,
-      color: 'purple',
-      badge: '150+',
-      badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-    },
-    {
-      to: '/concepts',
-      label: 'Core Concepts',
-      icon: Layers,
-      color: 'rose',
-      badge: '170',
-      badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     },
     {
       to: '/playgrounds',
@@ -151,9 +159,10 @@ export default function Navbar({
         {/* Brand & Logo */}
         <div className="flex items-center space-x-2.5 shrink-0">
           <NavLink 
-            to="/mindmap" 
+            to="/" 
             id="navbar-brand-logo"
             className="group flex items-center space-x-2.5 text-left focus:outline-none"
+            title="Return to The Era of AI Home Portal"
           >
             <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/25 ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-indigo-400/40 transition-all duration-200 shrink-0 bg-slate-900 flex items-center justify-center">
               {!logoError ? (
@@ -171,23 +180,49 @@ export default function Navbar({
             </div>
             <div>
               <span className="font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5 group-hover:text-indigo-300 transition-colors">
-                <span>The Era of AI</span>
-                <span className="hidden md:inline-block text-[10px] font-semibold uppercase px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 tracking-wider">
-                  React Edition
-                </span>
+                The Era of AI
               </span>
               <p className="text-[10px] text-slate-400 hidden 2xl:block">
-                Interactive Knowledge Universe &bull; Syllabus &bull; Papers &bull; 150+ Questions
+                Interactive Knowledge Universe &bull; Syllabus &bull; Papers &bull; 1000+ Questions
               </p>
             </div>
           </NavLink>
         </div>
 
         {/* Center Desktop Nav Tabs (Visible on xl+ screens) */}
-        <nav className="hidden xl:flex items-center space-x-0.5 2xl:space-x-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow-inner flex-nowrap shrink-0">
+        <nav className="hidden xl:flex items-center space-x-1 2xl:space-x-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow-inner flex-nowrap shrink-0">
+          {/* Merged Segmented Toggle: Mind Map & Line-wise Syllabus */}
+          <div className="flex items-center p-0.5 bg-slate-900 rounded-lg border border-slate-800 shadow-sm shrink-0">
+            <button
+              onClick={() => navigate('/mindmap')}
+              id="navbar-toggle-mindmap-btn"
+              className={`px-2.5 py-1.5 rounded-md text-[11px] 2xl:text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                location.pathname === '/mindmap'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <Network className="w-3.5 h-3.5 shrink-0" />
+              <span>Mind Map</span>
+            </button>
+            <button
+              onClick={() => navigate('/syllabus')}
+              id="navbar-toggle-syllabus-btn"
+              className={`px-2.5 py-1.5 rounded-md text-[11px] 2xl:text-xs font-semibold transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                location.pathname === '/syllabus'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 shrink-0" />
+              <span>Line-wise Syllabus</span>
+            </button>
+          </div>
+
+          {/* Remaining 5 Core Specialized Hubs */}
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.to || (item.to === '/mindmap' && location.pathname === '/');
+            const isActive = location.pathname === item.to;
 
             return (
               <NavLink
@@ -215,6 +250,20 @@ export default function Navbar({
         <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
           <ThemeSwitcher />
 
+          {/* Narrator Voice Preference Selector */}
+          <button
+            onClick={handleToggleGlobalVoice}
+            id="navbar-voice-toggle-btn"
+            className="p-1.5 px-2 sm:px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm shrink-0 cursor-pointer"
+            title={`Narrator Voice: ${voiceGender === 'female' ? 'Female' : 'Male'} (Click to switch to ${voiceGender === 'female' ? 'Male' : 'Female'})`}
+            aria-label={`Narrator Voice: ${voiceGender === 'female' ? 'Female' : 'Male'}`}
+          >
+            <span className="text-sm leading-none">{voiceGender === 'female' ? '👩' : '👨'}</span>
+            <span className="hidden xl:inline text-xs font-medium">
+              {voiceGender === 'female' ? 'Female' : 'Male'} Voice
+            </span>
+          </button>
+
           {/* Global Search Button */}
           <button
             onClick={onOpenSearch}
@@ -234,7 +283,7 @@ export default function Navbar({
             onClick={onOpenBookmarks}
             id="navbar-bookmarks-btn"
             className="relative p-1.5 px-2 sm:px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium shadow-sm group"
-            title="Open Saved Bookmarks & Study Cheatsheet"
+            title="Open Saved Bookmarks"
           >
             <Bookmark className={`w-3.5 h-3.5 transition-transform group-hover:scale-110 ${bookmarkCount > 0 ? 'text-amber-400 fill-amber-400' : 'text-slate-400'}`} />
             <span className="hidden sm:inline">Bookmarks</span>
@@ -337,24 +386,6 @@ export default function Navbar({
                   </button>
 
                   <button
-                    onClick={() => { onOpenCheatsheet(); setToolsDropdownOpen(false); }}
-                    id="tools-dropdown-cheatsheet-btn"
-                    className="w-full p-2 rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/30 border border-transparent text-left flex items-start gap-2.5 transition group"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform mt-0.5">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-white group-hover:text-cyan-300">
-                        Cheatsheet Builder
-                      </div>
-                      <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                        Curate custom exam cards &amp; export vector PDF
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
                     onClick={() => { onOpenTimeline(); setToolsDropdownOpen(false); }}
                     id="tools-dropdown-timeline-btn"
                     className="w-full p-2 rounded-xl hover:bg-amber-500/10 hover:border-amber-500/30 border border-transparent text-left flex items-start gap-2.5 transition group"
@@ -437,15 +468,48 @@ export default function Navbar({
       {mobileMenuOpen && (
         <div className="xl:hidden mt-2.5 pt-3 pb-2 border-t border-slate-800 space-y-3.5 animate-fadeIn">
           {/* Section 1: Main Platform Routes */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 font-mono flex items-center justify-between">
+              <span>Core Curriculum</span>
+              <span className="text-slate-500 font-normal">Toggle View</span>
+            </span>
+
+            {/* Merged Segmented Toggle in Mobile */}
+            <div className="p-1 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-1">
+              <button
+                onClick={() => { navigate('/mindmap'); setMobileMenuOpen(false); }}
+                id="mobile-toggle-mindmap-btn"
+                className={`flex-1 p-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 ${
+                  location.pathname === '/mindmap'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <Network className="w-4 h-4 shrink-0" />
+                <span>Mind Map</span>
+              </button>
+              <button
+                onClick={() => { navigate('/syllabus'); setMobileMenuOpen(false); }}
+                id="mobile-toggle-syllabus-btn"
+                className={`flex-1 p-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 ${
+                  location.pathname === '/syllabus'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                }`}
+              >
+                <BookOpen className="w-4 h-4 shrink-0" />
+                <span>Line-wise Syllabus</span>
+              </button>
+            </div>
+
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 font-mono flex items-center justify-between pt-1">
               <span>Navigation Pages</span>
-              <span className="text-slate-500 font-normal">7 Core Hubs</span>
+              <span className="text-slate-500 font-normal">5 Specialized Hubs</span>
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname === item.to || (item.to === '/mindmap' && location.pathname === '/');
+                const isActive = location.pathname === item.to;
 
                 return (
                   <NavLink
@@ -485,14 +549,6 @@ export default function Navbar({
               >
                 <Award className="w-4 h-4 text-purple-400 shrink-0" />
                 <span className="truncate">Diagnostic</span>
-              </button>
-
-              <button
-                onClick={() => { onOpenCheatsheet(); setMobileMenuOpen(false); }}
-                className="p-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-2 transition"
-              >
-                <FileText className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span className="truncate">Cheatsheet</span>
               </button>
 
               <button
@@ -540,6 +596,20 @@ export default function Navbar({
               >
                 <Info className="w-4 h-4 text-indigo-400 shrink-0" />
                 <span className="truncate">About Portal</span>
+              </button>
+
+              <button
+                onClick={handleToggleGlobalVoice}
+                className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center justify-between gap-2 transition"
+                title="Toggle Narrator Voice"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className="text-base">{voiceGender === 'female' ? '👩' : '👨'}</span>
+                  <span className="truncate font-medium">{voiceGender === 'female' ? 'Female' : 'Male'} Voice</span>
+                </div>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                  TTS
+                </span>
               </button>
 
               {isInstallable && (

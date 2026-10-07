@@ -67,6 +67,7 @@ export default function NodeInspector({ node, crossLinks = [], onClose, onSelect
             definition={node.def}
             intuition={node.logic}
             example={node.example}
+            formula={node.formula}
           />
 
           {/* Mark Done button */}

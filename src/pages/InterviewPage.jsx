@@ -22,6 +22,7 @@ import interviewData from '../data/interviewQuestions.json';
 import KaTeXRenderer, { MathText } from '../components/KaTeXRenderer';
 import { useProgress } from '../context/ProgressContext';
 import InterviewFlashcardDeck from '../components/InterviewFlashcardDeck';
+import AudioExplainerButton from '../components/AudioExplainerButton';
 
 export default function InterviewPage({ onOpenAssessment }) {
   const { toggleCompleted, isCompleted, toggleBookmark, isBookmarked } = useProgress();
@@ -33,25 +34,49 @@ export default function InterviewPage({ onOpenAssessment }) {
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'bookmarked', 'mastered', 'unmastered'
   const [openIds, setOpenIds] = useState(new Set());
   const [copiedId, setCopiedId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(50);
 
   // Flashcard mode state
   const [isFlashcardMode, setIsFlashcardMode] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [selectedExperience, setSelectedExperience] = useState('0-2'); // '0-2', '2-5', '6+', 'all'
+  const [selectedRound, setSelectedRound] = useState('all'); // 'all', 'round_coding', 'round_ml_theory', 'round_system_design', 'round_behavioral', 'round_terminology'
+
+  const experienceCounts = useMemo(() => {
+    const counts = { all: interviewData.length, '0-2': 0, '2-5': 0, '6+': 0 };
+    interviewData.forEach((q) => {
+      const exp = q.experience_level || '6+';
+      if (counts[exp] !== undefined) counts[exp]++;
+    });
+    return counts;
+  }, []);
+
+  const categoryCounts = useMemo(() => {
+    const counts = { all: interviewData.length };
+    interviewData.forEach((q) => {
+      if (q.category) {
+        counts[q.category] = (counts[q.category] || 0) + 1;
+      }
+    });
+    return counts;
+  }, []);
 
   const categories = [
-    { id: 'all', label: 'All (150)' },
-    { id: 'ml', label: 'Classical ML' },
-    { id: 'dl', label: 'Deep Learning' },
-    { id: 'genai_llm', label: 'GenAI & LLMs' },
-    { id: 'rag', label: 'RAG & Vector DB' },
-    { id: 'metrics_data', label: 'Metrics & Data' },
-    { id: 'system_mlops', label: 'System & MLOps' },
-    { id: 'logic_prob', label: 'Logic & Quant' }
+    { id: 'all', label: `All (${categoryCounts.all})` },
+    { id: 'ml', label: `Classical ML (${categoryCounts.ml || 0})` },
+    { id: 'dl', label: `Deep Learning (${categoryCounts.dl || 0})` },
+    { id: 'genai_llm', label: `GenAI & LLMs (${categoryCounts.genai_llm || 0})` },
+    { id: 'rag', label: `RAG & Vector DB (${categoryCounts.rag || 0})` },
+    { id: 'metrics_data', label: `Metrics & Data (${categoryCounts.metrics_data || 0})` },
+    { id: 'system_mlops', label: `System & MLOps (${categoryCounts.system_mlops || 0})` },
+    { id: 'swe_cloud', label: `SWE & Cloud Infra (${categoryCounts.swe_cloud || 0})` },
+    { id: 'logic_prob', label: `Logic & Quant (${categoryCounts.logic_prob || 0})` }
   ];
 
   const difficulties = [
     'all',
+    'Junior / Fresher',
     'Junior / Mid',
     'Mid',
     'Mid / Senior',
@@ -77,7 +102,8 @@ export default function InterviewPage({ onOpenAssessment }) {
 
   const toggleAll = (expand) => {
     if (expand) {
-      setOpenIds(new Set(interviewData.map((q) => q.id)));
+      setVisibleCount(filteredQuestions.length);
+      setOpenIds(new Set(filteredQuestions.map((q) => q.id)));
     } else {
       setOpenIds(new Set());
     }
@@ -100,6 +126,17 @@ export default function InterviewPage({ onOpenAssessment }) {
       if (statusFilter === 'mastered' && !isDone) return false;
       if (statusFilter === 'unmastered' && isDone) return false;
 
+      // Filter by Phase 13 Mock Interview Round
+      if (selectedRound !== 'all' && item.interview_round !== selectedRound) {
+        return false;
+      }
+
+      // Filter by Experience Tier
+      if (selectedExperience !== 'all') {
+        const itemExp = item.experience_level || '6+';
+        if (itemExp !== selectedExperience) return false;
+      }
+
       if (selectedCategory !== 'all' && item.category !== selectedCategory) {
         return false;
       }
@@ -116,7 +153,34 @@ export default function InterviewPage({ onOpenAssessment }) {
       }
       return true;
     });
-  }, [selectedCategory, selectedDifficulty, searchQuery, statusFilter, isCompleted, isBookmarked]);
+  }, [selectedExperience, selectedCategory, selectedDifficulty, searchQuery, statusFilter, selectedRound, isCompleted, isBookmarked]);
+
+  React.useEffect(() => {
+    setVisibleCount(50);
+  }, [selectedExperience, selectedCategory, selectedDifficulty, searchQuery, statusFilter, selectedRound]);
+
+  const displayedQuestions = useMemo(() => {
+    return filteredQuestions.slice(0, visibleCount);
+  }, [filteredQuestions, visibleCount]);
+
+  const getExperienceBadge = (level) => {
+    if (level === '0-2') {
+      return {
+        label: '🌱 0–2 Yrs (Freshers)',
+        cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+      };
+    }
+    if (level === '2-5') {
+      return {
+        label: '🚀 2–5 Yrs (Mid-Level)',
+        cls: 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+      };
+    }
+    return {
+      label: '🏛️ 6+ Yrs (Senior / Lead)',
+      cls: 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+    };
+  };
 
   const getDifficultyBadge = (diff) => {
     if (diff?.includes('Staff') || diff?.includes('Quant')) {
@@ -157,13 +221,13 @@ export default function InterviewPage({ onOpenAssessment }) {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 text-xs font-semibold uppercase tracking-wider mb-2">
               <HelpCircle className="w-3.5 h-3.5" />
-              Technical Interview Question Bank
+              Technical Interview Question Vault
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
               Master AI & Machine Learning Interview Vault
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
-              150+ rigorously curated technical interview questions asked at Google, Meta, OpenAI, Anthropic, and top quant funds. Includes proofs, code walkthroughs, and practical insider tips.
+              {interviewData.length.toLocaleString()}+ curated technical questions tailored for all career stages: <span className="text-emerald-400 font-semibold">🌱 0–2 Yrs (Freshers)</span>, <span className="text-blue-400 font-semibold">🚀 2–5 Yrs (Mid-Level)</span>, and <span className="text-purple-400 font-semibold">🏛️ 6+ Yrs (Senior / Staff / Lead)</span>.
             </p>
           </div>
 
@@ -244,6 +308,102 @@ export default function InterviewPage({ onOpenAssessment }) {
           </div>
         </div>
 
+        {/* Phase 13: Mock Interview Simulator Rounds */}
+        <div className="bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/40 border border-purple-500/35 rounded-2xl p-4 space-y-3 shadow-md">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎯</span>
+              <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">
+                Phase 13 &bull; Mock Interview Simulator Rounds
+              </h3>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-semibold">
+              5 Specialized Tracks
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            {[
+              { id: 'all', label: 'All Questions', icon: '📋' },
+              { id: 'round_coding', label: '1. Coding (DSA)', icon: '💻' },
+              { id: 'round_ml_theory', label: '2. ML Theory', icon: '🧠' },
+              { id: 'round_system_design', label: '3. System Design', icon: '🏗️' },
+              { id: 'round_behavioral', label: '4. Behavioral', icon: '🤝' },
+              { id: 'round_terminology', label: '5. Terminology Blitz', icon: '⚡' }
+            ].map((round) => {
+              const isActive = selectedRound === round.id;
+              return (
+                <button
+                  key={round.id}
+                  onClick={() => {
+                    setSelectedRound(round.id);
+                    if (round.id !== 'all') setSelectedExperience('all');
+                  }}
+                  className={`p-2.5 rounded-xl border text-xs font-semibold transition flex flex-col items-center justify-center text-center gap-1 ${
+                    isActive
+                      ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-600/30 ring-1 ring-purple-400'
+                      : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border-slate-800'
+                  }`}
+                >
+                  <span className="text-base">{round.icon}</span>
+                  <span className="text-[11px] leading-tight">{round.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Experience Tier Selector */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-slate-400 font-medium">Select Experience Level:</span>
+            <span className="text-purple-300 font-mono text-[11px]">
+              Active: {selectedExperience === '0-2' ? '🌱 0–2 Years' : selectedExperience === '2-5' ? '🚀 2–5 Years' : selectedExperience === '6+' ? '🏛️ 6+ Years' : 'All Levels'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { id: '0-2', label: '0–2 Years', sub: 'Freshers & Entry-Level', icon: '🌱', count: experienceCounts['0-2'], color: 'emerald' },
+              { id: '2-5', label: '2–5 Years', sub: 'Mid-Level Engineers', icon: '🚀', count: experienceCounts['2-5'], color: 'blue' },
+              { id: '6+', label: '6+ Years', sub: 'Senior / Staff / Lead', icon: '🏛️', count: experienceCounts['6+'], color: 'purple' },
+              { id: 'all', label: 'All Levels', sub: 'Complete Question Bank', icon: '🌐', count: experienceCounts.all, color: 'slate' },
+            ].map((tier) => {
+              const isActive = selectedExperience === tier.id;
+              return (
+                <button
+                  key={tier.id}
+                  onClick={() => setSelectedExperience(tier.id)}
+                  className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between gap-1.5 cursor-pointer ${
+                    isActive
+                      ? tier.id === '0-2'
+                        ? 'bg-emerald-950/50 border-emerald-500/60 ring-1 ring-emerald-500/40 text-emerald-200'
+                        : tier.id === '2-5'
+                        ? 'bg-blue-950/50 border-blue-500/60 ring-1 ring-blue-500/40 text-blue-200'
+                        : tier.id === '6+'
+                        ? 'bg-purple-950/50 border-purple-500/60 ring-1 ring-purple-500/40 text-purple-200'
+                        : 'bg-slate-850 border-slate-700 ring-1 ring-slate-600 text-white'
+                      : 'bg-slate-900/90 border-slate-800 hover:border-slate-700 text-slate-300 hover:bg-slate-850'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-base">{tier.icon}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
+                      isActive ? 'bg-black/30' : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {tier.count} Qs
+                    </span>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold leading-tight">{tier.label}</div>
+                    <div className="text-[10px] text-slate-400 leading-tight mt-0.5">{tier.sub}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Filters */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -253,7 +413,7 @@ export default function InterviewPage({ onOpenAssessment }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search 150 questions (e.g. FlashAttention, LoRA, ROC-AUC)..."
+                placeholder={`Search ${interviewData.length.toLocaleString()}+ questions (e.g. Overfitting, RAG, Embeddings, LoRA)...`}
                 className="w-full bg-slate-900 border border-slate-800 text-xs sm:text-sm text-white rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500"
               />
               <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -324,9 +484,41 @@ export default function InterviewPage({ onOpenAssessment }) {
           </div>
         </div>
 
-        {/* Results Count */}
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span>Showing {filteredQuestions.length} of {interviewData.length} technical questions</span>
+        {/* Results Count & Quick Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-400 pb-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-slate-200">
+              Showing {displayedQuestions.length < filteredQuestions.length ? `${displayedQuestions.length} of ${filteredQuestions.length}` : filteredQuestions.length}
+            </span>
+            <span className="text-slate-500 font-normal">
+              of {interviewData.length.toLocaleString()} technical questions
+            </span>
+            <span className="text-slate-700 hidden sm:inline">&bull;</span>
+            <span className="text-purple-400/90 font-mono text-[11px]">
+              {openIds.size > 0 ? `${openIds.size} answers expanded` : 'All answers collapsed'}
+            </span>
+          </div>
+
+          {!isFlashcardMode && (
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => toggleAll(true)}
+                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-purple-500/50 text-slate-200 hover:text-white text-xs font-medium transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                title="Expand answers for all displayed questions"
+              >
+                <ChevronDown className="w-3.5 h-3.5 text-purple-400" />
+                <span>Expand All</span>
+              </button>
+              <button
+                onClick={() => toggleAll(false)}
+                className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-purple-500/50 text-slate-200 hover:text-white text-xs font-medium transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                title="Collapse all expanded answers"
+              >
+                <ChevronUp className="w-3.5 h-3.5 text-purple-400" />
+                <span>Collapse All</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 3D ACTIVE RECALL FLASHCARD STUDY DECK */}
@@ -341,7 +533,7 @@ export default function InterviewPage({ onOpenAssessment }) {
         {/* STANDARD LIST OF QUESTIONS */}
         {!isFlashcardMode && (
           <div className="space-y-4">
-            {filteredQuestions.map((item) => {
+            {displayedQuestions.map((item, idx) => {
               const isOpen = openIds.has(item.id);
               const qKey = `interview-${item.id}`;
               const isDone = isCompleted(qKey);
@@ -364,12 +556,12 @@ export default function InterviewPage({ onOpenAssessment }) {
                   >
                     <div className="space-y-2 flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`w-6 h-6 rounded-md font-mono text-xs font-bold flex items-center justify-center shrink-0 border ${
+                        <span className={`px-2 h-6 min-w-[2.25rem] rounded-md font-mono text-[11px] font-bold flex items-center justify-center shrink-0 border ${
                           isDone 
                             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
                             : 'bg-purple-500/10 text-purple-400 border border-purple-500/30'
                         }`}>
-                          {item.id}
+                          #{idx + 1}
                         </span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
                           {item.category_label || item.category}
@@ -381,6 +573,15 @@ export default function InterviewPage({ onOpenAssessment }) {
                         >
                           {item.difficulty}
                         </span>
+                        {item.experience_level && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getExperienceBadge(
+                              item.experience_level
+                            ).cls}`}
+                          >
+                            {getExperienceBadge(item.experience_level).label}
+                          </span>
+                        )}
                         {item.company_tags?.map((comp, cIdx) => (
                           <span
                             key={cIdx}
@@ -404,7 +605,17 @@ export default function InterviewPage({ onOpenAssessment }) {
                       </h2>
                     </div>
 
-                    <div className="flex items-center space-x-2 shrink-0 pt-1">
+                    <div className="flex items-center space-x-2 shrink-0 pt-1 flex-wrap">
+                      {/* Audio Question & Answer Narration with Male/Female Voices */}
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <AudioExplainerButton
+                          title={`Question: ${item.question}`}
+                          text={`Question: ${item.question}. Detailed Answer: ${item.answer}. ${item.tip ? 'Interviewer Tip: ' + item.tip : ''}`}
+                          label="Listen"
+                          variant="compact"
+                        />
+                      </div>
+
                       {/* Mark as Mastered button */}
                       <button
                         onClick={(e) => {
@@ -498,6 +709,25 @@ export default function InterviewPage({ onOpenAssessment }) {
                 </div>
               );
             })}
+
+            {/* Load More Pagination */}
+            {visibleCount < filteredQuestions.length && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 pb-4">
+                <button
+                  onClick={() => setVisibleCount((prev) => Math.min(prev + 50, filteredQuestions.length))}
+                  className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-purple-600/30 transition flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Load More Questions (Showing {displayedQuestions.length} of {filteredQuestions.length})</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setVisibleCount(filteredQuestions.length)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs border border-slate-700 transition cursor-pointer"
+                >
+                  Show All ({filteredQuestions.length})
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

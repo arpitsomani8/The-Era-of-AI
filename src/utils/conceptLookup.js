@@ -1,4 +1,4 @@
-import conceptsData from '../data/concepts.json' with { type: 'json' };
+import conceptsData from '../data/concepts.json';
 
 // Group concepts by topic_id for topic-scoped fallbacks
 const topicToConcepts = new Map();
@@ -69,6 +69,11 @@ const hubSubtopicToConceptId = {
   "cross-validation": "concept_stratified_kfold",
 
   // 5. Deep Learning Root
+  "ann": "artificial-neurons-perceptrons",
+  "artificial neural network": "artificial-neurons-perceptrons",
+  "artificial neural networks": "artificial-neurons-perceptrons",
+  "artificial neural networks (ann & perceptrons)": "artificial-neurons-perceptrons",
+  "artificial neural networks (ann) & hidden layers": "artificial-neurons-perceptrons",
   "neurons & perceptrons": "artificial-neurons-perceptrons",
   "neural networks & hidden layers": "artificial-neurons-perceptrons",
   "activation functions": "relu-activation",
@@ -79,6 +84,11 @@ const hubSubtopicToConceptId = {
   "deep learning optimizers (adam, adamw)": "sgd-momentum",
   "normalization (batchnorm, layernorm)": "dropout-regularization",
   "normalization & regularization (dropout, layernorm)": "dropout-regularization",
+  "cnn": "convolutions-kernels-stride-padding",
+  "convolutional neural network": "convolutions-kernels-stride-padding",
+  "convolutional neural networks": "convolutions-kernels-stride-padding",
+  "convolutional neural networks (cnn & feature extraction)": "convolutions-kernels-stride-padding",
+  "convolutional neural networks (cnn) & vision transformers": "convolutions-kernels-stride-padding",
   "vision (cnn, vit)": "convolutions-kernels-stride-padding",
   "computer vision: cnns & vision transformers": "convolutions-kernels-stride-padding",
   "sequence models (lstm)": "recurrent-neural-networks-rnn",
@@ -100,6 +110,53 @@ const hubSubtopicToConceptId = {
   "prompt engineering & agents": "in-context-learning-few-shot",
   "prompt engineering & autonomous agents": "in-context-learning-few-shot",
 
+  // Fairness & Bias
+  "fairness, types of bias & mitigation": "concept_human_cognitive_biases",
+  "human & cognitive biases (reporting, historical, automation & confirmation bias)": "concept_human_cognitive_biases",
+  "selection bias (coverage, non-response & sampling bias)": "concept_selection_biases",
+  "group attribution bias (in-group bias & out-group homogeneity)": "concept_group_attribution_bias",
+  "fairness metrics (demographic parity, equality of opportunity & counterfactual fairness)": "concept_fairness_metrics_parity",
+  "algorithmic bias mitigation (mindiff & counterfactual logit pairing)": "concept_bias_mitigation_mindiff",
+
+  // Production Data Hygiene
+  "production data hygiene & engineering pitfalls": "concept_training_serving_skew_leakage",
+  "training-serving skew & label leakage": "concept_training_serving_skew_leakage",
+  "data slices, sliced metrics & the unicorn model antipattern": "concept_data_slices_unicorn_model",
+  "static vs dynamic training & static vs dynamic inference": "concept_static_vs_dynamic_training_inference",
+  "production ml pipelines, randomization & automl": "concept_production_ml_pipelines_automl",
+  "big data infrastructure & distributed feature stores": "concept_big_data_feature_stores",
+
+  // NLP Foundations
+  "nlp foundations: n-grams, tokens & word2vec": "tokenizers-bpe-wordpiece-sentencepiece",
+  "tokens, tokenization (bpe, wordpiece) & vocabulary bounds": "tokenizers-bpe-wordpiece-sentencepiece",
+  "n-grams, bigrams & statistical language modeling": "concept_ngrams_language_models",
+  "sparse vs dense representations & word2vec (skip-gram & cbow)": "concept_word2vec_embeddings",
+  "contextual embeddings (bert, elmo) vs static word vectors": "concept_contextual_embeddings",
+  "positional encodings (sinusoidal, rope & alibi)": "concept_positional_encoding_rope",
+
+  // Transformers & Attention Deep Dive
+  "transformers, attention & llm lifecycle": "concept_multihead_self_attention",
+  "multi-head, multi-layer self-attention dynamics": "concept_multihead_self_attention",
+  "bidirectional encoders (bert) vs unidirectional decoders (gpt)": "concept_bidirectional_vs_unidirectional",
+  "the llm training lifecycle (pretraining, sft, rlhf) & local training feasibility": "concept_llm_training_lifecycle",
+  "problems & failure modes with llms (hallucinations, sycophancy & prompt injection)": "concept_llm_problems_failures",
+  "prompt engineering (zero-shot, one-shot, few-shot & chain-of-thought)": "concept_prompt_engineering_shots",
+
+  // Agentic AI & Fine-Tuning
+  "agentic ai, fine-tuning & application infrastructure": "concept_lora_qlora",
+  "lora, qlora & parameter-efficient fine-tuning": "concept_lora_qlora",
+  "model quantization dynamics (fp16, int8, int4, awq & gguf)": "concept_model_quantization",
+  "fastapi production serving & streaming llm endpoints": "concept_fastapi_llm_serving",
+  "langchain, langgraph (cyclical state machines) & llamaindex rag": "concept_langchain_langgraph_llamaindex",
+  "agentic ai: react loops, tool calling & autonomous agent swarms": "concept_agentic_ai_react",
+
+  // Deep Learning Foundations & Limits
+  "feed forward, sequence limits & gradient dynamics": "concept_feed_forward_mlp",
+  "feed forward neural networks (multilayer perceptrons & dense layers)": "concept_feed_forward_mlp",
+  "recurrent neural networks (rnns) & hidden state recurrence": "concept_rnns_sequence_recurrence",
+  "vanishing gradient & exploding gradient dynamics": "concept_vanishing_exploding_gradients",
+  "principal component analysis (pca & dimensionality reduction)": "concept_pca",
+
   // MLOps Root
   "production ml systems & mlops": "model-registry-experiment-tracking",
   "model registry & experiment tracking (mlflow, weights & biases)": "model-registry-experiment-tracking",
@@ -120,7 +177,63 @@ const hubSubtopicToConceptId = {
   "deep learning foundations": "artificial-neurons-perceptrons",
   "generative ai & llms": "tokenizers-bpe-wordpiece-sentencepiece",
   "transformers & generative ai": "tokenizers-bpe-wordpiece-sentencepiece",
-  "mlops & production": "model-registry-experiment-tracking"
+  "mlops & production": "model-registry-experiment-tracking",
+  "software engineering & cloud infrastructure": "concept_swe_design_patterns_ai",
+  "swe & cloud infra": "concept_swe_design_patterns_ai",
+
+  // New Curriculum Topics
+  "support vector machines & production ensembles": "concept_svm_max_margin",
+  "deep learning framework internals & real-time cv inference": "concept_pytorch_tensorflow_internals",
+  "llm decoding dynamics & gpt vs llama architecture": "concept_llm_decoding_strategies",
+  "vector databases, pinecone & enterprise hybrid retrieval": "concept_hnsw_ivfpq_indexing",
+  "multimodal foundation models & advanced agentic workflows": "concept_clip_contrastive_multimodal",
+  "llmops, multi-tenancy & ai system design": "concept_semantic_caching_latency_cost",
+  "software engineering patterns & clean architecture for ai": "concept_swe_design_patterns_ai",
+  "cloud infrastructure, containerization & production tooling": "concept_cloud_ecosystems_aws_vs_azure",
+
+  // 7 New Industry Domains & Hub Mappings
+  "reinforcement learning": "concept_mdp_bellman",
+  "rl": "concept_mdp_bellman",
+  "reinforcement learning (rl) & decision foundations": "concept_mdp_bellman",
+  "dl_rl_foundations": "concept_mdp_bellman",
+
+  "time series": "concept_stationarity_acf_pacf",
+  "forecasting": "concept_stationarity_acf_pacf",
+  "time series analysis & forecasting dynamics": "concept_stationarity_acf_pacf",
+  "ml_time_series": "concept_stationarity_acf_pacf",
+
+  "recsys": "concept_collaborative_filtering_svd",
+  "recommender systems": "concept_collaborative_filtering_svd",
+  "recommender systems (recsys) & retrieval architecture": "concept_collaborative_filtering_svd",
+  "ml_recsys": "concept_collaborative_filtering_svd",
+
+  "gnn": "concept_graph_representations_adjacency",
+  "graph neural networks": "concept_graph_representations_adjacency",
+  "graph neural networks (gnn) & geometric deep learning": "concept_graph_representations_adjacency",
+  "dl_gnn": "concept_graph_representations_adjacency",
+
+  "xai": "concept_shap_game_theory",
+  "explainable ai": "concept_shap_game_theory",
+  "explainable ai (xai) & model interpretability": "concept_shap_game_theory",
+  "eval_xai": "concept_shap_game_theory",
+
+  "audio": "concept_audio_preprocessing_spectrograms",
+  "speech": "concept_audio_preprocessing_spectrograms",
+  "audio, speech ai & voice intelligence": "concept_audio_preprocessing_spectrograms",
+  "genai_audio_speech": "concept_audio_preprocessing_spectrograms",
+
+  "reasoning models": "concept_prm_vs_orm",
+  "test-time compute": "concept_prm_vs_orm",
+  "reasoning models, test-time compute & system 2 ai": "concept_prm_vs_orm",
+  "genai_reasoning_test_time": "concept_prm_vs_orm",
+
+  // Realigned Subtopics
+  "autoencoders & latent bottlenecks": "concept_autoencoders_latent_bottlenecks",
+  "real-time inference acceleration (tensorrt, onnx runtime & cuda graphs)": "concept_inference_acceleration_tensorrt_onnx",
+  "text preprocessing, lemmatization, stopwords & linguistic normalization": "concept_text_preprocessing_normalization",
+  "context window scaling (yarn, longlora & streamingllm)": "concept_context_window_scaling_yarn",
+  "multimodal tool calling & vision-language agents": "concept_multimodal_tool_calling_agents",
+  "hyperparameter tuning (grid search, random search & bayesian optuna)": "concept_hyperparameter_tuning_bayesian"
 };
 
 /**

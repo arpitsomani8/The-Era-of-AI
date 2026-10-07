@@ -12,7 +12,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Download,
-  Compass,
   Route,
   Sparkles,
   X
@@ -41,6 +40,8 @@ export const CAREER_TRACKS = {
       'genai_train',
       'genai_align',
       'genai_prompt_agents',
+      'genai_reasoning_test_time',
+      'genai_audio_speech',
       'dl_root',
       'dl_neurons',
       'dl_opt',
@@ -55,7 +56,7 @@ export const CAREER_TRACKS = {
     color: '#a855f7',
     bg: 'rgba(168, 85, 247, 0.15)',
     border: 'rgba(168, 85, 247, 0.4)',
-    summary: 'Vector spaces, optimization calculus, backpropagation proofs, generative diffusion mathematics, and alignment.',
+    summary: 'Vector spaces, optimization calculus, backpropagation proofs, generative diffusion mathematics, RL, and alignment.',
     path: [
       'root',
       'math_root',
@@ -67,6 +68,8 @@ export const CAREER_TRACKS = {
       'dl_backprop',
       'dl_norm',
       'dl_generative',
+      'dl_rl_foundations',
+      'dl_gnn',
       'genai_root',
       'genai_attention',
       'genai_align',
@@ -82,7 +85,7 @@ export const CAREER_TRACKS = {
     color: '#10b981',
     bg: 'rgba(16, 185, 129, 0.15)',
     border: 'rgba(16, 185, 129, 0.4)',
-    summary: 'Data scrub pipelines, model evaluation curves, drift detection, inference serving, and vector DB infrastructure.',
+    summary: 'Data scrub pipelines, model evaluation curves, drift detection, inference serving, XAI governance, and vector DB infrastructure.',
     path: [
       'root',
       'mlops_root',
@@ -93,6 +96,7 @@ export const CAREER_TRACKS = {
       'eval_root',
       'eval_matrix',
       'eval_curves',
+      'eval_xai',
       'genai_train',
       'genai_rag',
       'dl_opt'
@@ -106,7 +110,7 @@ export const CAREER_TRACKS = {
     color: '#f59e0b',
     bg: 'rgba(245, 158, 11, 0.15)',
     border: 'rgba(245, 158, 11, 0.4)',
-    summary: 'Feature engineering, tabular predictive modeling, tree ensembles (XGBoost/LightGBM), and ROC/PR metric validation.',
+    summary: 'Feature engineering, tabular predictive modeling, tree ensembles, time series forecasting, recommendation retrieval, and model explainability.',
     path: [
       'root',
       'data_root',
@@ -123,10 +127,13 @@ export const CAREER_TRACKS = {
       'ml_reg',
       'ml_trees',
       'ml_unsupervised',
+      'ml_time_series',
+      'ml_recsys',
       'eval_root',
       'eval_matrix',
       'eval_curves',
-      'eval_tradeoff'
+      'eval_tradeoff',
+      'eval_xai'
     ]
   }
 };
@@ -138,7 +145,6 @@ export default function MindMapPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDomain, setActiveDomain] = useState('all');
   const [showInterlinks, setShowInterlinks] = useState(true);
-  const [showMinimap, setShowMinimap] = useState(true);
   const [selectedTrackId, setSelectedTrackId] = useState(null);
   const [currentTrackStep, setCurrentTrackStep] = useState(0);
 
@@ -147,21 +153,31 @@ export default function MindMapPage() {
     return activeTrack ? new Set(activeTrack.path) : null;
   }, [activeTrack]);
 
-  // SVG Pan & Zoom Transform State
-  const [transform, setTransform] = useState({ x: 0, y: 0, k: 0.85 });
+  // SVG Pan & Zoom Transform State: Initialized with window center so nodes are never off-screen
+  const [transform, setTransform] = useState(() => {
+    const w = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const h = typeof window !== 'undefined' ? window.innerHeight : 800;
+    return {
+      x: Math.round(w / 2),
+      y: Math.round(h / 2),
+      k: 0.8
+    };
+  });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const svgRef = useRef(null);
 
   const focusNode = useCallback((nodeId) => {
     const node = allNodesData.find((n) => n.id === nodeId);
-    if (!node || !svgRef.current) return;
+    if (!node) return;
     setSelectedNodeId(nodeId);
     setSearchParams({ node: nodeId });
-    const rect = svgRef.current.getBoundingClientRect();
+    const rect = svgRef.current ? svgRef.current.getBoundingClientRect() : null;
+    const w = rect && rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+    const h = rect && rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
     setTransform({
-      x: rect.width / 2 - (node.x || 0) * 0.85,
-      y: rect.height / 2 - (node.y || 0) * 0.85,
+      x: Math.round(w / 2 - (node.x || 0) * 0.85),
+      y: Math.round(h / 2 - (node.y || 0) * 0.85),
       k: 0.85
     });
   }, [setSearchParams]);
@@ -256,7 +272,8 @@ export default function MindMapPage() {
     eval: { fill: '#78350f', stroke: '#f59e0b', text: '#fcd34d', label: 'Evaluation' },
     dl: { fill: '#831843', stroke: '#ec4899', text: '#fbcfe8', label: 'Deep Learning' },
     genai: { fill: '#312e81', stroke: '#6366f1', text: '#c7d2fe', label: 'GenAI & LLMs' },
-    mlops: { fill: '#134e4a', stroke: '#14b8a6', text: '#99f6e4', label: 'MLOps' }
+    mlops: { fill: '#134e4a', stroke: '#14b8a6', text: '#99f6e4', label: 'MLOps' },
+    swe_cloud: { fill: '#0f172a', stroke: '#38bdf8', text: '#bae6fd', label: 'SWE & Cloud Infra' }
   };
 
   const getThemeCanvasColors = () => {
@@ -313,17 +330,55 @@ export default function MindMapPage() {
   };
   const themeColors = getThemeCanvasColors();
 
-  // Center the view on initial mount
+  // Center the view on initial mount and re-center on layout stabilization
   useEffect(() => {
-    if (svgRef.current) {
+    const centerGraph = () => {
+      if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
-      setTransform({
-        x: rect.width / 2,
-        y: rect.height / 2,
-        k: 0.8
+      const w = rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+      const h = rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
+
+      const nodeFromParam = searchParams.get('node');
+      const targetNode = nodeFromParam ? allNodesData.find((n) => n.id === nodeFromParam) : null;
+
+      if (targetNode) {
+        setTransform({
+          x: Math.round(w / 2 - (targetNode.x || 0) * 0.85),
+          y: Math.round(h / 2 - (targetNode.y || 0) * 0.85),
+          k: 0.85
+        });
+      } else {
+        const scaleX = (w * 0.92) / 2800;
+        const scaleY = (h * 0.92) / 2000;
+        const optimalK = Math.min(Math.max(Math.min(scaleX, scaleY), 0.38), 0.72);
+        setTransform({
+          x: Math.round(w / 2 - 200 * optimalK),
+          y: Math.round(h / 2),
+          k: Number(optimalK.toFixed(2))
+        });
+      }
+    };
+
+    centerGraph();
+    const raf = requestAnimationFrame(centerGraph);
+    const t1 = setTimeout(centerGraph, 60);
+    const t2 = setTimeout(centerGraph, 200);
+
+    let observer;
+    if (typeof ResizeObserver !== 'undefined' && svgRef.current) {
+      observer = new ResizeObserver(() => {
+        centerGraph();
       });
+      observer.observe(svgRef.current);
     }
-  }, []);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (observer) observer.disconnect();
+    };
+  }, [searchParams]);
 
   // Filtered nodes
   const filteredNodes = useMemo(() => {
@@ -349,6 +404,7 @@ export default function MindMapPage() {
   // Hierarchy lines calculation
   const hierarchyLinks = useMemo(() => {
     const links = [];
+    const seen = new Set();
     const nodeMap = new Map(allNodesData.map((n) => [n.id, n]));
 
     for (const node of allNodesData) {
@@ -356,11 +412,15 @@ export default function MindMapPage() {
         for (const targetId of node.connections) {
           const target = nodeMap.get(targetId);
           if (target) {
-            links.push({
-              source: node,
-              target: target,
-              id: `${node.id}-${target.id}`
-            });
+            const edgeKey = [node.id, target.id].sort().join('--');
+            if (!seen.has(edgeKey)) {
+              seen.add(edgeKey);
+              links.push({
+                source: node,
+                target: target,
+                id: edgeKey
+              });
+            }
           }
         }
       }
@@ -414,10 +474,15 @@ export default function MindMapPage() {
   const resetView = () => {
     if (svgRef.current) {
       const rect = svgRef.current.getBoundingClientRect();
+      const w = rect.width > 50 ? rect.width : (typeof window !== 'undefined' ? window.innerWidth : 1200);
+      const h = rect.height > 50 ? rect.height : (typeof window !== 'undefined' ? window.innerHeight : 800);
+      const scaleX = (w * 0.92) / 2800;
+      const scaleY = (h * 0.92) / 2000;
+      const optimalK = Math.min(Math.max(Math.min(scaleX, scaleY), 0.38), 0.72);
       setTransform({
-        x: rect.width / 2,
-        y: rect.height / 2,
-        k: 0.8
+        x: Math.round(w / 2 - 200 * optimalK),
+        y: Math.round(h / 2),
+        k: Number(optimalK.toFixed(2))
       });
     }
   };
@@ -436,7 +501,7 @@ export default function MindMapPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 34+ modules (AdamW, LoRA)..."
+              placeholder="Search 55 modules (AdamW, LoRA)..."
               className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg pl-8 pr-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-52 md:w-64 placeholder-slate-500"
             />
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" />
@@ -459,7 +524,9 @@ export default function MindMapPage() {
               { id: 'ml', label: 'Classical ML' },
               { id: 'eval', label: 'Evaluation' },
               { id: 'dl', label: 'Deep Learning' },
-              { id: 'genai', label: 'GenAI & LLM' }
+              { id: 'genai', label: 'GenAI & LLM' },
+              { id: 'mlops', label: 'MLOps' },
+              { id: 'swe_cloud', label: 'SWE & Cloud' }
             ].map((dom) => (
               <button
                 key={dom.id}
@@ -539,20 +606,6 @@ export default function MindMapPage() {
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>Links: {showInterlinks ? 'ON' : 'OFF'}</span>
-          </button>
-
-          {/* Radar Minimap Toggle */}
-          <button
-            onClick={() => setShowMinimap(!showMinimap)}
-            title="Toggle Radar Minimap"
-            className={`p-1.5 px-2.5 rounded-lg border transition text-xs font-semibold hidden md:flex items-center gap-1.5 ${
-              showMinimap
-                ? 'bg-emerald-600/20 text-emerald-300 border-emerald-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
-            }`}
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Radar</span>
           </button>
 
           {/* Export PNG Dropdown */}
@@ -791,56 +844,6 @@ export default function MindMapPage() {
           </g>
         </svg>
 
-        {/* Floating Radar Minimap */}
-        {showMinimap && (
-          <div className="absolute bottom-16 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 shadow-2xl hidden md:flex flex-col gap-1.5 z-20 animate-fadeIn">
-            <div className="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              <span className="flex items-center gap-1.5 text-emerald-400">
-                <Compass className="w-3.5 h-3.5" />
-                Radar View
-              </span>
-              <span className="text-[10px] font-mono text-indigo-300">
-                {Math.round(transform.k * 100)}% zoom
-              </span>
-            </div>
-            
-            {/* Radar Mini SVG canvas */}
-            <svg 
-              className="w-40 h-28 bg-slate-950/90 rounded-xl border border-slate-800"
-              viewBox="-800 -600 1600 1200"
-            >
-              {/* Nodes miniature points */}
-              {allNodesData.map((n) => {
-                const config = categoryConfig[n.category] || categoryConfig.ml;
-                const nodeColor = n.id === selectedNodeId ? '#38bdf8' : n.id === 'root' ? '#818cf8' : config.stroke;
-                return (
-                  <circle
-                    key={`radar-${n.id}`}
-                    cx={n.x}
-                    cy={n.y}
-                    r={n.id === selectedNodeId ? 28 : n.id === 'root' ? 24 : 16}
-                    fill={nodeColor}
-                    opacity={n.id === selectedNodeId ? 1 : 0.85}
-                  />
-                );
-              })}
-
-              {/* Viewport Box Indicator */}
-              <rect
-                x={(-transform.x - 400) / transform.k}
-                y={(-transform.y - 250) / transform.k}
-                width={800 / transform.k}
-                height={500 / transform.k}
-                fill="rgba(56, 189, 248, 0.08)"
-                stroke="#38bdf8"
-                strokeWidth={4 / transform.k}
-                strokeDasharray="10,10"
-                className="transition-all duration-75"
-              />
-            </svg>
-          </div>
-        )}
-
         {/* Legend Overlay at bottom-left */}
         <div className="absolute bottom-4 left-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 shadow-xl pointer-events-none hidden md:flex items-center space-x-3.5">
           <div className="flex items-center space-x-1.5">
@@ -870,6 +873,10 @@ export default function MindMapPage() {
           <div className="flex items-center space-x-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span>
             <span>MLOps</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-sm shadow-sky-400/50"></span>
+            <span>SWE &amp; Cloud</span>
           </div>
           <div className="text-slate-500 border-l border-slate-700 pl-3 hidden lg:block">
             Drag to pan &bull; Scroll to zoom &bull; Click node to inspect details
