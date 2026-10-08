@@ -247,6 +247,7 @@ export default function ConceptsPage() {
         'portion-arch',
         'portion-example',
         'portion-traps',
+        'portion-connected-logic',
         'portion-takeaways'
       ];
 
@@ -650,6 +651,21 @@ export default function ConceptsPage() {
                 </button>
               )}
 
+              {selectedConcept.connected_logic && selectedConcept.connected_logic.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => scrollToPortion('portion-connected-logic')}
+                  className={`px-2.5 py-1 rounded-xl transition flex items-center gap-1 font-medium cursor-pointer ${
+                    activePortion === 'portion-connected-logic'
+                      ? 'bg-amber-500/25 text-amber-200 border border-amber-500/50 shadow-sm font-semibold'
+                      : 'bg-slate-800/80 hover:bg-slate-700/80 text-amber-300 hover:text-white border border-transparent'
+                  }`}
+                >
+                  <Zap className="w-3 h-3 text-amber-400" />
+                  <span>6. Connected Logic</span>
+                </button>
+              )}
+
               {selectedConcept.key_takeaways && selectedConcept.key_takeaways.length > 0 && (
                 <button
                   type="button"
@@ -661,7 +677,7 @@ export default function ConceptsPage() {
                   }`}
                 >
                   <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                  <span>6. Takeaways</span>
+                  <span>{selectedConcept.connected_logic && selectedConcept.connected_logic.length > 0 ? '7. Takeaways' : '6. Takeaways'}</span>
                 </button>
               )}
             </div>
@@ -697,9 +713,9 @@ export default function ConceptsPage() {
                           </h4>
                         </div>
                         
-                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
-                          {termItem.what_is_it}
-                        </p>
+                        <div className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal whitespace-pre-line">
+                          <MathText text={termItem.what_is_it} />
+                        </div>
                       </div>
 
                       <div className="space-y-2 pt-2.5 border-t border-slate-800">
@@ -707,19 +723,59 @@ export default function ConceptsPage() {
                           <div className="text-[11px] sm:text-xs text-amber-200/90 bg-amber-950/40 p-2.5 rounded-xl border border-amber-500/25 flex items-start gap-2">
                             <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                             <div>
-                              <strong className="text-amber-300 font-semibold">Everyday Analogy:</strong> {termItem.analogy}
+                              <strong className="text-amber-300 font-semibold">Everyday Analogy:</strong> <MathText text={termItem.analogy} />
                             </div>
                           </div>
                         )}
                         {termItem.why_it_matters && (
                           <div className="text-[11px] sm:text-xs text-slate-300 flex items-start gap-1.5 pt-0.5">
                             <ArrowRight className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-                            <span><strong className="text-cyan-300 font-semibold">Why AI Needs It:</strong> {termItem.why_it_matters}</span>
+                            <span><strong className="text-cyan-300 font-semibold">Why AI Needs It:</strong> <MathText text={termItem.why_it_matters} /></span>
                           </div>
                         )}
                       </div>
                     </div>
                   ))}
+
+                  {selectedConcept.types_of_vectors && selectedConcept.types_of_vectors.length > 0 && (
+                    <div className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 shadow-sm space-y-3 mt-3">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-cyan-400" />
+                          <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                            Types of Vectors at a Glance
+                          </h4>
+                        </div>
+                        <span className="text-[11px] text-cyan-300 font-mono bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">
+                          {selectedConcept.types_of_vectors.length} Types
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        {selectedConcept.types_of_vectors.map((item, vIdx) => (
+                          <div 
+                            key={vIdx} 
+                            className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90 flex flex-col justify-between gap-2 hover:border-cyan-500/40 transition"
+                          >
+                            <div>
+                              <div className="font-semibold text-xs text-cyan-300 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                                {item.type}
+                              </div>
+                              <div className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                                {item.definition}
+                              </div>
+                            </div>
+                            {item.looks_like && (
+                              <div className="text-[11px] font-mono text-amber-300 bg-amber-950/30 px-2.5 py-1 rounded border border-amber-500/20 truncate">
+                                <span className="text-amber-500 text-[10px] mr-1">e.g.</span>{item.looks_like}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-slate-800 space-y-3.5 shadow-sm">
@@ -840,9 +896,9 @@ export default function ConceptsPage() {
                 <Cpu className="w-3.5 h-3.5 text-purple-400" />
                 Portion 3 &bull; Architectural Logic (How AI Models Use This Internally)
               </h3>
-              <p className="text-slate-200 leading-relaxed text-sm sm:text-base">
-                {selectedConcept.architectural_logic || selectedConcept.logic || "This concept is integrated into the core neural layer operations, guiding gradient descent and forward transformations."}
-              </p>
+              <div className="text-slate-200 leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-2">
+                <MathText text={selectedConcept.architectural_logic || selectedConcept.logic || "This concept is integrated into the core neural layer operations, guiding gradient descent and forward transformations."} />
+              </div>
             </div>
 
             {/* PORTION 4: Real-World Production Example */}
@@ -865,18 +921,54 @@ export default function ConceptsPage() {
                   <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
                   <span>Portion 5 &bull; Common Pitfalls &amp; Misconceptions</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {selectedConcept.pitfalls}
-                </p>
+                <div className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+                  <MathText text={selectedConcept.pitfalls} />
+                </div>
               </div>
             )}
 
-            {/* PORTION 6: Key Takeaways & Revision Guide */}
+            {/* PORTION: Extra & Connected Logic Points */}
+            {selectedConcept.connected_logic && selectedConcept.connected_logic.length > 0 && (
+              <div id="portion-connected-logic" className="bg-slate-900/90 rounded-2xl p-5 sm:p-6 border border-amber-500/30 space-y-4 scroll-mt-14 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    <h3 className="text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider">
+                      Portion 6 &bull; Connected Logic &amp; Deep-Dive Points
+                    </h3>
+                  </div>
+                  <span className="text-[11px] text-amber-300 font-mono bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/40">
+                    {selectedConcept.connected_logic.length} Logical Points
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {selectedConcept.connected_logic.map((point, pIdx) => (
+                    <div 
+                      key={pIdx} 
+                      className="p-3.5 sm:p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-2 hover:border-amber-500/30 transition"
+                    >
+                      <div className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold flex items-center justify-center border border-amber-500/30 shrink-0">
+                          {pIdx + 1}
+                        </span>
+                        <span>{point.title}</span>
+                      </div>
+                      <div className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-7">
+                        <MathText text={point.content} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* PORTION 6/7: Key Takeaways & Revision Guide */}
             {selectedConcept.key_takeaways && selectedConcept.key_takeaways.length > 0 && (
               <div id="portion-takeaways" className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-emerald-500/30 space-y-2.5 scroll-mt-14">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Portion 6 &bull; Key Takeaways (Summary to Remember)</span>
+                  <span>{selectedConcept.connected_logic && selectedConcept.connected_logic.length > 0 ? 'Portion 7' : 'Portion 6'} &bull; Key Takeaways (Summary to Remember)</span>
                 </div>
                 <ul className="text-xs sm:text-sm text-slate-300 space-y-1.5 list-disc list-inside">
                   {selectedConcept.key_takeaways.map((point, kIdx) => (

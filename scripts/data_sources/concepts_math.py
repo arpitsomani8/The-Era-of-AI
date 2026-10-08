@@ -15,7 +15,152 @@ MATH_CONCEPTS = [
         "formula": "$$u \\cdot v = \\sum_{i=1}^d u_i v_i = \\|u\\| \\|v\\| \\cos(\\theta), \\quad \\text{Cosine Similarity} = \\frac{u \\cdot v}{\\|u\\|_2 \\|v\\|_2} = \\frac{\\sum u_i v_i}{\\sqrt{\\sum u_i^2} \\sqrt{\\sum v_i^2}}$$",
         "logic": "When comparing high-dimensional embeddings (e.g., text, images), Euclidean distance is heavily sensitive to document length or feature magnitude. Cosine similarity normalizes length away, isolating pure semantic orientation.",
         "example": "Comparing search queries: Query vector for 'electric car' [0.9, 0.1, 0.8] and document vector for 'Tesla EV vehicle' [0.85, 0.05, 0.75] produce a cosine similarity of 0.998, indicating near-perfect topical alignment.",
-        "tags": ["Vectors", "Linear Algebra", "Cosine Similarity", "Embeddings"]
+        "tags": [
+            "Vectors",
+            "Linear Algebra",
+            "Cosine Similarity",
+            "Embeddings",
+            "Dot Product",
+            "Vector Space"
+        ],
+        "raw_sub": "Vectors, Dot Products & Geometric Cosine Similarity",
+        "definition": "A vector is an ordered list of numbers representing a point or direction in multi-dimensional space. The dot product sums the products of corresponding elements, and cosine similarity measures the directional alignment between two vectors regardless of magnitude.",
+        "formula_explanation": "",
+        "simple_summary": "Think of vectors as arrows pointing in space, the dot product as a tool to measure how much two arrows point in the same direction, and cosine similarity as a score from -1 to +1 that measures alignment while ignoring arrow length.",
+        "core_terms": [
+            {
+                "term": "Vector",
+                "what_is_it": "• A list of numbers that describes something. In AI, every piece of data (words, images, house prices, audio) is converted into a vector (a numerical representation that an ML model can process and compare).\n• In AI, when text or concepts are converted into vectors in continuous space, that vector representation is called an embedding.",
+                "analogy": "A GPS coordinate (latitude, longitude) is a 2D vector. A house profile [3 bedrooms, 2 bathrooms, 1500 sqft, $350k] is a 4D vector.",
+                "why_it_matters": "Computers cannot read text or look at images directly; they only understand numbers arranged in vectors."
+            },
+            {
+                "term": "Dot Product",
+                "what_is_it": "• A math operation where you multiply matching numbers from two vectors and add them up.\n• It tells you whether two vectors push in the same direction, push against each other, or are completely unrelated.",
+                "analogy": "If you and a friend push a heavy cart in the exact same direction, your combined effort is high (positive dot product). If you push in opposite directions, you cancel out (negative). If you push at a 90° right angle, your push doesn't help your friend at all (zero dot product).",
+                "why_it_matters": "It is the core building block of AI neural networks, attention mechanisms, and feature matching."
+            },
+            {
+                "term": "Cosine Similarity",
+                "what_is_it": "• A similarity score between -1 and +1 that measures only the angle (direction) between two vectors.\n• It completely ignores vector length or size, evaluating pure directional alignment.",
+                "analogy": "A short 1-sentence tweet and a 20-page article about 'quantum computing' both talk about the same topic. Their vectors point in the same direction. Cosine similarity recognizes they are 99% identical in topic, even though the 20-page article has much larger numbers because it has more words.",
+                "why_it_matters": "Essential for search engines, recommendation systems, and Vector Databases (RAG) to find related content fairly without favoring long documents."
+            }
+        ],
+        "types_of_vectors": [
+            {
+                "type": "Row Vector",
+                "definition": "A 1D vector written horizontally as a single row.",
+                "looks_like": "[x₁, x₂, x₃] (shape: 1 × 3, e.g. [2, 5, 8])"
+            },
+            {
+                "type": "Column Vector",
+                "definition": "A 1D vector written vertically (the standard default in AI math & neural networks).",
+                "looks_like": "[[x₁], [x₂], [x₃]] (shape: 3 × 1)"
+            },
+            {
+                "type": "Dense Vector",
+                "definition": "Most or all numbers are non-zero real values; stores rich meaning in compact size.",
+                "looks_like": "[0.42, -0.89, 0.15, 0.77] (e.g. 1536-dim embedding)"
+            },
+            {
+                "type": "Sparse Vector",
+                "definition": "Most numbers are zeros; only a few positions have values.",
+                "looks_like": "[0, 0, 1, 0, 0, 0, 0] (e.g. One-Hot, TF-IDF)"
+            },
+            {
+                "type": "Zero Vector",
+                "definition": "All elements are zero; represents the center origin with zero magnitude.",
+                "looks_like": "[0, 0, 0, 0]"
+            },
+            {
+                "type": "Unit Vector",
+                "definition": "A vector normalized so its total length/magnitude is exactly 1 (pure direction).",
+                "looks_like": "||v|| = 1.0 (e.g. [0.6, 0.8])"
+            },
+            {
+                "type": "Orthogonal Vectors",
+                "definition": "Two vectors meeting at a 90° angle whose dot product is exactly 0 (completely unrelated).",
+                "looks_like": "[1, 0] · [0, 1] = 0 (perpendicular)"
+            },
+            {
+                "type": "Feature Vector vs. Embedding Vector",
+                "definition": "Feature vectors are raw measured attributes; Embeddings are learned by neural nets to capture conceptual meaning.",
+                "looks_like": "[age=28, salary=65k] vs. [0.21, -0.45, 0.82]"
+            }
+        ],
+        "symbol_guide": [
+            {
+                "symbol": "u, v",
+                "meaning": "Two vectors (lists of numbers) being compared",
+                "plain_english": "e.g. vector u = [1, 2] and vector v = [3, 4]"
+            },
+            {
+                "symbol": "u · v",
+                "meaning": "The dot product of u and v",
+                "plain_english": "Multiply pairs and add: (1×3) + (2×4) = 11"
+            },
+            {
+                "symbol": "∑ u_i v_i",
+                "meaning": "Sum of products across all dimensions i",
+                "plain_english": "Loop through all numbers in the list and multiply matching positions"
+            },
+            {
+                "symbol": "||u||_2",
+                "meaning": "The Euclidean length (magnitude) of vector u",
+                "plain_english": "Square each number, sum them up, and take the square root (Pythagorean theorem)"
+            },
+            {
+                "symbol": "θ (theta)",
+                "meaning": "The angle between the two arrows in space",
+                "plain_english": "0° means identical direction, 90° means perpendicular (unrelated), 180° means opposite"
+            },
+            {
+                "symbol": "cos(θ)",
+                "meaning": "Cosine of the angle (Cosine Similarity)",
+                "plain_english": "+1.0 = identical direction, 0.0 = completely unrelated, -1.0 = exact opposite"
+            }
+        ],
+        "numerical_example": "Let Vector A = [1, 2] and Vector B = [3, 4].\n1. Multiply matching positions: (1 × 3) = 3 and (2 × 4) = 8.\n2. Dot Product: 3 + 8 = 11.\n3. Length of A: √(1² + 2²) = √(1 + 4) = √5 ≈ 2.236.\n4. Length of B: √(3² + 4²) = √(9 + 16) = √25 = 5.0.\n5. Cosine Similarity: 11 / (2.236 × 5.0) = 11 / 11.18 = 0.984.\nConclusion: 0.984 is very close to 1.0, showing both vectors point in almost the exact same direction!",
+        "pitfalls": "Common Pitfall: Don't confuse Dot Product with Cosine Similarity! If you duplicate words in a document, its vector length doubles, which doubles the dot product, but its cosine similarity stays exactly the same because the direction didn't change.",
+        "core_logic": "When comparing high-dimensional embeddings (e.g., text, images), Euclidean distance is heavily sensitive to document length or feature magnitude. Cosine similarity normalizes length away, isolating pure semantic orientation.",
+        "architectural_logic": "When comparing high-dimensional embeddings (e.g., text, images), Euclidean distance is heavily sensitive to document length or feature magnitude. Cosine similarity normalizes length away, isolating pure semantic orientation.",
+        "connected_logic": [
+            {
+                "title": "Scalar vs. Vector vs. Matrix vs. Tensor (The Hierarchy)",
+                "content": "• Scalar (0D): A single isolated number.\n   Example: Learning rate η = 0.001, loss = 0.42, temperature = 0.7\n• Vector (1D): A 1D list of numbers.\n   Example: Word embedding vector of shape [768]\n• Matrix (2D): A 2D table/grid with rows and columns.\n   Example: Neural layer weight matrix W of shape [128, 64]\n• Tensor (ND, N ≥ 3): A multi-dimensional array.\n   Example: A batch of 32 images [32, 3, 224, 224] (Batch × Channels × Height × Width)"
+            },
+            {
+                "title": "Dense Vector vs. Sparse Vector (Key Difference)",
+                "content": "• Sparse Vector: Huge dimension (e.g., 50,000 words in a dictionary), but 99.9% of entries are zeros. Great for exact keyword search (TF-IDF, BM25, SPLADE), but wastes memory if stored naively and doesn't understand synonyms.\n• Dense Vector: Compact dimension (e.g., 768 or 1536 numbers), almost all non-zero floats. Learned by neural nets to capture semantic meaning (e.g., understands 'king' is related to 'queen' even if the words look different)."
+            },
+            {
+                "title": "Vector Norm / Magnitude & Distance Metrics",
+                "content": "• Vector Norm / Magnitude (Length from origin):\n   ├── Euclidean Norm (L₂): Straight-line length: ||v||₂ = √(v₁² + v₂² + ...)\n   └── Manhattan Norm (L₁): Sum of absolute values: ||v||₁ = |v₁| + |v₂| + ...\n• Distance (Dissimilarity between two points):\n   ├── Euclidean Distance (L₂): Direct straight-line distance: d(u, v) = √(∑(u_i - v_i)²). Highly sensitive to vector length.\n   └── Manhattan Distance (L₁): Grid / taxicab distance along streets: d(u, v) = ∑|u_i - v_i|."
+            },
+            {
+                "title": "Vector Space & Vector Databases",
+                "content": "• Vector Space: The multi-dimensional coordinate space ℝᵈ where all these vectors live and can be compared geometrically.\n• Vector Databases (Pinecone, Milvus, Qdrant, Chroma): Specialized databases engineered to store millions of dense embeddings and find the most similar items in milliseconds using Approximate Nearest Neighbor (ANN) search for RAG systems."
+            },
+            {
+                "title": "Neuron as a Dot Product & Directional Meaning",
+                "content": "• An artificial neuron is primarily a dot product of inputs and weights: z = w · x + b = ∑ w_i x_i + b.\n• Dot product formula: A · B = |A| |B| cos(θ), where |A| = length of A, |B| = length of B, and θ = angle between them.\n• The dot product depends on BOTH: (1) The angle/direction between vectors, and (2) Their magnitudes/lengths.\n• When vectors have the same length (or are unit vectors):\n   - Positive and large: Similar direction (θ < 90°, neuron fires strongly)\n   - Around 0: Little/no alignment, orthogonal (θ ≈ 90°, neuron output near bias)\n   - Negative: Opposite direction (θ > 90°, neuron is inhibited)"
+            }
+        ],
+        "key_takeaways": [
+            "A vector is a numerical representation of data that an ML model can process and compare; learned representations are called embeddings.",
+            "Data hierarchy: Scalar (0D) → Vector (1D) → Matrix (2D) → Tensor (ND).",
+            "Dense vectors hold compact semantic meaning; sparse vectors hold mostly zeros for keyword counts.",
+            "An artificial neuron is primarily a dot product of inputs and weights: z = w · x + b.",
+            "The dot product depends on both angle and magnitude: A · B = |A| |B| cos(θ).",
+            "Cosine similarity divides out magnitude to measure pure directional alignment between -1 and +1.",
+            "Vector databases index vector spaces to power instant semantic search in RAG."
+        ],
+        "definition_bullets": [
+            "Vector: A list of numbers that describes something. In AI, every piece of data is converted into a vector.",
+            "Dot Product: A math operation multiplying matching numbers from two vectors and add them up.",
+            "Cosine Similarity: A similarity score between -1 and +1 measuring directional angle while ignoring length."
+        ]
     },
     {
         "id": "concept_matrix_mult_inverses",
@@ -29,7 +174,12 @@ MATH_CONCEPTS = [
         "formula": "$$C = A B \\implies C_{ij} = \\sum_{k=1}^p A_{ik} B_{kj}, \\quad (A B)^T = B^T A^T, \\quad A A^{-1} = A^{-1} A = I$$",
         "logic": "Every feedforward layer in a neural network is a matrix multiplication $y = W X + b$. Computing matrix inverses directly is $O(d^3)$ and numerically unstable; modern solvers use iterative decompositions (QR, Cholesky, LU).",
         "example": "Batch forward pass: If you pass a batch of 64 image feature vectors of size 512 through a weight matrix of size [512, 128], a single matrix multiplication computes all 64 hidden representations simultaneously in GPU SRAM.",
-        "tags": ["Matrices", "Matrix Multiply", "Linear Algebra", "Forward Pass"]
+        "tags": [
+            "Matrices",
+            "Matrix Multiply",
+            "Linear Algebra",
+            "Forward Pass"
+        ]
     },
     {
         "id": "concept_eigenvalues_eigenvectors",
@@ -43,7 +193,12 @@ MATH_CONCEPTS = [
         "formula": "$$A v = \\lambda v, \\quad \\det(A - \\lambda I) = 0$$",
         "logic": "Eigenvectors reveal the fundamental internal axes of a dataset or physical system. In PCA, the eigenvectors of the data covariance matrix identify the orthogonal directions of maximum data spread and variance.",
         "example": "Google PageRank algorithm: The web is modeled as a massive transition matrix $M$. The steady-state importance of every webpage is the principal eigenvector corresponding to eigenvalue $\\lambda = 1$.",
-        "tags": ["Eigenvalues", "Eigenvectors", "Spectral Theory", "PCA"]
+        "tags": [
+            "Eigenvalues",
+            "Eigenvectors",
+            "Spectral Theory",
+            "PCA"
+        ]
     },
     {
         "id": "concept_svd",
@@ -57,7 +212,12 @@ MATH_CONCEPTS = [
         "formula": "$$A = U \\Sigma V^T, \\quad A \\approx U_k \\Sigma_k V_k^T = \\sum_{i=1}^k \\sigma_i u_i v_i^T$$",
         "logic": "Eckart-Young Theorem proves that truncated SVD provides the provably optimal rank-$k$ approximation of any matrix under the Frobenius norm, maximizing preserved information while compressing storage.",
         "example": "Netflix Prize collaborative filtering: A massive user-movie rating matrix [500,000 users × 20,000 movies] is decomposed via truncated SVD to rank 50, revealing latent movie genres and user taste archetypes.",
-        "tags": ["SVD", "Matrix Factorization", "Dimensionality Reduction", "Recommender Systems"]
+        "tags": [
+            "SVD",
+            "Matrix Factorization",
+            "Dimensionality Reduction",
+            "Recommender Systems"
+        ]
     },
     {
         "id": "concept_tensors",
@@ -71,7 +231,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\mathcal{T} \\in \\mathbb{R}^{B \\times S \\times D} \\quad (\\text{Batch} \\times \\text{Sequence Length} \\times \\text{Embedding Dimension})$$",
         "logic": "Deep learning models compute on contiguous multi-dimensional memory blocks. Tensor broadcasting allows operations across tensors of mismatched shapes without redundant memory allocations.",
         "example": "A mini-batch of video clips: Stored as a 5D tensor of shape `[Batch_Size=16, Frames=30, Channels=3, Height=224, Width=224]`.",
-        "tags": ["Tensors", "PyTorch", "Array Programming", "Deep Learning Data"]
+        "tags": [
+            "Tensors",
+            "PyTorch",
+            "Array Programming",
+            "Deep Learning Data"
+        ]
     },
     {
         "id": "concept_partial_derivatives",
@@ -85,7 +250,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\frac{\\partial f}{\\partial x_i} = \\lim_{h \\to 0} \\frac{f(x_1, \\dots, x_i + h, \\dots, x_d) - f(x_1, \\dots, x_i, \\dots, x_d)}{h}$$",
         "logic": "Neural networks possess millions or billions of parameters. Partial derivatives isolate the individual sensitivity of the total loss to small perturbations of each specific weight.",
         "example": "Predicting car price from house age and square footage: $\\frac{\\partial \\text{Price}}{\\partial \\text{SqFt}}$ tells you how much the price rises per extra square foot, keeping house age strictly fixed.",
-        "tags": ["Calculus", "Derivatives", "Sensitivity", "Optimization"]
+        "tags": [
+            "Calculus",
+            "Derivatives",
+            "Sensitivity",
+            "Optimization"
+        ]
     },
     {
         "id": "concept_chain_rule",
@@ -99,7 +269,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\frac{d}{dx} [f(g(x))] = f'(g(x)) \\cdot g'(x), \\quad \\frac{\\partial z}{\\partial x} = \\sum_k \\frac{\\partial z}{\\partial u_k} \\frac{\\partial u_k}{\\partial x}$$",
         "logic": "The chain rule is the mathematical bedrock of backpropagation. A neural network is simply a chain of composite functions $y = f_L(f_{L-1}(\\dots f_1(x)))$; gradients propagate backward layer by layer via sequential chain rule multiplications.",
         "example": "If your speed affects fuel consumption ($d\\text{Fuel}/d\\text{Speed}$), and pedal pressure affects speed ($d\\text{Speed}/d\\text{Pedal}$), the chain rule gives the direct impact of pedal pressure on fuel usage ($d\\text{Fuel}/d\\text{Pedal}$).",
-        "tags": ["Chain Rule", "Calculus", "Backpropagation", "Deep Learning Foundations"]
+        "tags": [
+            "Chain Rule",
+            "Calculus",
+            "Backpropagation",
+            "Deep Learning Foundations"
+        ]
     },
     {
         "id": "concept_gradient_vector",
@@ -113,7 +288,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\nabla f(w) = \\left[ \\frac{\\partial f}{\\partial w_1}, \\frac{\\partial f}{\\partial w_2}, \\dots, \\frac{\\partial f}{\\partial w_d} \\right]^T, \\quad w^{(t+1)} = w^{(t)} - \\eta \\nabla f(w^{(t)})$$",
         "logic": "Because the gradient vector points in the direction of steepest increase, stepping in the negative gradient direction ($-\\nabla f$) guarantees the fastest local decrease in loss.",
         "example": "Hiking on a foggy hill (Google ML Crash Course analogy): You cannot see the valley floor, so you feel the ground tilt under your boots and step in the exact opposite direction of the upward slope.",
-        "tags": ["Gradient", "Gradient Descent", "Optimization", "Vector Calculus"]
+        "tags": [
+            "Gradient",
+            "Gradient Descent",
+            "Optimization",
+            "Vector Calculus"
+        ]
     },
     {
         "id": "concept_hessian_matrix",
@@ -127,7 +307,13 @@ MATH_CONCEPTS = [
         "formula": "$$H_{ij} = \\frac{\\partial^2 f}{\\partial w_i \\partial w_j}, \\quad H = \\begin{bmatrix} \\frac{\\partial^2 f}{\\partial w_1^2} & \\cdots & \\frac{\\partial^2 f}{\\partial w_1 \\partial w_d} \\\\ \\vdots & \\ddots & \\vdots \\\\ \\frac{\\partial^2 f}{\\partial w_d \\partial w_1} & \\cdots & \\frac{\\partial^2 f}{\\partial w_d^2} \\end{bmatrix}$$",
         "logic": "First-order gradients only tell you slope; second-order Hessians tell you if the slope is getting steeper or flatter. If eigenvalues of $H$ have mixed positive and negative signs, the point is a saddle point rather than an extremum.",
         "example": "XGBoost optimization: Taylor series expansion of loss uses the first derivative $g_i$ (gradient) and second derivative $h_i$ (Hessian diagonal) to calculate the exact optimal leaf weight analytically.",
-        "tags": ["Hessian", "Second Order", "Curvature", "Newton Method", "XGBoost"]
+        "tags": [
+            "Hessian",
+            "Second Order",
+            "Curvature",
+            "Newton Method",
+            "XGBoost"
+        ]
     },
     {
         "id": "concept_convex_optimization",
@@ -141,7 +327,12 @@ MATH_CONCEPTS = [
         "formula": "$$f(\\alpha x + (1-\\alpha)y) \\le \\alpha f(x) + (1-\\alpha)f(y) \\quad \\forall \\alpha \\in [0, 1], \\quad H(x) \\succeq 0$$",
         "logic": "Linear Regression and Logistic Regression are convex (guaranteed global optimum with standard gradient descent). Deep Neural Networks are non-convex with countless saddle points, requiring momentum, adaptive learning rates, and overparameterization to escape plateaus.",
         "example": "Convex bowl: A marble dropped into a soup bowl always rolls to the exact center bottom. Non-convex mountain range: A marble can get stuck in countless small puddles and ravines.",
-        "tags": ["Convexity", "Optimization", "Global Minimum", "Loss Landscapes"]
+        "tags": [
+            "Convexity",
+            "Optimization",
+            "Global Minimum",
+            "Loss Landscapes"
+        ]
     },
     {
         "id": "concept_random_variables_variance",
@@ -155,7 +346,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\mathbb{E}[X] = \\mu = \\sum x_i P(x_i), \\quad \\text{Var}(X) = \\sigma^2 = \\mathbb{E}[(X - \\mu)^2] = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2$$",
         "logic": "Machine learning models are function approximators trained over empirical samples drawn from an underlying random distribution. Optimizing loss is equivalent to minimizing expected risk $\\mathbb{E}[\\mathcal{L}(y, \\hat{y})]$.",
         "example": "Fair die roll: Values 1 through 6 each with probability 1/6. Expected value is $\\mu = 3.5$, and variance is $\\sigma^2 = 2.92$.",
-        "tags": ["Probability", "Expectation", "Variance", "Statistics"]
+        "tags": [
+            "Probability",
+            "Expectation",
+            "Variance",
+            "Statistics"
+        ]
     },
     {
         "id": "concept_prob_distributions",
@@ -169,7 +365,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\text{Gaussian: } p(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}, \\quad \\text{Bernoulli: } P(y) = p^y (1-p)^{1-y}$$",
         "logic": "Selecting loss functions depends on the assumed output distribution: Gaussian assumption leads to Mean Squared Error; Bernoulli assumption leads to Binary Cross-Entropy; Poisson assumption leads to Poisson deviance loss.",
         "example": "Bernoulli models whether an ad is clicked (0 or 1); Gaussian models the continuous price of a used house; Poisson models the number of website visits per minute.",
-        "tags": ["Distributions", "Gaussian", "Bernoulli", "Loss Foundations"]
+        "tags": [
+            "Distributions",
+            "Gaussian",
+            "Bernoulli",
+            "Loss Foundations"
+        ]
     },
     {
         "id": "concept_bayes_theorem",
@@ -183,7 +384,12 @@ MATH_CONCEPTS = [
         "formula": "$$P(\\theta | \\mathcal{D}) = \\frac{P(\\mathcal{D} | \\theta) \\cdot P(\\theta)}{P(\\mathcal{D})} = \\frac{\\text{Likelihood} \\times \\text{Prior}}{\\text{Evidence}}$$",
         "logic": "Provides a formal mechanism to integrate domain knowledge (the Prior) with real observed data (the Likelihood) to reach a statistically sound revised conclusion (the Posterior).",
         "example": "Spam filtering: If 20% of all emails are spam (Prior $P(S)=0.2$), and the word 'lottery' appears in 80% of spam but only 1% of ham, Bayes' theorem computes the revised probability that an incoming email with 'lottery' is spam as ~95.2%.",
-        "tags": ["Bayes Rule", "Probability", "Inference", "Naive Bayes"]
+        "tags": [
+            "Bayes Rule",
+            "Probability",
+            "Inference",
+            "Naive Bayes"
+        ]
     },
     {
         "id": "concept_mle_map",
@@ -197,7 +403,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\hat{\\theta}_{\\text{MLE}} = \\arg\\max_\\theta \\sum_{i=1}^n \\log P(x_i | \\theta), \\quad \\hat{\\theta}_{\\text{MAP}} = \\arg\\max_\\theta \\left[ \\sum_{i=1}^n \\log P(x_i | \\theta) + \\log P(\\theta) \\right]$$",
         "logic": "Ridge regression is mathematically identical to MAP estimation assuming a zero-mean Gaussian prior on weights; Lasso regression is MAP with a zero-mean Laplace prior on weights.",
         "example": "Coin flip: If you flip a coin 3 times and get 3 heads, MLE concludes $P(\\text{Heads}) = 1.0$ (ridiculous). MAP with a prior centered at 0.5 concludes $P(\\text{Heads}) \\approx 0.625$.",
-        "tags": ["MLE", "MAP", "Bayesian", "Regularization Duality"]
+        "tags": [
+            "MLE",
+            "MAP",
+            "Bayesian",
+            "Regularization Duality"
+        ]
     },
     {
         "id": "concept_clt_lln",
@@ -211,7 +422,12 @@ MATH_CONCEPTS = [
         "formula": "$$\\lim_{n \\to \\infty} \\bar{X}_n = \\mu, \\quad \\sqrt{n}\\left(\\bar{X}_n - \\mu\\right) \\xrightarrow{d} \\mathcal{N}(0, \\sigma^2)$$",
         "logic": "Allows data scientists to compute confidence intervals and conduct valid hypothesis tests (e.g. A/B testing z-tests) on arbitrary metrics because sample means are guaranteed to be normally distributed.",
         "example": "Rolling 100 dice: Individual dice outcomes are uniform flat [1, 2, 3, 4, 5, 6]. But if you roll 100 dice and sum them, the resulting sum across thousands of trials forms an exquisite bell curve centered at 350.",
-        "tags": ["CLT", "Statistics", "A/B Testing", "Confidence Intervals"]
+        "tags": [
+            "CLT",
+            "Statistics",
+            "A/B Testing",
+            "Confidence Intervals"
+        ]
     },
     {
         "id": "concept_shannon_entropy",
@@ -225,7 +441,12 @@ MATH_CONCEPTS = [
         "formula": "$$H(X) = -\\sum_{i=1}^n P(x_i) \\log_2 P(x_i)$$",
         "logic": "A deterministic event with probability 1.0 contains 0 bits of information (0 entropy, no surprises). Maximum entropy occurs when all outcomes are equally likely (maximum unpredictability).",
         "example": "A fair coin has $H = -(0.5 \\log_2 0.5 + 0.5 \\log_2 0.5) = 1.0$ bit of entropy. A rigged coin that lands on heads 99% of the time has $H = 0.08$ bits (almost no surprise).",
-        "tags": ["Entropy", "Information Theory", "Uncertainty", "Decision Trees"]
+        "tags": [
+            "Entropy",
+            "Information Theory",
+            "Uncertainty",
+            "Decision Trees"
+        ]
     },
     {
         "id": "concept_cross_entropy",
@@ -239,7 +460,12 @@ MATH_CONCEPTS = [
         "formula": "$$H(P, Q) = -\\sum_{x} P(x) \\log Q(x) = -\\sum_{k=1}^K y_k \\log(\\hat{y}_k)$$",
         "logic": "The loss approaches infinity as the model predicts zero probability for the correct true class. This creates steep, aggressive corrective gradients when a model is confidently wrong.",
         "example": "Dog vs Cat classifier: True label is Dog [1, 0]. If the model predicts Dog with probability 0.99, loss is $-\\log(0.99) = 0.01$. If it foolishly predicts Dog with probability 0.01, loss is $-\\log(0.01) = 4.60$.",
-        "tags": ["Cross Entropy", "Loss Functions", "Classification", "Log Loss"]
+        "tags": [
+            "Cross Entropy",
+            "Loss Functions",
+            "Classification",
+            "Log Loss"
+        ]
     },
     {
         "id": "concept_kl_divergence",
@@ -253,7 +479,12 @@ MATH_CONCEPTS = [
         "formula": "$$D_{\\text{KL}}(P \\parallel Q) = \\sum_{x} P(x) \\log\\left( \\frac{P(x)}{Q(x)} \\right) = H(P, Q) - H(P)$$",
         "logic": "Always non-negative ($D_{\\text{KL}} \\ge 0$) via Gibbs' inequality, and zero if and only if $P = Q$. Used in Variational Autoencoders (VAEs) and RLHF / DPO to prevent fine-tuned models from drifting too far from their base pre-trained models.",
         "example": "LLM Alignment: In RLHF, a KL-penalty term $-\\beta D_{\\text{KL}}(\\pi_\\theta \\parallel \\pi_{\\text{ref}})$ prevents the agent from hacking the reward model by deviating into gibberish.",
-        "tags": ["KL Divergence", "Information Distance", "VAE", "RLHF Alignment"]
+        "tags": [
+            "KL Divergence",
+            "Information Distance",
+            "VAE",
+            "RLHF Alignment"
+        ]
     },
     {
         "id": "concept_mutual_information",
@@ -267,6 +498,10 @@ MATH_CONCEPTS = [
         "formula": "$$I(X; Y) = \\sum_{x, y} P(x, y) \\log\\left( \\frac{P(x, y)}{P(x) P(y)} \\right) = H(X) - H(X | Y)$$",
         "logic": "Unlike linear correlation (Pearson $r$) which only captures straight-line associations, Mutual Information captures arbitrary non-linear and non-monotonic relationships between features and labels.",
         "example": "Feature selection for credit default: A feature 'Age' and label 'Default' may have Pearson $r \\approx 0$ due to a U-shaped risk curve (very young and very old default more). Mutual Information easily captures this high predictive value.",
-        "tags": ["Mutual Information", "Feature Selection", "Non-linear Dependence"]
+        "tags": [
+            "Mutual Information",
+            "Feature Selection",
+            "Non-linear Dependence"
+        ]
     }
 ]
