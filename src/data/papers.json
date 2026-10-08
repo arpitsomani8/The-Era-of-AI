@@ -410,5 +410,20 @@
     "formula": "$$L_i(\\theta_i) = \\mathbb{E}_{(s, a, r, s') \\sim U(D)} \\left[ \\left( r + \\gamma \\max_{a'} Q(s', a'; \\theta_i^-) - Q(s, a; \\theta_i) \\right)^2 \\right]$$",
     "impact": "Proved that neural networks can learn superhuman control policies end-to-end from raw sensory data; paved the road for AlphaGo, MuZero, and modern RLHF.",
     "license": "Open Access (Nature Research)"
+  },
+  {
+    "id": "paper_2609_36995_salt_context_aligned_post_trai",
+    "title": "Salt++: Context-Aligned Post-Training for Few-Step Streaming Multimodal Generation",
+    "authors": "Xingtong Ge, Yutong Wang, Lunjie Zhu, Haitao Lin et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "generative",
+    "arxiv_id": "2609.36995",
+    "url": "https://arxiv.org/abs/2609.36995",
+    "one_liner": "Few-step streaming audio--video generation requires both causal modeling and step distillation, yet standard training recipes face two context-related challenge...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Few-step streaming audio--video generation requires both causal modeling and step distillation, yet standard training recipes face two context-related challenges. Teacher forcing pairs clean history with a noisy target, but supervises predictive contextual representations only indirectly through velocity prediction. Meanwhile, directly reusing bidirectional ...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
