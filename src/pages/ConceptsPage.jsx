@@ -737,22 +737,22 @@ export default function ConceptsPage() {
                     </div>
                   ))}
 
-                  {selectedConcept.types_of_vectors && selectedConcept.types_of_vectors.length > 0 && (
+                  {(selectedConcept.quick_types || selectedConcept.types_of_vectors) && (selectedConcept.quick_types || selectedConcept.types_of_vectors).length > 0 && (
                     <div className="bg-slate-900/90 rounded-2xl p-4 sm:p-5 border border-slate-700/80 shadow-sm space-y-3 mt-3">
                       <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                         <div className="flex items-center gap-2">
                           <Layers className="w-4 h-4 text-cyan-400" />
                           <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                            Types of Vectors at a Glance
+                            {selectedConcept.types_header || 'Types & Forms at a Glance'}
                           </h4>
                         </div>
                         <span className="text-[11px] text-cyan-300 font-mono bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">
-                          {selectedConcept.types_of_vectors.length} Types
+                          {(selectedConcept.quick_types || selectedConcept.types_of_vectors).length} {selectedConcept.types_badge || 'Types'}
                         </span>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                        {selectedConcept.types_of_vectors.map((item, vIdx) => (
+                        {(selectedConcept.quick_types || selectedConcept.types_of_vectors).map((item, vIdx) => (
                           <div 
                             key={vIdx} 
                             className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/90 flex flex-col justify-between gap-2 hover:border-cyan-500/40 transition"
