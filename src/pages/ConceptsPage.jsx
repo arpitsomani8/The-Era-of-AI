@@ -767,8 +767,8 @@ export default function ConceptsPage() {
                               </div>
                             </div>
                             {item.looks_like && (
-                              <div className="text-[11px] font-mono text-amber-300 bg-amber-950/30 px-2.5 py-1 rounded border border-amber-500/20 truncate">
-                                <span className="text-amber-500 text-[10px] mr-1">e.g.</span>{item.looks_like}
+                              <div className="text-[11px] font-mono text-amber-300 bg-amber-950/30 px-2.5 py-1.5 rounded border border-amber-500/20 break-words leading-relaxed">
+                                <span className="text-amber-500 text-[10px] mr-1.5 font-sans font-semibold">e.g.</span><MathText text={item.looks_like.replace(/^e\.g\.\s*/i, '')} />
                               </div>
                             )}
                           </div>
