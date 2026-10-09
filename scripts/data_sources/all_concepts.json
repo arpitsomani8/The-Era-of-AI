@@ -3995,7 +3995,7 @@
     "category": "data",
     "category_label": "Data Preprocessing & EDA",
     "raw_subtopic": "Outlier Clipping / Capping (Truncating extreme values)",
-    "def": "Outlier Clipping & Winsorization is a data preprocessing technique that sets extreme values beyond chosen lower and upper boundaries to the nearest limit, preserving 100% of the sample rows while stabilizing distribution variance.",
+    "def": "Outlier clipping means setting values outside chosen limits to the nearest limit, rather than deleting the records. Winsorization is a form of clipping where those limits are chosen using percentiles (such as the 1st and 99th percentiles).",
     "formula": "$$x_{\\text{clipped}} = \\min(\\max(x, L), U) = \\begin{cases} L & \\text{if } x < L \\\\ x & \\text{if } L \\le x \\le U \\\\ U & \\text{if } x > U \\end{cases}, \\quad L = P_{\\alpha}, \\quad U = P_{1 - \\alpha}$$",
     "logic": "Extreme outliers exert excessive leverage on regression lines and destabilize gradient updates. Rather than deleting rows (trimming) and discarding valuable accompanying features, clipping pulls extreme values inward to specified percentile or statistical fences, stabilizing mean and variance while keeping sample size 100% intact.",
     "example": "E-commerce checkout: A single B2B bulk purchase of $50,000 in a retail dataset with median $50. Rather than deleting the customer record, 99th-percentile Winsorization caps the order value at $500, preserving the customer's age, location, and browsing history without wrecking model gradients.",
@@ -4005,27 +4005,27 @@
       "Outlier Treatment"
     ],
     "raw_sub": "Outlier Clipping / Capping (Truncating extreme values)",
-    "definition": "Outlier Clipping & Winsorization is a data preprocessing technique that sets extreme values beyond chosen lower and upper boundaries to the nearest limit, preserving 100% of the sample rows while stabilizing distribution variance.",
+    "definition": "Outlier clipping means setting values outside chosen limits to the nearest limit, rather than deleting the records. Winsorization is a form of clipping where those limits are chosen using percentiles (such as the 1st and 99th percentiles).",
     "formula_explanation": "",
-    "simple_summary": "Clipping (or Winsorization) caps extreme numbers at set boundaries (like the 1st and 99th percentiles or physical limits) instead of throwing the rows away. This stabilizes the mean and standard deviation, prevents massive outliers from distorting your model's weights, and preserves all other useful columns in those rows.",
+    "simple_summary": "Instead of throwing away rows with extreme numbers (trimming), Outlier Clipping caps them at fixed limits. Winsorization is simply clipping using percentiles (like the 1st% and 99th%). This protects your model from extreme spikes while keeping 100% of your data rows and all their other columns.",
     "core_terms": [
       {
-        "term": "Winsorization (Percentile Capping)",
-        "what_is_it": "• A statistical technique named after Charles P. Winsor that caps extreme tail values at fixed percentile thresholds (commonly the 1st and 99th percentiles).\n• Rather than deleting extreme rows, it pulls tail observations inward to the boundary cutoff, retaining 100% of the dataset rows.",
-        "analogy": "A gymnastics competition scoring rule where judge scores cannot exceed a ceiling of 10.0, capping extreme flukes without disqualifying the athlete.",
-        "why_it_matters": "Preserves every single data row and all accompanying feature columns while stabilizing the mean and variance against leverage points."
+        "term": "Outlier Clipping (Capping / Clamping)",
+        "what_is_it": "• Setting any value that falls outside your chosen lower and upper limits to the nearest boundary, instead of deleting the row.\n• If a number is too small (below lower limit L), it is pulled up to L; if it is too big (above upper limit U), it is capped down to U.",
+        "analogy": "A speed limiter on an electric scooter: no matter how hard you push the throttle downhill, your speed is capped at 25 km/h.",
+        "why_it_matters": "Protects machine learning models from wild numerical spikes without throwing away the rest of the customer or patient record."
       },
       {
-        "term": "Threshold Clipping & Clamping",
-        "what_is_it": "• Setting hard numerical boundaries (L and U) based on physical laws, business domain knowledge, or statistical fences (like Tukey's IQR: Q3 + 1.5 × IQR).\n• Any observation below L is set to L; any observation above U is set to U; values in between remain completely untouched.",
-        "analogy": "A thermostat control on an air conditioner: temperatures outside the 16°C to 30°C comfort zone are clamped to the nearest setpoint rather than shutting down the system.",
-        "why_it_matters": "Enforces realistic physical boundaries (e.g. human age between 0 and 110, or vehicle speed ≥ 0) and protects downstream models from rogue sensor glitches."
+        "term": "Winsorization (Percentile-Based Capping)",
+        "what_is_it": "• A simple, automated way to clip data using percentiles (most commonly the 1st percentile at the bottom and the 99th percentile at the top).\n• Any number in the top 1% gets capped down to the 99th percentile value, and any number in the bottom 1% gets pulled up to the 1st percentile value.",
+        "analogy": "In a class test where one student scores 500 bonus points while everyone else gets under 100, the teacher caps the top score at 98 so the class curve isn't ruined.",
+        "why_it_matters": "You don't have to guess manual limits—the dataset's own percentiles automatically pick fair, clean boundaries for you."
       },
       {
-        "term": "Trimming vs. Winsorizing Tradeoff",
-        "what_is_it": "• Trimming (truncation) removes outlier rows entirely from the table, whereas Winsorizing keeps every row but pulls extreme values to the fence boundary.\n• Trimming is appropriate strictly for corrupt data entry errors; Winsorizing is best for real-world extreme events (e.g. high-wealth accounts or viral web traffic).",
-        "analogy": "Pruning a tree by clipping a single overgrown branch down to the garden fence line (Winsorization) versus uprooting and throwing away the entire tree (Trimming).",
-        "why_it_matters": "Prevents data loss: if an e-commerce buyer spent $100,000, trimming deletes their age, location, and click history; Winsorizing keeps that customer while bounding their spending."
+        "term": "Trimming vs. Winsorizing (Delete vs. Keep)",
+        "what_is_it": "• Trimming completely deletes the outlier rows from your dataset, making your table smaller and throwing away all other columns in that row.\n• Winsorizing keeps every single row, only adjusting the extreme number so you preserve 100% of your data and feature relationships.",
+        "analogy": "Trimming is throwing out an entire apple because of one small bruised spot; Winsorizing is slicing off the bruised tip and keeping the rest of the good apple.",
+        "why_it_matters": "Stops unnecessary data loss—if a customer spent $50,000, you don't want to discard their age, location, and account history just because of one big order!"
       }
     ],
     "symbol_guide": [
@@ -4071,8 +4071,8 @@
       "Training Encapsulation: Thresholds L and U must be derived strictly from training folds to prevent data leakage during inference."
     ],
     "definition_bullets": [
-      "Outlier Clipping: Setting numerical feature values beyond specified lower and upper thresholds to the nearest boundary limit.",
-      "Winsorization: A percentile-based capping method replacing values outside chosen percentiles (e.g. 1st and 99th) with the percentile cutoffs."
+      "Outlier Clipping: Setting numbers that are too high or too low to the nearest boundary limit, keeping the record intact.",
+      "Winsorization: A specific type of clipping that uses fixed percentiles (such as the 1st and 99th percentiles) as the boundaries."
     ],
     "types_header": "Clipping Techniques & Boundary Selection",
     "types_badge": "Tail Management",
