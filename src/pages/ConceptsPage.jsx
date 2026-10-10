@@ -510,7 +510,7 @@ export default function ConceptsPage() {
                     title={selectedConcept.title}
                     definition={selectedConcept.def || selectedConcept.definition || selectedConcept.simple_summary}
                     intuition={selectedConcept.logic || selectedConcept.core_logic || selectedConcept.formula_explanation}
-                    example={selectedConcept.example || selectedConcept.numerical_example}
+                    example={selectedConcept.example || (typeof selectedConcept.numerical_example === 'string' ? selectedConcept.numerical_example : '')}
                   />
 
                   {/* Mark as Mastered button */}
@@ -714,7 +714,7 @@ export default function ConceptsPage() {
                         </div>
                         
                         <div className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal whitespace-pre-line">
-                          <MathText text={termItem.what_is_it} />
+                          <MathText text={termItem.what_is_it || termItem.definition} />
                         </div>
                       </div>
 
@@ -883,7 +883,11 @@ export default function ConceptsPage() {
                       <span>Step-by-Step Numerical Calculation (Real Numbers):</span>
                     </div>
                     <p className="whitespace-pre-line font-mono text-xs sm:text-[13px] leading-relaxed text-slate-300 bg-slate-950/60 p-3 rounded-lg border border-indigo-950">
-                      {selectedConcept.numerical_example}
+                      {typeof selectedConcept.numerical_example === 'string'
+                        ? selectedConcept.numerical_example
+                        : typeof selectedConcept.numerical_example === 'object' && selectedConcept.numerical_example !== null
+                        ? `${selectedConcept.numerical_example.scenario || ''}\n\n${(selectedConcept.numerical_example.steps || []).join('\n')}\n\n${selectedConcept.numerical_example.result || ''}`
+                        : String(selectedConcept.numerical_example || '')}
                     </p>
                   </div>
                 )}
