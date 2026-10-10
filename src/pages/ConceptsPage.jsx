@@ -861,13 +861,13 @@ export default function ConceptsPage() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selectedConcept.symbol_guide.map((sym, sIdx) => (
-                        <div key={sIdx} className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-xs flex items-start gap-2">
-                          <code className="text-cyan-300 font-mono font-bold shrink-0 bg-slate-900 px-2 py-0.5 rounded border border-slate-700/80">
+                        <div key={sIdx} className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-xs flex items-start gap-2.5">
+                          <code className="text-cyan-300 font-mono font-bold shrink-0 bg-slate-900 px-2 py-0.5 rounded border border-slate-700/80 min-w-[28px] text-center">
                             {sym.symbol}
                           </code>
-                          <div className="min-w-0">
-                            <div className="text-slate-200 font-semibold">{sym.meaning}</div>
-                            <div className="text-[11px] text-slate-400 leading-tight mt-0.5">{sym.plain_english}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-slate-200 font-medium leading-relaxed">{sym.meaning}</div>
+                            {sym.plain_english && <div className="text-[11px] text-slate-400 leading-tight mt-0.5">{sym.plain_english}</div>}
                           </div>
                         </div>
                       ))}
