@@ -18729,5 +18729,163 @@
       "Model Registry",
       "Feature Schema"
     ]
+  },
+  {
+    "id": "concept_stationarity_acf_pacf",
+    "title": "Stationarity, Autocorrelation (ACF/PACF) & Differencing",
+    "topic_id": "ml_time_series",
+    "topic_label": "Time Series Analysis & Forecasting Dynamics",
+    "category": "ml",
+    "category_label": "Classical Machine Learning",
+    "raw_subtopic": "Stationarity, Autocorrelation (ACF/PACF) & Differencing",
+    "def": "The foundational toolkit for time-series forecasting: Stationarity ensures statistical properties remain stable over time, Autocorrelation (ACF/PACF) reveals relationships between past and present values, and Differencing eliminates trends to prepare data for models like ARIMA.",
+    "definition": "A time series is a chronological sequence of observations where the order of time steps matters. To forecast future steps reliably, three core concepts are required: 1) Stationarity: The series must maintain a constant mean, constant variance, and time-independent autocovariance over time. 2) Autocorrelation Functions: ACF measures total correlation between the series and its past lags, while PACF isolates the direct relationship with a specific lag by controlling for intermediate time steps. 3) Differencing: Subtracting past values from current observations (first-order or seasonal) to remove trends and stabilize the mean so models do not mistake upward drift for true predictive relationships.",
+    "simple_summary": "Think of tracking daily weather: Stationarity means the overall climate stays stable across years, even if daily temperatures bounce up and down. ACF is checking if today's heat relates to last Tuesday's heat. PACF checks if Monday directly influenced Wednesday, or if it only felt that way because Tuesday was hot. Differencing is subtracting yesterday's temperature from today's so you predict day-to-day changes instead of getting fooled by the shift from winter to summer!",
+    "core_terms": [
+      {
+        "term": "Stationarity (Weak Stationarity)",
+        "what_is_it": "• Constant Mean: The average value does not drift up or down systematically over time.\n• Constant Variance: The spread and volatility of fluctuations remain stable across all periods.\n• Invariant Autocovariance: Correlation between two observations depends only on their lag distance, not calendar dates.",
+        "definition": "A property of a time series whose mean, variance, and autocovariance remain invariant over time.",
+        "analogy": "A steady heartbeat on an EKG monitor fluctuating around a fixed baseline, unlike an accelerating rocket climbing to space.",
+        "why_it_matters": "Classical models like ARMA and ARIMA assume stationarity so historical statistical relationships remain valid for future forecasts."
+      },
+      {
+        "term": "Autocorrelation Function (ACF)",
+        "what_is_it": "• Lag Correlation: Measures how strongly current values relate to past values at delay k (Lag 1, Lag 2, Lag 7).\n• Direct + Indirect: Captures both direct influences and cumulative ripples passing through middle time steps.\n• Diagnostic Role: Helps identify repeating seasonal cycles (e.g. weekly spikes at lag 7) and Moving Average (MA) order q.",
+        "definition": "A metric measuring the linear correlation between a time series and a lagged version of itself across multiple time steps.",
+        "analogy": "Checking how much today's electricity consumption resembles yesterday's, the day before, or last week's consumption.",
+        "why_it_matters": "Reveals persistent memory and repeating seasonal periods within raw sequential data."
+      },
+      {
+        "term": "Partial Autocorrelation Function (PACF)",
+        "what_is_it": "• Direct Impact: Isolates the direct correlation between observation X_t and lag X_{t-k}.\n• Controls Intermediates: Statistically removes the linear ripple effects of all intermediate steps (X_{t-1} through X_{t-k+1}).\n• Diagnostic Role: Identifies the exact Autoregressive (AR) order p where PACF cuts off to zero.",
+        "definition": "The correlation between current and lagged observations after controlling for the linear effects of all intermediate lags.",
+        "analogy": "Measuring your direct genetic resemblance to your grandparent after accounting for the traits inherited through your parent.",
+        "why_it_matters": "Prevents indirect correlations from misleading you about which historical lags directly drive future outcomes."
+      },
+      {
+        "term": "Lag Differencing (First & Seasonal)",
+        "what_is_it": "• First-Order Differencing: Replaces raw values with consecutive changes: ΔX_t = X_t - X_{t-1} to eliminate linear trends.\n• Second-Order Differencing: Differences the differences (Δ²X_t) when trends are non-linear or accelerating.\n• Seasonal Differencing: Subtracts observations from one cycle earlier: Δ_s X_t = X_t - X_{t-s} (e.g. s=7 for daily data).",
+        "definition": "A mathematical transformation that subtracts past observations from current values to remove trends and induce stationarity.",
+        "analogy": "Instead of tracking your odometer reading (which always climbs), tracking your daily driving mileage (which stays stable).",
+        "why_it_matters": "Provides the 'Integrated' (I = d) component of ARIMA, converting trending real-world data into stationary inputs."
+      }
+    ],
+    "symbol_guide": [
+      {
+        "symbol": "X_t",
+        "meaning": "Observation recorded at discrete time index t (e.g. daily kWh consumption)."
+      },
+      {
+        "symbol": "X_{t-k}",
+        "meaning": "Observation k time steps in the past (lag k)."
+      },
+      {
+        "symbol": "μ",
+        "meaning": "Constant expected mean of a stationary time series: E[X_t] = μ."
+      },
+      {
+        "symbol": "σ²",
+        "meaning": "Constant variance of a stationary time series: Var(X_t) = σ²."
+      },
+      {
+        "symbol": "γ_k",
+        "meaning": "Autocovariance between observations separated by lag k: Cov(X_t, X_{t-k})."
+      },
+      {
+        "symbol": "r_k",
+        "meaning": "Sample autocorrelation coefficient at lag k, bounded between -1 and +1."
+      },
+      {
+        "symbol": "Δ",
+        "meaning": "First-order differencing operator: ΔX_t = X_t - X_{t-1}."
+      },
+      {
+        "symbol": "s",
+        "meaning": "Seasonal lag period (e.g., s = 7 for weekly patterns, s = 12 for monthly)."
+      },
+      {
+        "symbol": "p-value",
+        "meaning": "Augmented Dickey-Fuller test statistic (p < 0.05 rejects unit root, confirming stationarity)."
+      }
+    ],
+    "formula": "$$\\Delta X_t = X_t - X_{t-1}, \\quad r_k = \\frac{\\sum_{t=k+1}^T (X_t - \\bar{X})(X_{t-k} - \\bar{X})}{\\sum_{t=1}^T (X_t - \\bar{X})^2}, \\quad \\text{ADF}: \\Delta X_t = \\alpha + \\beta t + \\gamma X_{t-1} + \\sum_{i=1}^p \\delta_i \\Delta X_{t-i} + \\epsilon_t$$",
+    "logic": "Time-series models require stable mathematical foundations. If a series has an upward trend, the mean changes at every time step, producing spurious statistical significance between unrelated series. Differencing transforms a non-stationary series with trend into a stationary series of increments. Once stationary, ACF and PACF plots reveal whether the underlying data-generating process is driven by autoregressive memory (PACF cutoff), moving average shocks (ACF cutoff), or repeating seasonal cycles (spikes at lag s), directly determining ARIMA(p, d, q) hyperparameters.",
+    "example": "Smart Grid Power Demand: Daily electricity consumption climbs steadily over 6 months from 100 kWh to 300 kWh due to summer air conditioning. Raw ADF testing yields p = 0.88 (fails stationarity). Taking first differences ΔX_t yields daily changes fluctuating around +1.2 kWh with constant spread, dropping ADF p-value to 0.008 (stationary!). ACF shows a strong repeating spike at lag 7 (weekly cycle), indicating a seasonal ARIMA specification is required.",
+    "numerical_example": "Step-by-Step Numerical Walkthrough with Electricity Meter Data:\n\n1. Raw Non-Stationary Sequence:\n   • Daily consumption over 5 days: X = [100, 110, 120, 130, 140] kWh.\n   • Inspection: Steady upward drift; mean increases from 100 to 140.\n   • ADF Test: p-value = 0.89 (> 0.05 -> Fail to reject null hypothesis -> Non-stationary!).\n\n2. First-Order Differencing (d = 1):\n   • ΔX_2 = 110 - 100 = 10 kWh\n   • ΔX_3 = 120 - 110 = 10 kWh\n   • ΔX_4 = 130 - 120 = 10 kWh\n   • ΔX_5 = 140 - 130 = 10 kWh\n   • Resulting Series: [10, 10, 10, 10] kWh.\n   • Trend is completely removed! Mean = 10, variance = 0, ADF p-value < 0.01 (Stationary!).\n\n3. Second-Order Differencing (d = 2, if increment was accelerating):\n   • Δ²X = [10 - 10, 10 - 10, 10 - 10] = [0, 0, 0]. (Use only when 1st diff still has a trend).\n\n4. AR(1) Autocorrelation vs. Partial Autocorrelation:\n   • Process: X_t = 0.8 * X_{t-1} + ε_t.\n   • ACF at Lag 1: r_1 = 0.80\n   • ACF at Lag 2: r_2 = 0.80² = 0.64 (indirect relationship through lag 1)\n   • ACF at Lag 3: r_3 = 0.80³ = 0.512 (gradual geometric decay/tail off)\n   • PACF at Lag 1: 0.80 (strong direct spike!)\n   • PACF at Lag 2, 3: 0.00 (cuts off to zero after controlling for lag 1!).\n\n5. ARIMA(p, d, q) Identification:\n   • Differencing needed: d = 1 (1st difference removed trend).\n   • PACF cuts off after lag 1 -> Autoregressive order p = 1.\n   • ACF tails off geometrically -> Moving average order q = 0.\n   • Best Model Baseline: ARIMA(1, 1, 0).",
+    "pitfalls": [
+      "Confusing Stationary with Constant: Stationary series fluctuate continuously; what stays constant is their statistical mean, variance, and autocovariance.",
+      "Over-Differencing (d >= 2): Differencing more than necessary injects artificial high-frequency noise and creates severe negative autocorrelation.",
+      "Analyzing ACF/PACF on Trending Data: A raw upward trend produces artificially high ACF values across all lags; always difference to stationarity first.",
+      "Ignoring Seasonal Patterns: First differencing removes general trends but leaves 7-day or 12-month waves; apply seasonal differencing (Δ_s) when cycles repeat.",
+      "Relying Solely on ADF p-values: ADF tests can have low power in small datasets; cross-check with KPSS tests and rolling mean/std plots."
+    ],
+    "types_header": "Time Series Diagnostic & Transformation Toolkit",
+    "types_badge": "Time Series Quartet",
+    "quick_types": [
+      {
+        "type": "Stationary Series",
+        "definition": "Fluctuates around a constant mean with stable variance and time-invariant autocovariance.",
+        "looks_like": "Stable baseline | Constant variance"
+      },
+      {
+        "type": "First-Order Differencing (ΔX_t)",
+        "definition": "Subtracts previous step (X_t - X_{t-1}) to strip linear upward or downward trends.",
+        "looks_like": "Removes linear trends | d = 1"
+      },
+      {
+        "type": "Seasonal Differencing (Δ_s X_t)",
+        "definition": "Subtracts past cycle observation (X_t - X_{t-s}) to eliminate repeating weekly or yearly waves.",
+        "looks_like": "Removes seasonal cycles | s = 7 or 12"
+      },
+      {
+        "type": "ACF & PACF Diagnostics",
+        "definition": "Correlation plots identifying memory length, seasonal lags, and AR(p) / MA(q) orders.",
+        "looks_like": "PACF cutoff -> AR(p) | ACF cutoff -> MA(q)"
+      }
+    ],
+    "connected_logic": [
+      {
+        "title": "The 3 Conditions of Weak Stationarity",
+        "content": "• Constant Mean: Expected value E[X_t] = μ does not drift across time windows.\n• Constant Variance: Dispersion Var(X_t) = σ² remains stable across all seasons.\n• Invariant Autocovariance: Cov(X_t, X_{t-k}) = γ_k depends purely on lag distance k.\n• Stationary does not mean flat; series can oscillate vigorously around its mean."
+      },
+      {
+        "title": "How to Diagnose Stationarity",
+        "content": "• Visual Plot: Scan for visible trends, shifting spreads, or seasonal waves.\n• Rolling Statistics: Calculate 30-period rolling mean and standard deviation lines.\n• ADF Test: Null hypothesis H_0 posits a unit root (non-stationary); p < 0.05 confirms stationarity.\n• KPSS Complement: Null hypothesis posits stationarity; pair with ADF for bulletproof diagnosis."
+      },
+      {
+        "title": "ACF vs. PACF Diagnostic Rules",
+        "content": "• ACF (Autocorrelation): Measures total correlation; tails off for AR, cuts off after lag q for MA.\n• PACF (Partial Autocorrelation): Isolates direct link; cuts off after lag p for AR, tails off for MA.\n• Seasonal Spikes: Sharp ACF spikes at lag 7, 14 indicate weekly periodicity.\n• Prerequisite: Always induce stationarity before interpreting ACF/PACF signatures."
+      },
+      {
+        "title": "Connecting Differencing to ARIMA(p, d, q)",
+        "content": "• AR (p): Autoregressive order identified by PACF cutoff point.\n• I (d): Differencing order needed to achieve stationarity (usually d = 0 or 1).\n• MA (q): Moving Average order identified by ACF cutoff point.\n• Validation: Combine ACF/PACF visual clues with AIC/BIC model comparison and cross-validation."
+      }
+    ],
+    "key_takeaways": [
+      "A time series is chronological data where observation order and temporal dependencies matter.",
+      "Stationarity means constant mean, constant variance, and autocovariance that depends only on lag distance.",
+      "First-order differencing (ΔX_t = X_t - X_{t-1}) removes linear trends; seasonal differencing removes repeating cycles.",
+      "ADF test verifies stationarity: a p-value < 0.05 provides evidence to reject the unit-root null hypothesis.",
+      "ACF measures total correlation across lags; PACF isolates direct correlation by removing intermediate lag ripples.",
+      "PACF cutoff indicates AR order p; ACF cutoff indicates MA order q; differencing depth defines integration order d."
+    ],
+    "definition_bullets": [
+      "Time Series: An ordered sequence of data points recorded at successive, evenly spaced intervals of time.",
+      "Stationarity: A statistical condition where the joint probability distribution does not shift over time.",
+      "Autocorrelation Function (ACF): The cross-correlation of a signal with a delayed copy of itself as a function of lag.",
+      "Partial Autocorrelation Function (PACF): The conditional correlation between two points in a time series given all intermediate values.",
+      "Differencing: An invertible data transformation computing consecutive differences to convert non-stationary series into stationary ones."
+    ],
+    "tags": [
+      "Time Series",
+      "Stationarity",
+      "ACF",
+      "PACF",
+      "Differencing",
+      "ADF Test",
+      "ARIMA",
+      "Forecasting"
+    ]
   }
 ]
