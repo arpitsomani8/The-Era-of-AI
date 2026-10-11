@@ -760,10 +760,10 @@ export default function ConceptsPage() {
                             <div>
                               <div className="font-semibold text-xs text-cyan-300 flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                                {item.type}
+                                {item.type || item.name}
                               </div>
                               <div className="text-[11px] text-slate-300 mt-1 leading-relaxed">
-                                {item.definition}
+                                {item.definition || item.description}
                               </div>
                             </div>
                             {item.looks_like && (
@@ -926,7 +926,7 @@ export default function ConceptsPage() {
                   <span>Portion 5 &bull; Common Pitfalls &amp; Misconceptions</span>
                 </div>
                 <div className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                  <MathText text={selectedConcept.pitfalls} />
+                  <MathText text={Array.isArray(selectedConcept.pitfalls) ? selectedConcept.pitfalls.map(p => `• ${p}`).join('\n\n') : selectedConcept.pitfalls} />
                 </div>
               </div>
             )}
@@ -959,7 +959,7 @@ export default function ConceptsPage() {
                         <span>{point.title}</span>
                       </div>
                       <div className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-7">
-                        <MathText text={point.content} />
+                        <MathText text={point.content || (point.points ? point.points.map(p => `• ${p}`).join('\n') : (point.description || ''))} />
                       </div>
                     </div>
                   ))}
