@@ -10356,63 +10356,146 @@
     "category": "ml",
     "category_label": "Classical Machine Learning",
     "raw_subtopic": "t-SNE & UMAP (High-dimensional manifold projection)",
-    "def": "Non-linear dimensionality reduction algorithms that map complex high-dimensional datasets into 2D or 3D for visual inspection, preserving local neighborhood structures.",
-    "formula": "$$p_{j|i} = \\frac{\\exp(-\\|x_i - x_j\\|^2 / 2\\sigma_i^2)}{\\sum_{k \\neq i} \\exp(-\\|x_i - x_k\\|^2 / 2\\sigma_i^2)}, \\quad q_{ij} = \\frac{(1 + \\|y_i - y_j\\|^2)^{-1}}{\\sum (1 + \\|y_k - y_l\\|^2)^{-1}}$$",
-    "logic": "PCA only captures linear projections. t-SNE and UMAP preserve non-linear topological manifolds, keeping points that were close in 1536-dimensional embedding space close on a 2D screen.",
-    "example": "Visualizing OpenAI text embeddings: Plotting 10,000 news articles on a 2D scatter plot, where politics, sports, and science naturally cluster into tight distinct islands.",
-    "tags": [
-      "t-SNE",
-      "UMAP",
-      "Manifold Learning",
-      "Visualization"
-    ],
-    "raw_sub": "t-SNE & UMAP (High-dimensional manifold projection)",
-    "definition": "Non-linear dimensionality reduction algorithms that map complex high-dimensional datasets into 2D or 3D for visual inspection, preserving local neighborhood structures.",
-    "formula_explanation": "",
-    "simple_summary": "t-SNE & UMAP Manifold Projections explained simply: Non-linear dimensionality reduction algorithms that map complex high-dimensional datasets into 2D or 3D for visual inspection, preserving local neighborhood structures.. It ensures machine learning models can learn and generalize effectively.",
+    "def": "t-SNE (t-Distributed Stochastic Neighbor Embedding) and UMAP (Uniform Manifold Approximation and Projection) are non-linear dimensionality-reduction techniques that project complex high-dimensional data into 2D or 3D for visualization.",
+    "definition": "t-SNE and UMAP are non-linear algorithms used to visualize high-dimensional data on a 2D or 3D screen. While PCA can only draw straight linear axes, t-SNE and UMAP can unfold curved, complex geometric shapes called manifolds. They work by calculating how close points are to their neighbors in high-dimensional space, and then arranging points on a flat map so that true neighbors stay close together. They are primarily used for visual data exploration, discovering hidden clusters, and inspecting embeddings.",
+    "simple_summary": "Imagine rolling up a 2D sheet of paper into a tight 3D cylinder. In 3D space, opposite edges of the paper look close together, but along the paper's actual surface they are far apart! That paper is a manifold. PCA would try to flatten the roll by squishing it with a hammer, crushing the structure. In contrast, t-SNE and UMAP gently unroll the paper flat onto your desk so every point returns to its true original neighborhood!",
     "core_terms": [
       {
-        "term": "t-SNE",
-        "what_is_it": "t-SNE is a key building block in Unsupervised Learning & Clustering. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-        "analogy": "Think of t-SNE like a specific tool in a toolbox: it solves one distinct step in the machine learning process so the rest of the model can work accurately.",
-        "why_it_matters": "Essential in Unsupervised Learning & Clustering to ensure the model trains stably, avoids overfitting, and delivers reliable predictions."
+        "term": "What is a Manifold & Embedding?",
+        "what_is_it": "• Manifold: A structure that looks complicated in high dimensions, but is simple and smooth locally (like a rolled-up sheet of paper).\n• Embedding: The process of mapping high-dimensional observations into new low-dimensional coordinate vectors (like 2D X and Y coordinates).\n• Non-linear power: Captures curves, twists, and swiss-roll shapes that linear PCA misses.",
+        "definition": "A lower-dimensional geometric surface embedded within a higher-dimensional space, and the coordinate mapping that represents it.",
+        "analogy": "Unrolling a crumpled world map flat onto a table so continents take their true shapes.",
+        "why_it_matters": "Real-world data (images, text, genetics) naturally lies on non-linear manifolds rather than flat planes."
       },
       {
-        "term": "UMAP Manifold Projections",
-        "what_is_it": "UMAP Manifold Projections is a key building block in Unsupervised Learning & Clustering. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-        "analogy": "Think of UMAP Manifold Projections like a specific tool in a toolbox: it solves one distinct step in the machine learning process so the rest of the model can work accurately.",
-        "why_it_matters": "Essential in Unsupervised Learning & Clustering to ensure the model trains stably, avoids overfitting, and delivers reliable predictions."
+        "term": "t-SNE & The Crowding Problem",
+        "what_is_it": "• Full Form: t-Distributed Stochastic Neighbor Embedding.\n• Core mechanism: Measures probability similarities between neighbors using Gaussian curves in high dimensions.\n• Low-dimensional map: Uses a Student's t-distribution with heavy tails to place points on a 2D map.\n• The t-distribution prevents distant points from crowding together in the center (solves the crowding problem).",
+        "definition": "A non-linear visualization technique that minimizes the divergence between high-dimensional and low-dimensional neighbor probabilities.",
+        "analogy": "Arranging guests at dinner tables so close friends sit side-by-side without squishing distant strangers together.",
+        "why_it_matters": "The classic gold-standard algorithm for revealing fine-grained, local cluster neighborhoods in 2D."
+      },
+      {
+        "term": "What Does Perplexity Control in t-SNE?",
+        "what_is_it": "• Perplexity sets the effective number of local neighbors considered when measuring similarities.\n• Low perplexity (e.g. 5): Focuses only on tiny, tight local groups; can create fake fragmented clusters.\n• High perplexity (e.g. 50): Looks at broad global neighborhoods; can merge distinct clusters.\n• Best practice: Always test several perplexity values (typically between 5 and 50) and check if patterns persist.",
+        "definition": "A smooth measure of the effective number of nearest neighbors used to construct similarity distributions.",
+        "analogy": "Adjusting the zoom lens on a camera from extreme close-up (low perplexity) to wide-angle view (high perplexity).",
+        "why_it_matters": "The single most influential hyperparameter in t-SNE that changes the visual cluster layout."
+      },
+      {
+        "term": "UMAP & Key Parameters (n_neighbors, min_dist)",
+        "what_is_it": "• Full Form: Uniform Manifold Approximation and Projection.\n• Core mechanism: Builds a weighted neighbor graph of points and optimizes an equivalent 2D graph.\n• Key advantages: Much faster than t-SNE, preserves both local and global structure better, and supports transform() for new points.\n• Parameters: n_neighbors (neighborhood scale) and min_dist (how tightly points clump together in 2D).",
+        "definition": "A scalable graph-based manifold learning method built on fuzzy simplicial sets and cross-entropy optimization.",
+        "analogy": "Creating a rubber net connecting nearby points, then stretching the net flat onto a 2D table without snapping the strings.",
+        "why_it_matters": "Modern replacement for t-SNE that scales to millions of data points and preserves broader cluster relationships."
+      },
+      {
+        "term": "The PCA Preprocessing Workflow",
+        "what_is_it": "• Standard practice: Run PCA before running t-SNE or UMAP on very high-dimensional data.\n• Step 1: Scale features with StandardScaler.\n• Step 2: Reduce 1,000+ features down to 30–50 components using PCA.\n• Step 3: Run t-SNE or UMAP on those 30–50 components.\n• Benefit: Drastically speeds up computation and removes random background noise.",
+        "definition": "A two-stage dimensionality-reduction pipeline combining linear noise filtering with non-linear manifold projection.",
+        "analogy": "Roughly cutting a diamond with a saw (PCA) before polishing fine facets with a micro-laser (t-SNE/UMAP).",
+        "why_it_matters": "Significantly improves visualization quality and avoids long training times on high-dimensional data."
       }
     ],
     "symbol_guide": [
       {
-        "symbol": "∑ (Sigma)",
-        "meaning": "Summation",
-        "plain_english": "Add up all values across the index"
+        "symbol": "p_ij",
+        "meaning": "Probability similarity between points i and j in high-dimensional space."
       },
       {
-        "symbol": "y",
-        "meaning": "Ground truth label",
-        "plain_english": "The true target measurement or correct answer"
+        "symbol": "q_ij",
+        "meaning": "Probability similarity between points i and j in low-dimensional 2D space."
       },
       {
-        "symbol": "x, X",
-        "meaning": "Input features",
-        "plain_english": "The raw data measurements fed into the network"
+        "symbol": "Perp",
+        "meaning": "Perplexity parameter in t-SNE (effective neighborhood scale)."
+      },
+      {
+        "symbol": "k",
+        "meaning": "Number of nearest neighbors in UMAP (n_neighbors)."
+      },
+      {
+        "symbol": "min_dist",
+        "meaning": "Minimum allowable distance between points in UMAP embedding."
+      },
+      {
+        "symbol": "KL(P||Q)",
+        "meaning": "Kullback-Leibler divergence minimized during t-SNE gradient descent."
       }
     ],
-    "numerical_example": "Practical Calculation: In a standard Unsupervised Learning & Clustering pipeline, inputs are evaluated through this formulation. For example, given a sample batch with normalized values, the formula calculates the exact gradient or score to guide model improvement.",
-    "pitfalls": "Common Pitfall: Pay close attention to feature scaling and data assumptions before applying t-SNE & UMAP Manifold Projections. Always ensure training and test distributions match.",
-    "core_logic": "Why this matters: In Unsupervised Learning & Clustering, t-SNE & UMAP Manifold Projections provides the essential logic to connect input data with mathematical optimization. PCA only captures linear projections. t-SNE and UMAP preserve non-linear topological manifolds, keeping points that were close in 1536-dimensional embedding space close on a 2D screen.",
-    "architectural_logic": "In modern AI systems, t-SNE & UMAP Manifold Projections is applied during data ingestion, hidden layer transformations, or loss calculation to guarantee numerical stability and fast convergence.",
+    "formula": "$$p_{j|i} = \\frac{\\exp(-\\|x_i - x_j\\|^2 / 2\\sigma_i^2)}{\\sum_{k \\neq i} \\exp(-\\|x_i - x_k\\|^2 / 2\\sigma_i^2)}, \\quad q_{ij} = \\frac{(1 + \\|y_i - y_j\\|^2)^{-1}}{\\sum_{k \\neq l} (1 + \\|y_k - y_l\\|^2)^{-1}}, \\quad \\text{Loss} = \\text{KL}(P \\parallel Q)$$",
+    "logic": "t-SNE converts Euclidean distances between data points into conditional probabilities p_j|i using a Gaussian distribution. It then defines low-dimensional probabilities q_ij using a Student's t-distribution with 1 degree of freedom (Cauchy distribution). Because the t-distribution has heavy tails, moderate distances in high dimensions map to larger distances in 2D, avoiding the crowding problem. The algorithm minimizes the Kullback-Leibler divergence KL(P||Q) via gradient descent. UMAP instead models data as a fuzzy topological graph and optimizes a binary cross-entropy loss between high- and low-dimensional edge weights, achieving faster convergence and better global geometry preservation.",
+    "example": "Visualizing handwritten digits (MNIST): 70,000 images, each having 784 pixel features. Linear PCA produces an overlapping, muddy blur in 2D. Running PCA to 50 dimensions followed by t-SNE or UMAP cleanly unfolds the pixel manifold into 10 tight, beautiful, distinct color-coded digit clusters (0 through 9) on a 2D scatter plot.",
+    "numerical_example": "Simple 3-Point Neighborhood Trace:\nOriginal 10D Data: Point A and B are close neighbors; Point C is distant.\n\n1. High-Dimensional Similarities (p_ij):\n   • Distance(A, B) = 1.0 -> High similarity: p_AB = 0.45\n   • Distance(A, C) = 10.0 -> Low similarity: p_AC = 0.05\n   • Distance(B, C) = 9.5 -> Low similarity: p_BC = 0.05\n\n2. Low-Dimensional 2D Initialization (Random Coordinates):\n   • Suppose random initialization places A at (0, 0), B at (5, 5), C at (1, 1).\n   • Currently, distant C is closer to A than true friend B!\n   • Low-dimensional similarities q_ij do not match p_ij.\n   • High error: KL(P || Q) is large.\n\n3. Gradient Descent Optimization:\n   • The algorithm pulls A and B closer together (attractive force).\n   • It pushes C further away from A and B (repulsive force).\n\n4. Final 2D Positions:\n   • Position A: (1.0, 1.0)\n   • Position B: (1.2, 1.1) -> Neighbors A and B stay tightly together!\n   • Position C: (8.5, 9.0) -> Distant point C is pushed far away.\n\nOutcome: The 2D map faithfully reflects true neighborhood clusters!",
+    "pitfalls": [
+      "Plot Distances Are Not Exact: Gaps between distant clusters in 2D do not mean equal distance in original space.",
+      "Testing Only One Setting: Layouts change drastically with perplexity and n_neighbors; always compare several values.",
+      "Treating Embeddings as Clusters: t-SNE and UMAP only create visual maps; use HDBSCAN or K-Means to assign real cluster labels.",
+      "Trusting a Single Seed: Random seeds alter visual positions; verify that key groupings appear consistently across runs.",
+      "Skipping PCA Preprocessing: Running t-SNE directly on 1,000+ raw features is extremely slow; reduce to 30-50 PCs first."
+    ],
+    "types_header": "Dimensionality Reduction Methods Compared",
+    "types_badge": "Projection Toolkit",
+    "quick_types": [
+      {
+        "type": "PCA (Linear)",
+        "definition": "Fast linear baseline; preserves global variance; interpretable components.",
+        "looks_like": "Linear projection | Global variance"
+      },
+      {
+        "type": "t-SNE (Non-Linear)",
+        "definition": "Focuses on local neighborhoods; excellent for visualizing small clusters in 2D.",
+        "looks_like": "Local focus | Probability based"
+      },
+      {
+        "type": "UMAP (Non-Linear)",
+        "definition": "Fast graph-based method; preserves both local and global structure; scales to big data.",
+        "looks_like": "Graph based | Fast & scalable"
+      },
+      {
+        "type": "Parametric UMAP",
+        "definition": "Trains a neural network to learn the embedding, allowing instant inference on new data.",
+        "looks_like": "Neural network | Supports transform"
+      }
+    ],
+    "connected_logic": [
+      {
+        "title": "What t-SNE & UMAP Stand For",
+        "content": "• t-SNE: t-Distributed Stochastic Neighbor Embedding.\n• UMAP: Uniform Manifold Approximation and Projection.\n• Both unfold non-linear manifolds that linear PCA cannot capture.\n• Manifold: A rolled-up 2D sheet of paper sitting in 3D space."
+      },
+      {
+        "title": "How t-SNE Works & Perplexity",
+        "content": "• Measures neighborhood probabilities in high dimensions with Gaussians.\n• Maps to 2D using heavy-tailed Student's t-distribution to prevent center crowding.\n• Perplexity: Effective neighbor count (test values between 5 and 50)."
+      },
+      {
+        "title": "How UMAP Works & Key Settings",
+        "content": "• Builds a weighted neighborhood graph and optimizes a 2D graph layout.\n• n_neighbors: Controls local vs. broader global structure.\n• min_dist: Controls how tightly points pack together in 2D.\n• Faster than t-SNE and supports transform() for new points."
+      },
+      {
+        "title": "The Standard PCA Preprocessing Workflow",
+        "content": "• Scale features with StandardScaler.\n• Reduce dimensions to 30–50 using PCA to remove noise.\n• Run t-SNE or UMAP on the reduced data for fast, clean visualization."
+      }
+    ],
     "key_takeaways": [
-      "Core Role: Foundational concept in Unsupervised Learning & Clustering under Classical Machine Learning.",
-      "Key Principle: Non-linear dimensionality reduction algorithms that map complex high-dimensional datasets into 2D or 3D for visual inspection, preserving local neighborhood structures..",
-      "Production Impact: Critical for accurate training, stable evaluation, and scalable inference."
+      "t-SNE and UMAP are non-linear algorithms for visualizing high-dimensional data in 2D/3D.",
+      "They unfold non-linear manifolds that linear PCA cannot represent.",
+      "t-SNE preserves local neighborhoods; UMAP preserves both local and broader global structure.",
+      "Always test multiple parameter settings (perplexity for t-SNE, n_neighbors for UMAP).",
+      "Standard workflow: Standardize features -> Run PCA to 30-50 components -> Run t-SNE or UMAP."
     ],
     "definition_bullets": [
-      "t-SNE: t-SNE is a key building block in Unsupervised Learning & Clustering. In plain English, it provides the foundation to process, evaluate, or optimize data patterns.",
-      "UMAP Manifold Projections: UMAP Manifold Projections is a key building block in Unsupervised Learning & Clustering. In plain English, it provides the foundation to process, evaluate, or optimize data patterns."
+      "t-SNE: Stands for t-Distributed Stochastic Neighbor Embedding. A non-linear algorithm that preserves local cluster neighborhoods in 2D.",
+      "UMAP: Stands for Uniform Manifold Approximation and Projection. A fast graph-based algorithm that preserves local and global structure.",
+      "Manifold: A geometric structure that appears complex in high dimensions but has simpler low-dimensional geometry locally.",
+      "Embedding: The low-dimensional coordinate representation of high-dimensional observations."
+    ],
+    "tags": [
+      "t-SNE",
+      "UMAP",
+      "Manifold Learning",
+      "Dimensionality Reduction",
+      "Perplexity",
+      "Visualization",
+      "Unsupervised Learning"
     ]
   },
   {
