@@ -18210,64 +18210,151 @@
     "category": "ml",
     "category_label": "Classical Machine Learning",
     "raw_subtopic": "Support Vector Machines (SVM & Maximum Margin Hyperplanes)",
-    "def": "Support Vector Machines find the optimal hyperplane that separates classes with the maximum possible margin, relying only on critical boundary instances called support vectors.",
-    "formula": "\\max_{w, b} \\frac{2}{\\|w\\|} \\quad \\text{s.t.} \\quad y_i(w^T x_i + b) \\ge 1 \\quad \\forall i",
-    "logic": "By maximizing the geometric margin (2/||w||), SVM minimizes the structural risk rather than empirical risk, drastically preventing overfitting on small-to-medium sized datasets.",
-    "example": "Used in multi-tenant financial fraud detection to cleanly separate fraudulent credit transfers from authentic customer behaviors.",
-    "tags": [
-      "SVM",
-      "Maximum Margin",
-      "Support Vectors",
-      "Convex Optimization"
-    ],
-    "raw_sub": "Support Vector Machines (SVM & Maximum Margin Hyperplanes)",
-    "definition": "Support Vector Machines find the optimal hyperplane that separates classes with the maximum possible margin, relying only on critical boundary instances called support vectors.",
-    "formula_explanation": "Mathematical formulation and loss objective for Support Vector Machines (SVM & Maximum Margin Hyperplanes).",
-    "simple_summary": "Support Vector Machines find the optimal hyperplane that separates classes with the maximum possible margin, relying only on critical boundary instances called support vectors.",
+    "def": "Support Vector Machines (SVM) is a supervised machine learning algorithm that finds the optimal decision boundary (hyperplane) that separates classes with the maximum possible margin.",
+    "definition": "Support Vector Machines (SVM) is a supervised learning algorithm used primarily for classification, but also capable of regression. The central goal of an SVM is to find a decision boundary (hyperplane) that separates different classes with the widest possible empty street (maximum margin). The data points lying right along the edges of this margin are called support vectors. These critical points alone determine the exact position and angle of the boundary. Any other data point can be moved or deleted without affecting the decision line at all.",
+    "simple_summary": "Imagine building a highway between two rival towns. You don't just draw a thin line on the ground; you want the widest possible median strip between them so cars don't crash into each other! The dividing line in the middle is the decision boundary. The width of the road is the margin. The houses standing right next to the road on both sides are the support vectors—they dictate exactly where the highway can fit without hitting anyone's property!",
     "core_terms": [
       {
-        "term": "Support Vector",
-        "what_is_it": "The data points that lie closest to the decision boundary and determine the position and orientation of the separating hyperplane.",
-        "analogy": "The fence posts that directly define the boundary line between two properties.",
-        "why_it_matters": "All other training points can be removed without altering the final decision boundary."
+        "term": "What is SVM? (Full Form & Core Concept)",
+        "what_is_it": "• Full Form: Support Vector Machine.\n• What it does: Finds the decision boundary that separates classes with the maximum possible margin.\n• Decision rule: Points where w^T x + b > 0 belong to one class; points where w^T x + b < 0 belong to the other class.\n• Versatility: Primarily used for binary and multiclass classification, but can also perform regression (SVR).",
+        "definition": "A supervised algorithm that finds the optimal maximum-margin separating hyperplane between classes.",
+        "analogy": "Building a wide neutral safety zone between two opposing armies.",
+        "why_it_matters": "Provides exceptional generalization and mathematical robustness on small-to-medium sized tabular datasets."
       },
       {
-        "term": "Margin",
-        "what_is_it": "The perpendicular distance between the separating hyperplane and the closest data points from either class.",
-        "analogy": "A wide median strip on a highway separating oncoming traffic lanes.",
-        "why_it_matters": "Wider margins guarantee greater tolerance to future measurement noise and variance."
+        "term": "What is the Maximum Margin?",
+        "what_is_it": "• The margin is the distance between the decision boundary and the closest training points on either side.\n• SVM maximizes this distance (the width of the 'street').\n• A wider margin makes the classifier much less sensitive to noise or small shifts in new data.",
+        "definition": "The perpendicular distance separating the decision boundary from the nearest training instances of either class.",
+        "analogy": "A wide buffer zone on a highway that keeps oncoming lanes safely apart.",
+        "why_it_matters": "Maximizing margin width minimizes structural risk, directly preventing overfitting."
+      },
+      {
+        "term": "What are Support Vectors?",
+        "what_is_it": "• Support vectors are the critical training points closest to the decision boundary.\n• They lie directly on the margins and support the hyperplane.\n• If you remove all non-support vector points from the dataset, the decision boundary stays completely identical!",
+        "definition": "The subset of training observations lying closest to the hyperplane that uniquely dictate its position and angle.",
+        "analogy": "The load-bearing pillars that hold up a roof; removing non-bearing interior walls changes nothing.",
+        "why_it_matters": "Makes SVM memory-efficient during inference because only support vectors need to be stored."
+      },
+      {
+        "term": "The 4 Common Kernel Choices",
+        "what_is_it": "• Linear: Straight line/plane. Best for datasets with many features.\n• RBF (Radial Basis Function): Flexible curved boundary. Default choice for complex non-linear patterns.\n• Poly (Polynomial): Curved boundary shaped like mathematical curves (circles, parabolas).\n• Sigmoid: Resembles neural network activation; used in specialized niche applications.",
+        "definition": "Mathematical functions that compute similarities in higher dimensions without explicitly transforming coordinates.",
+        "analogy": "Switching camera lenses (wide-angle, macro, fisheye) to view the same scene in different perspectives.",
+        "why_it_matters": "Allows SVM to separate non-linear data cleanly without manual feature engineering."
+      },
+      {
+        "term": "The RBF Kernel & Gamma (γ)",
+        "what_is_it": "• Formula intuition: Measures similarity based on distance: K(x, z) = exp(-γ ||x - z||²).\n• Small gamma: Each point has a broad reach, producing smooth, gentle boundaries.\n• Large gamma: Each point has a tight local reach, producing complex, tight boundaries that can overfit.\n• Best practice: Always tune C and gamma together using cross-validation.",
+        "definition": "A non-linear kernel measuring squared Euclidean similarity, controlled by the spread hyperparameter gamma.",
+        "analogy": "A drop of ink in water: low gamma spreads out smoothly, while high gamma stays concentrated in tiny droplets.",
+        "why_it_matters": "The most versatile kernel in practice for tackling intricate, non-linear classification tasks."
       }
     ],
     "symbol_guide": [
       {
         "symbol": "w",
-        "meaning": "Weight vector orthogonal to the separating hyperplane",
-        "plain_english": "Direction vector pointing perpendicular to the decision boundary."
+        "meaning": "Weight vector perpendicular (orthogonal) to the decision hyperplane."
       },
       {
         "symbol": "b",
-        "meaning": "Bias term / intercept",
-        "plain_english": "Shifts the hyperplane offset from the coordinate origin."
+        "meaning": "Bias intercept shifting the hyperplane away from the coordinate origin."
       },
       {
-        "symbol": "y_i",
-        "meaning": "Binary class label in {-1, +1}",
-        "plain_english": "Ground truth classification sign for training sample i."
+        "symbol": "x",
+        "meaning": "Feature vector of a data observation."
+      },
+      {
+        "symbol": "y",
+        "meaning": "Binary class label (+1 or -1)."
+      },
+      {
+        "symbol": "γ",
+        "meaning": "RBF kernel hyperparameter controlling the reach of each point (gamma)."
+      },
+      {
+        "symbol": "C",
+        "meaning": "Regularization penalty balancing margin width against misclassifications."
+      },
+      {
+        "symbol": "K(x, z)",
+        "meaning": "Kernel function measuring similarity between points x and z."
       }
     ],
-    "numerical_example": "Given weight vector w = [3, 4] with norm ||w|| = 5:\nGeometric margin = 2 / ||w|| = 2 / 5 = 0.4 units on either side of the separating hyperplane w^T x + b = 0.",
-    "pitfalls": "Do not train linear SVMs without standardizing feature scales; unscaled features cause the optimizer to bias the margin orientation toward high-magnitude features.",
-    "core_logic": "By maximizing the geometric margin (2/||w||), SVM minimizes the structural risk rather than empirical risk, drastically preventing overfitting on small-to-medium sized datasets.",
-    "architectural_logic": "Support Vector Machines (SVM & Maximum Margin Hyperplanes) integrates into production machine learning pipelines by establishing mathematically sound boundaries and optimal computational resource utilization.",
+    "formula": "$$\\min_{w, b} \\frac{1}{2} \\|w\\|^2 \\quad \\text{s.t.} \\quad y_i(w^T x_i + b) \\ge 1, \\quad \\text{Margin} = \\frac{2}{\\|w\\|}, \\quad K(x, z) = \\exp(-\\gamma \\|x - z\\|^2)$$",
+    "logic": "SVM formulates classification as a convex quadratic optimization problem: minimize 0.5 * ||w||² subject to y_i(w^T x_i + b) >= 1. Minimizing ||w||² is mathematically equivalent to maximizing the geometric margin 2 / ||w||. Points satisfying y_i(w^T x_i + b) = 1 lie on the margin boundaries and are the support vectors. When classes are not linearly separable in the original space, the kernel trick K(x, z) computes inner products in a higher-dimensional space without explicitly mapping vectors, enabling non-linear classification with zero extra coordinate storage.",
+    "example": "Credit card fraud detection: Transaction data has 30 features. Authentic transactions (+1) and fraudulent charges (-1) overlap slightly. A linear SVM finds a separating hyperplane with a wide margin. Only 400 out of 50,000 transactions become support vectors. The bank saves only these 400 vectors to evaluate new transactions with sub-millisecond scoring speed.",
+    "numerical_example": "Simple 1D Maximum Margin Trace:\nPoints: Class A (-1) at x = 2; Class B (+1) at x = 6\n\n1. Find the Midpoint Decision Boundary:\n   • Midpoint = (2 + 6) / 2 = 4\n   • Boundary equation: w * x + b = 0 -> Set boundary at x = 4\n\n2. Set Margin Requirements (y_i * (w * x_i + b) >= 1):\n   • For Class B at x = 6 (y = +1): w*(6) + b = +1\n   • For Class A at x = 2 (y = -1): w*(2) + b = -1\n\n3. Solve for w and b:\n   • Subtracting equations: w*(6 - 2) = 1 - (-1) -> 4w = 2 -> w = 0.5\n   • Substitute w: 0.5*(6) + b = 1 -> 3 + b = 1 -> b = -2\n   • Decision equation: 0.5 * x - 2 = 0 (which means x = 4!)\n\n4. Calculate Margin Width (2 / |w|):\n   • Margin = 2 / 0.5 = 4 units total (2 units on each side)\n\nSupport Vectors: Point x = 2 and Point x = 6 (they lie exactly on margin borders)!",
+    "pitfalls": [
+      "Skipping Feature Scaling: SVM is extremely sensitive to feature scales; unscaled features completely skew the margin. Always use StandardScaler.",
+      "Setting Gamma Too High in RBF: Very large gamma causes tight islands around individual training points, leading to severe overfitting.",
+      "Slow Training on Huge Datasets: Traditional SVM training scales as O(N²) to O(N³); for >100,000 samples, consider LinearSVC or SGDClassifier.",
+      "Assuming Linear Kernel Fits All: If data is complex or circular, a linear kernel will underfit; use RBF or polynomial kernels.",
+      "Guessing Hyperparameters: Never guess C and gamma; use GridSearchCV or cross-validation to find optimal values."
+    ],
+    "types_header": "SVM Kernels & Architectural Flavors",
+    "types_badge": "Kernel Toolkit",
+    "quick_types": [
+      {
+        "type": "Linear SVM",
+        "definition": "Straight boundary; fast and best when feature count is high (e.g. text/NLP).",
+        "looks_like": "Straight plane | High-dimension data"
+      },
+      {
+        "type": "RBF Kernel SVM",
+        "definition": "Radial basis function; flexible non-linear boundary; best general-purpose choice.",
+        "looks_like": "Curved boundary | Default choice"
+      },
+      {
+        "type": "Polynomial Kernel",
+        "definition": "Curved boundary modeling feature interactions and polynomial shapes.",
+        "looks_like": "Poly curves | Circles & parabolas"
+      },
+      {
+        "type": "Support Vector Regressor (SVR)",
+        "definition": "Fits a margin corridor (epsilon-tube) around continuous values.",
+        "looks_like": "Margin tube | Continuous regression"
+      }
+    ],
+    "connected_logic": [
+      {
+        "title": "What SVM Stands For & Core Idea",
+        "content": "• Full Form: Support Vector Machine.\n• Core Idea: Finds the decision boundary that separates classes with the largest margin.\n• Decision Rule: Points with w^T x + b > 0 are Class +1; points with w^T x + b < 0 are Class -1.\n• Robustness: A wider margin protects against noise and variations in future data."
+      },
+      {
+        "title": "Support Vectors & Margin Anatomy",
+        "content": "• Margin: The distance between the boundary and the closest points on either side.\n• Support Vectors: The training points sitting right on the margin borders.\n• Independence: Moving or removing non-support vectors does not change the boundary at all."
+      },
+      {
+        "title": "The 4 Common Kernel Choices",
+        "content": "• Linear: Straight line/hyperplane. Use when features are numerous or linear.\n• RBF (Radial Basis Function): Complex curved boundaries. Most popular default.\n• Poly: Polynomial interactions (curves, parabolas).\n• Sigmoid: Neural-network-like similarity; used in niche problems."
+      },
+      {
+        "title": "The RBF Kernel & Gamma Tuning",
+        "content": "• Formula: K(x, z) = exp(-γ ||x - z||²). Measures similarity based on distance.\n• Small Gamma: Broader influence, smoother and simpler decision boundaries.\n• Large Gamma: Local influence, tighter boundaries around points (risk of overfitting).\n• Tuning: Always tune C and gamma together with cross-validation."
+      }
+    ],
     "key_takeaways": [
-      "SVM solves a convex quadratic programming problem with a guaranteed global optimum (no local minima).",
-      "Only support vectors determine the decision boundary; removing non-support vectors leaves the model unchanged.",
-      "Feature scaling (StandardScaler) is strictly mandatory before fitting an SVM."
+      "SVM stands for Support Vector Machine; a supervised algorithm for classification and regression.",
+      "The core goal is to find the separating boundary with the maximum possible margin.",
+      "Support vectors are the critical edge points that alone dictate the position of the boundary.",
+      "Common kernels include Linear (fast), RBF (flexible non-linear default), and Polynomial.",
+      "Gamma in RBF controls boundary smoothness: small gamma is smooth; large gamma is complex.",
+      "Always scale features with StandardScaler before training any SVM model."
     ],
     "definition_bullets": [
-      "**Core Purpose:** Support Vector Machines find the optimal hyperplane that separates classes with the maximum possible margin, relying only on critical boundary instances called support vectors.",
-      "**Operational Role:** By maximizing the geometric margin (2/||w||), SVM minimizes the structural risk rather than empirical risk, drastically preventing overfitting on small-to-medium sized datasets.",
-      "**Production Significance:** Used in multi-tenant financial fraud detection to cleanly separate fraudulent credit transfers from authentic customer behaviors."
+      "SVM: Stands for Support Vector Machine. A supervised algorithm that finds the maximum-margin decision boundary between classes.",
+      "Support Vectors: The closest training points to the decision boundary that uniquely determine the hyperplane.",
+      "Margin: The perpendicular distance between the decision boundary and the closest training points on either side.",
+      "RBF Kernel: A popular non-linear kernel that measures Euclidean distance similarity, tuned via gamma."
+    ],
+    "tags": [
+      "SVM",
+      "Support Vector Machine",
+      "Maximum Margin",
+      "Hyperplane",
+      "Kernels",
+      "RBF Kernel",
+      "Gamma"
     ]
   },
   {
