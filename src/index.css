@@ -116,6 +116,23 @@
   overflow-x: auto;
 }
 
+/* Hero Ambient Glow Base & Themes */
+.hero-ambient-glow {
+  background: radial-gradient(ellipse 75% 65% at 50% -5%, rgba(99, 102, 241, 0.18), rgba(15, 23, 42, 0.98));
+}
+[data-theme="bright"] .hero-ambient-glow {
+  background: radial-gradient(ellipse 75% 65% at 50% -5%, rgba(99, 102, 241, 0.08), rgba(248, 250, 252, 0.98)) !important;
+}
+[data-theme="dark"] .hero-ambient-glow {
+  background: radial-gradient(ellipse 75% 65% at 50% -5%, rgba(99, 102, 241, 0.15), rgba(0, 0, 0, 0.98)) !important;
+}
+[data-theme="cyberpunk"] .hero-ambient-glow {
+  background: radial-gradient(ellipse 75% 65% at 50% -5%, rgba(236, 72, 153, 0.2), rgba(13, 10, 39, 0.98)) !important;
+}
+[data-theme="metallic-green"] .hero-ambient-glow {
+  background: radial-gradient(ellipse 75% 65% at 50% -5%, rgba(16, 185, 129, 0.18), rgba(2, 20, 13, 0.98)) !important;
+}
+
 /* ==========================================================================
    THEME 1: BRIGHT DAY MODE (Ultra-Clean Daylight Modern & High-Contrast)
    ========================================================================== */
@@ -129,34 +146,49 @@
 [data-theme="bright"] .bg-slate-950 {
   background-color: #f1f5f9 !important;
 }
+
+/* Surface Cards & Containers in Bright Mode */
 [data-theme="bright"] .bg-slate-900,
+[data-theme="bright"] .bg-slate-900\/95,
 [data-theme="bright"] .bg-slate-900\/90,
-[data-theme="bright"] .bg-slate-900\/95 {
-  background-color: #ffffff !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
-}
+[data-theme="bright"] .bg-slate-900\/80,
+[data-theme="bright"] .bg-slate-900\/70,
 [data-theme="bright"] .bg-slate-900\/60,
-[data-theme="bright"] .bg-slate-900\/80 {
-  background-color: #f8fafc !important;
+[data-theme="bright"] .bg-slate-900\/50,
+[data-theme="bright"] .bg-slate-900\/40 {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
-[data-theme="bright"] .bg-slate-950\/40,
-[data-theme="bright"] .bg-slate-950\/50,
-[data-theme="bright"] .bg-slate-950\/60,
+[data-theme="bright"] .bg-slate-950\/90,
+[data-theme="bright"] .bg-slate-950\/80,
 [data-theme="bright"] .bg-slate-950\/70,
-[data-theme="bright"] .bg-slate-950\/80 {
+[data-theme="bright"] .bg-slate-950\/60,
+[data-theme="bright"] .bg-slate-950\/50,
+[data-theme="bright"] .bg-slate-950\/40 {
   background-color: #ffffff !important;
 }
+
+/* Keep modal backdrops semi-transparent overlay */
+[data-theme="bright"] .fixed.inset-0.bg-slate-950\/80,
+[data-theme="bright"] .fixed.inset-0.bg-slate-950\/70,
+[data-theme="bright"] .fixed.inset-0.bg-slate-950\/90 {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+}
+
+/* Secondary Containers & Controls */
 [data-theme="bright"] .bg-slate-800,
+[data-theme="bright"] .bg-slate-800\/90,
 [data-theme="bright"] .bg-slate-800\/80 {
   background-color: #e2e8f0 !important;
 }
-[data-theme="bright"] .bg-slate-800\/40,
+[data-theme="bright"] .bg-slate-800\/70,
+[data-theme="bright"] .bg-slate-800\/60,
 [data-theme="bright"] .bg-slate-800\/50,
-[data-theme="bright"] .bg-slate-800\/60 {
+[data-theme="bright"] .bg-slate-800\/40 {
   background-color: #f1f5f9 !important;
 }
 
-/* Text Hierarchy in Bright Mode */
+/* Global Text Hierarchy in Bright Mode (WCAG AAA High Contrast) */
 [data-theme="bright"] .text-white {
   color: #0f172a !important;
 }
@@ -170,9 +202,13 @@
   color: #334155 !important;
 }
 [data-theme="bright"] .text-slate-400 {
-  color: #475569 !important;
+  color: #334155 !important;
+  font-weight: 500;
 }
 [data-theme="bright"] .text-slate-500 {
+  color: #475569 !important;
+}
+[data-theme="bright"] .text-slate-600 {
   color: #64748b !important;
 }
 
@@ -182,13 +218,285 @@
 [data-theme="bright"] .border-slate-800\/60,
 [data-theme="bright"] .border-slate-800\/40,
 [data-theme="bright"] .border-slate-700,
-[data-theme="bright"] .border-slate-700\/60,
+[data-theme="bright"] .border-slate-700\/80,
 [data-theme="bright"] .border-slate-700\/70,
-[data-theme="bright"] .border-slate-700\/80 {
+[data-theme="bright"] .border-slate-700\/60 {
   border-color: #cbd5e1 !important;
 }
 
-/* Form inputs */
+/* CRITICAL: Preserve Pure White Text on Solid / Gradient Colored Buttons & Badges */
+[data-theme="bright"] .bg-indigo-600,
+[data-theme="bright"] .bg-indigo-700,
+[data-theme="bright"] .hover\:bg-indigo-500:hover,
+[data-theme="bright"] .hover\:bg-indigo-600:hover,
+[data-theme="bright"] .bg-purple-600,
+[data-theme="bright"] .bg-purple-700,
+[data-theme="bright"] .hover\:bg-purple-500:hover,
+[data-theme="bright"] .hover\:bg-purple-600:hover,
+[data-theme="bright"] .bg-rose-600,
+[data-theme="bright"] .bg-rose-700,
+[data-theme="bright"] .hover\:bg-rose-500:hover,
+[data-theme="bright"] .hover\:bg-rose-600:hover,
+[data-theme="bright"] .bg-emerald-600,
+[data-theme="bright"] .bg-emerald-700,
+[data-theme="bright"] .hover\:bg-emerald-500:hover,
+[data-theme="bright"] .bg-cyan-600,
+[data-theme="bright"] .bg-cyan-700,
+[data-theme="bright"] .hover\:bg-cyan-500:hover,
+[data-theme="bright"] .bg-blue-600,
+[data-theme="bright"] .bg-amber-600,
+[data-theme="bright"] button[class*="bg-indigo-600"],
+[data-theme="bright"] button[class*="bg-purple-600"],
+[data-theme="bright"] button[class*="bg-rose-600"],
+[data-theme="bright"] button[class*="bg-emerald-600"],
+[data-theme="bright"] button[class*="bg-cyan-600"],
+[data-theme="bright"] a[class*="bg-indigo-600"],
+[data-theme="bright"] a[class*="bg-purple-600"],
+[data-theme="bright"] [class*="from-indigo-600"],
+[data-theme="bright"] [class*="from-purple-600"],
+[data-theme="bright"] [class*="from-cyan-600"],
+[data-theme="bright"] [class*="from-rose-600"] {
+  color: #ffffff !important;
+}
+
+[data-theme="bright"] .bg-indigo-600 *,
+[data-theme="bright"] .bg-indigo-700 *,
+[data-theme="bright"] .bg-purple-600 *,
+[data-theme="bright"] .bg-purple-700 *,
+[data-theme="bright"] .bg-rose-600 *,
+[data-theme="bright"] .bg-rose-700 *,
+[data-theme="bright"] .bg-emerald-600 *,
+[data-theme="bright"] .bg-emerald-700 *,
+[data-theme="bright"] .bg-cyan-600 *,
+[data-theme="bright"] .bg-blue-600 *,
+[data-theme="bright"] .bg-amber-600 *,
+[data-theme="bright"] button[class*="bg-indigo-600"] *,
+[data-theme="bright"] button[class*="bg-purple-600"] *,
+[data-theme="bright"] button[class*="bg-rose-600"] *,
+[data-theme="bright"] a[class*="bg-indigo-600"] *,
+[data-theme="bright"] [class*="from-indigo-600"] *,
+[data-theme="bright"] [class*="from-purple-600"] *,
+[data-theme="bright"] [class*="from-cyan-600"] * {
+  color: #ffffff !important;
+}
+
+/* HIGH-CONTRAST JEWEL TONES FOR ACCENTS & LABELS (Passes WCAG AA/AAA on Light) */
+
+/* 1. Cyan (ML Playgrounds, Metrics, Attention, Tools) */
+[data-theme="bright"] .text-cyan-400,
+[data-theme="bright"] .text-cyan-300,
+[data-theme="bright"] .text-cyan-200 {
+  color: #0891b2 !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .bg-cyan-500\/10,
+[data-theme="bright"] .bg-cyan-500\/15,
+[data-theme="bright"] .bg-cyan-500\/20,
+[data-theme="bright"] .bg-cyan-500\/25,
+[data-theme="bright"] .bg-cyan-600\/20 {
+  background-color: #ecfeff !important;
+  color: #0891b2 !important;
+  border-color: #a5f3fc !important;
+}
+[data-theme="bright"] .border-cyan-500\/20,
+[data-theme="bright"] .border-cyan-500\/30,
+[data-theme="bright"] .border-cyan-500\/40,
+[data-theme="bright"] .border-cyan-500\/50 {
+  border-color: #67e8f9 !important;
+}
+[data-theme="bright"] .bg-cyan-950\/40,
+[data-theme="bright"] .bg-cyan-950\/50,
+[data-theme="bright"] .bg-cyan-950\/80 {
+  background-color: #ecfeff !important;
+  border-color: #a5f3fc !important;
+  color: #0e7490 !important;
+}
+
+/* 2. Indigo & Blue (Mind Map, Syllabus, Math, Architecture) */
+[data-theme="bright"] .text-indigo-400,
+[data-theme="bright"] .text-indigo-300,
+[data-theme="bright"] .text-indigo-200 {
+  color: #4338ca !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .bg-indigo-500\/10,
+[data-theme="bright"] .bg-indigo-500\/15,
+[data-theme="bright"] .bg-indigo-500\/20,
+[data-theme="bright"] .bg-indigo-500\/25 {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-color: #c7d2fe !important;
+}
+[data-theme="bright"] .border-indigo-500\/20,
+[data-theme="bright"] .border-indigo-500\/25,
+[data-theme="bright"] .border-indigo-500\/30,
+[data-theme="bright"] .border-indigo-500\/40 {
+  border-color: #a5b4fc !important;
+}
+[data-theme="bright"] .text-blue-400,
+[data-theme="bright"] .text-blue-300,
+[data-theme="bright"] .text-blue-200 {
+  color: #1d4ed8 !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .bg-blue-500\/10,
+[data-theme="bright"] .bg-blue-500\/15,
+[data-theme="bright"] .bg-blue-500\/20 {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}
+[data-theme="bright"] .border-blue-500\/20,
+[data-theme="bright"] .border-blue-500\/30,
+[data-theme="bright"] .border-blue-500\/40 {
+  border-color: #93c5fd !important;
+}
+[data-theme="bright"] .bg-blue-950\/40,
+[data-theme="bright"] .bg-blue-950\/50 {
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #1e40af !important;
+}
+
+/* 3. Purple (Interview Vault, Diagnostic, Senior Track) */
+[data-theme="bright"] .text-purple-400,
+[data-theme="bright"] .text-purple-300,
+[data-theme="bright"] .text-purple-200 {
+  color: #7e22ce !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .bg-purple-500\/10,
+[data-theme="bright"] .bg-purple-500\/15,
+[data-theme="bright"] .bg-purple-500\/20,
+[data-theme="bright"] .bg-purple-500\/25 {
+  background-color: #f3e8ff !important;
+  color: #6b21a8 !important;
+  border-color: #e9d5ff !important;
+}
+[data-theme="bright"] .border-purple-500\/20,
+[data-theme="bright"] .border-purple-500\/30,
+[data-theme="bright"] .border-purple-500\/35,
+[data-theme="bright"] .border-purple-500\/40 {
+  border-color: #d8b4fe !important;
+}
+[data-theme="bright"] .bg-purple-950\/40,
+[data-theme="bright"] .bg-purple-950\/50 {
+  background-color: #f3e8ff !important;
+  border-color: #d8b4fe !important;
+  color: #6b21a8 !important;
+}
+
+/* 4. Emerald & Green (Case Studies, Mastered Status, Freshers Track) */
+[data-theme="bright"] .text-emerald-400,
+[data-theme="bright"] .text-emerald-300,
+[data-theme="bright"] .text-emerald-200 {
+  color: #047857 !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .text-emerald-100,
+[data-theme="bright"] .text-emerald-100\/90 {
+  color: #064e3b !important;
+}
+[data-theme="bright"] .bg-emerald-500\/10,
+[data-theme="bright"] .bg-emerald-500\/15,
+[data-theme="bright"] .bg-emerald-500\/20,
+[data-theme="bright"] .bg-emerald-500\/25 {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+[data-theme="bright"] .border-emerald-500\/20,
+[data-theme="bright"] .border-emerald-500\/30,
+[data-theme="bright"] .border-emerald-500\/40 {
+  border-color: #6ee7b7 !important;
+}
+[data-theme="bright"] .bg-emerald-950\/20,
+[data-theme="bright"] .bg-emerald-950\/40,
+[data-theme="bright"] .bg-emerald-950\/50 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+/* 5. Rose & Pink (Core Concepts, Encyclopedia, Traps) */
+[data-theme="bright"] .text-rose-400,
+[data-theme="bright"] .text-rose-300,
+[data-theme="bright"] .text-rose-200 {
+  color: #be123c !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .bg-rose-500\/10,
+[data-theme="bright"] .bg-rose-500\/15,
+[data-theme="bright"] .bg-rose-500\/20,
+[data-theme="bright"] .bg-rose-500\/25,
+[data-theme="bright"] .bg-rose-600\/20 {
+  background-color: #fff1f2 !important;
+  color: #be123c !important;
+  border-color: #fecdd3 !important;
+}
+[data-theme="bright"] .border-rose-500\/20,
+[data-theme="bright"] .border-rose-500\/30,
+[data-theme="bright"] .border-rose-500\/40 {
+  border-color: #fda4af !important;
+}
+
+/* 6. Amber (Landmark Papers, Bookmarks, Tips) */
+[data-theme="bright"] .text-amber-400,
+[data-theme="bright"] .text-amber-300,
+[data-theme="bright"] .text-amber-200 {
+  color: #b45309 !important;
+  font-weight: 600 !important;
+}
+[data-theme="bright"] .text-amber-100,
+[data-theme="bright"] .text-amber-100\/90 {
+  color: #78350f !important;
+}
+[data-theme="bright"] .bg-amber-500\/10,
+[data-theme="bright"] .bg-amber-500\/15,
+[data-theme="bright"] .bg-amber-500\/20,
+[data-theme="bright"] .bg-amber-500\/25 {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+[data-theme="bright"] .border-amber-500\/20,
+[data-theme="bright"] .border-amber-500\/30,
+[data-theme="bright"] .border-amber-500\/40 {
+  border-color: #fcd34d !important;
+}
+[data-theme="bright"] .bg-amber-950\/20,
+[data-theme="bright"] .bg-amber-950\/40,
+[data-theme="bright"] .bg-amber-950\/50 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #92400e !important;
+}
+
+/* Landing Page Hub Cards in Bright Mode */
+[data-theme="bright"] .portal-hub-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+[data-theme="bright"] .portal-hub-card:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="bright"] .portal-hub-card h4 {
+  color: #0f172a !important;
+}
+[data-theme="bright"] .portal-hub-card p {
+  color: #475569 !important;
+}
+
+/* Sidebar Encyclopedia in Bright Mode */
+[data-theme="bright"] aside {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Form inputs & selects */
 [data-theme="bright"] input,
 [data-theme="bright"] select {
   background-color: #ffffff !important;
@@ -197,93 +505,6 @@
 }
 [data-theme="bright"] input::placeholder {
   color: #64748b !important;
-}
-
-/* HIGH-CONTRAST CALLOUT BOXES IN BRIGHT MODE */
-
-/* 1. Intuition & When to Use (Amber) */
-[data-theme="bright"] .bg-amber-950\/20 {
-  background-color: #fffbeb !important;
-  border-color: #fcd34d !important;
-}
-[data-theme="bright"] .text-amber-400 {
-  color: #92400e !important;
-  font-weight: 700 !important;
-}
-[data-theme="bright"] .text-amber-100,
-[data-theme="bright"] .text-amber-100\/90,
-[data-theme="bright"] .text-amber-200,
-[data-theme="bright"] .text-amber-200\/90,
-[data-theme="bright"] .text-amber-300 {
-  color: #78350f !important;
-  font-weight: 500 !important;
-}
-
-/* 2. Real-World Practical Example (Emerald) */
-[data-theme="bright"] .bg-emerald-950\/20 {
-  background-color: #f0fdf4 !important;
-  border-color: #86efac !important;
-}
-[data-theme="bright"] .text-emerald-400 {
-  color: #065f46 !important;
-  font-weight: 700 !important;
-}
-[data-theme="bright"] .text-emerald-100,
-[data-theme="bright"] .text-emerald-100\/90,
-[data-theme="bright"] .text-emerald-200,
-[data-theme="bright"] .text-emerald-200\/90,
-[data-theme="bright"] .text-emerald-300 {
-  color: #064e3b !important;
-  font-weight: 500 !important;
-}
-
-/* 3. Core Definition & Role (Rose / Pink) */
-[data-theme="bright"] .text-rose-300 {
-  color: #9f1239 !important;
-  font-weight: 700 !important;
-}
-[data-theme="bright"] .text-rose-400 {
-  color: #be123c !important;
-}
-[data-theme="bright"] .bg-rose-500\/10 {
-  background-color: #ffe4e6 !important;
-  color: #9f1239 !important;
-  border-color: #fecdd3 !important;
-}
-
-/* 4. Mathematical Formulation (Indigo) */
-[data-theme="bright"] .text-indigo-300 {
-  color: #3730a3 !important;
-  font-weight: 700 !important;
-}
-[data-theme="bright"] .text-indigo-400 {
-  color: #4338ca !important;
-}
-[data-theme="bright"] .bg-indigo-500\/10,
-[data-theme="bright"] .bg-indigo-500\/20 {
-  background-color: #e0e7ff !important;
-  color: #3730a3 !important;
-  border-color: #c7d2fe !important;
-}
-[data-theme="bright"] .border-indigo-500\/25,
-[data-theme="bright"] .border-indigo-500\/20,
-[data-theme="bright"] .border-indigo-500\/30 {
-  border-color: #a5b4fc !important;
-}
-
-/* 5. Interview Vault (Purple) */
-[data-theme="bright"] .text-purple-300 {
-  color: #6b21a8 !important;
-  font-weight: 700 !important;
-}
-[data-theme="bright"] .text-purple-400 {
-  color: #7e22ce !important;
-}
-[data-theme="bright"] .bg-purple-500\/10,
-[data-theme="bright"] .bg-purple-500\/20 {
-  background-color: #ede9fe !important;
-  color: #6b21a8 !important;
-  border-color: #ddd6fe !important;
 }
 
 /* KaTeX Formulas in Bright Mode */
@@ -307,15 +528,14 @@
   border-color: #cbd5e1 !important;
 }
 
-/* Concept Encyclopedia Sidebar in Bright Mode */
-[data-theme="bright"] aside {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
+/* Code & Terminal blocks: sleek, high-contrast dark surfaces for readable syntax */
+[data-theme="bright"] pre {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
-[data-theme="bright"] .bg-rose-600\/20 {
-  background-color: #ffe4e6 !important;
-  color: #9f1239 !important;
-  border-color: #f43f5e !important;
+[data-theme="bright"] pre code {
+  color: #f8fafc !important;
 }
 
 [data-theme="bright"] ::-webkit-scrollbar-track {

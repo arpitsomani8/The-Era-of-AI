@@ -264,7 +264,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
       isEntering ? 'opacity-0 scale-105 filter blur-sm pointer-events-none' : 'opacity-100 scale-100'
     }`}>
       {/* Background Ambient Glow */}
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_75%_65%_at_50%_-5%,rgba(99,102,241,0.18),rgba(15,23,42,0.98))]" />
+      <div className="hero-ambient-glow fixed inset-0 pointer-events-none" />
 
       {/* Main Content Area */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center text-center space-y-6">
@@ -520,7 +520,7 @@ export default function LandingHeroPage({ onOpenAbout }) {
                 <Link
                   key={idx}
                   to={portal.to}
-                  className={`p-2.5 rounded-xl bg-slate-900/50 hover:bg-slate-900 border transition-all text-left flex items-center justify-between group hover:border-indigo-500/30 hover:scale-[1.01] ${portal.color}`}
+                  className={`portal-hub-card p-2.5 rounded-xl bg-slate-900/50 hover:bg-slate-900 border transition-all text-left flex items-center justify-between group hover:border-indigo-500/30 hover:scale-[1.01] ${portal.color}`}
                 >
                   <div className="min-w-0 flex items-center gap-2">
                     <div className="w-6 h-6 rounded-lg bg-slate-800/80 flex items-center justify-center shrink-0">
