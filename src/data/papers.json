@@ -635,5 +635,20 @@
     "breakthrough": "A login screen that appears after a tap on Sign in is expected; the same screen after a tap on View order is an attack. For GUI agents, safety is therefore a property of the transition rather than of the screen, and a monitor that inspects only screens can be defeated by reusing a legitimate one. Judging a transition requires an expectation of what should ha...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2610_23987_what_generation_knows_unlockin",
+    "title": "What Generation Knows: Unlocking Fine-Grained Understanding in Unified Multimodal Models",
+    "authors": "Tengju Ru, Weitong Lian, Zecong Tang, Zhiheng Liu et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "generative",
+    "arxiv_id": "2610.23987",
+    "url": "https://arxiv.org/abs/2610.23987",
+    "one_liner": "Fine-grained visual understanding requires distinguishing subtle differences in local attributes and spatial relations, yet remains challenging for existing vis...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Fine-grained visual understanding requires distinguishing subtle differences in local attributes and spatial relations, yet remains challenging for existing vision-language models. Unified multimodal models (UMMs) offer a new opportunity through generation pathways that preserve rich visual information complementary to understanding. However, existing genera...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
