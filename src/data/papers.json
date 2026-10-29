@@ -725,5 +725,20 @@
     "breakthrough": "Looped transformers reuse a shared block of layers to increase computational depth without increasing the number of trainable parameters. They are trained with backpropagation through time (BPTT). To save training compute, BPTT is often truncated to the last few loops, but truncation yields biased gradients that may weaken the benefit of looping. In this wor...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2601_15351_omnispectra_a_unified_foundati",
+    "title": "OmniSpectra: A Unified Foundation Model for Universal Spectra Representation Learning",
+    "authors": "Md Khairul Islam, Zeyu Xia, Adam S. Bolton, Judy Fox",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "llm",
+    "arxiv_id": "2601.15351",
+    "url": "https://arxiv.org/abs/2601.15351",
+    "one_liner": "Standard sequence models encode position by token rank rather than physical coordinate, typically forcing practitioners to destructively resample continuous phy...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Standard sequence models encode position by token rank rather than physical coordinate, typically forcing practitioners to destructively resample continuous physical signals such as spectra observed across heterogeneous instruments. We identify this coordinate mismatch as a structural limitation in cross-instrument representation learning, and propose OmniSp...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
