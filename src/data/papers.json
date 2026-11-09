@@ -890,5 +890,20 @@
     "breakthrough": "Offline retrieval-augmented generation (RAG) on edge devices is updated through signed knowledge packs that carry text and precomputed embedding vectors. A signature proves who published a pack, not that its vectors encode its text. We study this text-vector integrity gap. A verifier that recomputes vectors and accepts them within a cosine tolerance concedes...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_00448_learning_to_evolve_by_matching",
+    "title": "Learning to evolve by matching velocities",
+    "authors": "Nicola Farenga, Andrea Manzoni",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "llm",
+    "arxiv_id": "2611.00448",
+    "url": "https://arxiv.org/abs/2611.00448",
+    "one_liner": "Learning the continuous-time evolution of nonlinear dynamical systems relies on trajectory-based objectives, which require simulating the learned dynamics durin...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Learning the continuous-time evolution of nonlinear dynamical systems relies on trajectory-based objectives, which require simulating the learned dynamics during training and backpropagating through the numerical scheme, at a cost that grows with the rollout horizon. We show that trajectory-based objectives degenerate as the rollout horizon increases, hinder...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
