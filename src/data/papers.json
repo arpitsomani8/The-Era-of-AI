@@ -920,5 +920,20 @@
     "breakthrough": "On-policy distillation (OPD) trains a student language model on its own responses, guided by a fixed teacher. Generating these responses is expensive, so systems use quantized inference and asynchronous rollouts to reduce the cost. Both, however, introduce training-inference mismatch between the rollout engine and the model being trained. Such mismatch can d...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_13995_lipschitz_controlled_flow_matc",
+    "title": "Lipschitz-Controlled Flow Matching for Robust Image Restoration",
+    "authors": "Sedjro Salomon Hotegni, Konstantin Sonntag, Paul-Christian Bürkner, Sebastian Peitz",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "generative",
+    "arxiv_id": "2611.13995",
+    "url": "https://arxiv.org/abs/2611.13995",
+    "one_liner": "Flow-matching models can produce high-quality image restorations, but their learned dynamics may amplify small input perturbations and make reconstructions unst...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Flow-matching models can produce high-quality image restorations, but their learned dynamics may amplify small input perturbations and make reconstructions unstable. We introduce LipsFlower to reduce this amplification. We derive stability bounds for Flow-from-Y, which initializes the ordinary differential equation from a noise-perturbed observation, as well...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
