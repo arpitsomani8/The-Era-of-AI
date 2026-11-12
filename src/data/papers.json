@@ -935,5 +935,20 @@
     "breakthrough": "Flow-matching models can produce high-quality image restorations, but their learned dynamics may amplify small input perturbations and make reconstructions unstable. We introduce LipsFlower to reduce this amplification. We derive stability bounds for Flow-from-Y, which initializes the ordinary differential equation from a noise-perturbed observation, as well...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_12869_where_does_alignment_emerge_an",
+    "title": "Where Does Alignment Emerge and What Does It Mean? A Closer Look at the Platonic Representation Hypothesis",
+    "authors": "Julia Herbst, Simon Roschmann, Quentin Bouniot, Zeynep Akata",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "alignment",
+    "arxiv_id": "2611.12869",
+    "url": "https://arxiv.org/abs/2611.12869",
+    "one_liner": "The Platonic Representation Hypothesis (PRH) suggests that neural networks are converging toward similar representation spaces. As language models become more c...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "The Platonic Representation Hypothesis (PRH) suggests that neural networks are converging toward similar representation spaces. As language models become more capable, their representations are aligning with those of vision models. However, recent work has questioned whether this trend continues to hold for newer language models. Moreover, it has been shown ...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
