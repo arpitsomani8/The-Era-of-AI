@@ -950,5 +950,20 @@
     "breakthrough": "The Platonic Representation Hypothesis (PRH) suggests that neural networks are converging toward similar representation spaces. As language models become more capable, their representations are aligning with those of vision models. However, recent work has questioned whether this trend continues to hold for newer language models. Moreover, it has been shown ...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_08318_learning_the_task_or_learning",
+    "title": "Learning the Task or Learning the Verifier? Rethinking Criteria Exposure in Embodied Self-Improvement",
+    "authors": "Wenbo Huang, Jianxin Bi, Shunyu Yang, Ruiyang Si et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "llm",
+    "arxiv_id": "2611.08318",
+    "url": "https://arxiv.org/abs/2611.08318",
+    "one_liner": "Self-improving embodied agents are increasingly being developed and compared on robot simulation benchmarks. Several recent works expose the benchmark's success...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Self-improving embodied agents are increasingly being developed and compared on robot simulation benchmarks. Several recent works expose the benchmark's success criteria to the learning agent, a practice we call Criteria Exposure (CE). These criteria, originally written to verify policies trained by imitation learning, often demand more than the correspondin...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
