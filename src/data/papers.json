@@ -1070,5 +1070,20 @@
     "breakthrough": "Facial deepfake detectors are usually trained on blending fakes, where a generated face is pasted back into a real frame. Recent generators synthesize the entire face and leave no traces of blending. On a benchmark of 19 datasets released from 2019 to 2026, the best prior facial deepfake detector reaches a mean AUROC of 96.2% on ten blending datasets, but no...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_26232_time_series_structure_learning",
+    "title": "Time Series Structure Learning with Local Causal Parent Discovery",
+    "authors": "Jacqueline Maasch, Shu Wan, Hank Zhu, Huan Liu et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "rag",
+    "arxiv_id": "2611.26232",
+    "url": "https://arxiv.org/abs/2611.26232",
+    "one_liner": "Learning and inference on time series can pose significant statistical challenges, including autocorrelated observations, distribution shift over time, and the ...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Learning and inference on time series can pose significant statistical challenges, including autocorrelated observations, distribution shift over time, and the curse of dimensionality. These challenges complicate the practical application of causal discovery algorithms, which already suffer from high computational and sample complexity in the general case. T...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
