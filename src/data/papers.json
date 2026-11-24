@@ -1115,5 +1115,20 @@
     "breakthrough": "-05-X-03), Known Exploited Vulnerabilities (KEV) catalogs, and exploitation sightings.   We introduce an evidence model implemented in Vulnerability-Lookup that selects the earliest evidence for each lifecycle event, distinguishes vulnerability-specific records, preserves date precision, and ensures traceability to original sources.   Among 3,758 vulnerabili...",
     "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
     "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
+  },
+  {
+    "id": "paper_2611_31198_toolsmith_an_automatic_tool_ge",
+    "title": "ToolSmith: An Automatic Tool-Generation Framework for Multimodal Search Agents",
+    "authors": "Rui Sun, Junhua Huang, Luca Zancato, Md Mofijul Islam et al.",
+    "institution": "Open Research Community / arXiv",
+    "year": 2026,
+    "category": "vision_dl",
+    "arxiv_id": "2611.31198",
+    "url": "https://arxiv.org/abs/2611.31198",
+    "one_liner": "Recent multimodal search agents use reasoning, vision, and live web search across many turns to answer questions beyond parametric knowledge by orchestrating a ...",
+    "problem": "Addresses critical emerging bottlenecks in frontier model reasoning, inference scaling, and computational efficiency.",
+    "breakthrough": "Recent multimodal search agents use reasoning, vision, and live web search across many turns to answer questions beyond parametric knowledge by orchestrating a small library of hand-crafted search and visual tools. However, the library is laborious to create and maintain, and frozen when new query types, evidence formats, and failure modes are encountered in...",
+    "formula": "$$\\mathcal{L}(\\theta) = \\mathbb{E}_{x \\sim \\mathcal{D}}[\\ell(f_\\theta(x), y)] + \\lambda \\mathcal{R}(\\theta)$$",
+    "impact": "High daily trending momentum with community backing (0 upvotes on Hugging Face Daily Papers)."
   }
 ]
